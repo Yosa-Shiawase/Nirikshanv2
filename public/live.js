@@ -1,6 +1,6 @@
 /* NIRAKSHAN live bridge v2 — SSE ingestion, ATM layer, provenance, visible feedback */
 (function () {
-  var LIVE = location.protocol + "//" + location.hostname + ":8500";
+  var LIVE = location.origin;
   var atmLayer = null, pulseCount = 0;
 
   function addBadge() {
