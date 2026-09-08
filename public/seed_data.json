@@ -1,0 +1,3076 @@
+{
+  "terminals": [
+    {
+      "id": "ATM-DL-01",
+      "name": "SBI ATM - Kalkaji B-Block, New Delhi",
+      "lat": 28.5355,
+      "lon": 77.241,
+      "base_flow": 380000
+    },
+    {
+      "id": "ATM-DL-02",
+      "name": "HDFC 24x7 - Nehru Place Outer, New Delhi",
+      "lat": 28.549,
+      "lon": 77.252,
+      "base_flow": 450000
+    },
+    {
+      "id": "ATM-DL-03",
+      "name": "PNB Terminal - Vikas Marg, Laxmi Nagar",
+      "lat": 28.631,
+      "lon": 77.289,
+      "base_flow": 210000
+    },
+    {
+      "id": "ATM-DL-04",
+      "name": "ICICI E-Lobby - Sector 18, Noida",
+      "lat": 28.5705,
+      "lon": 77.321,
+      "base_flow": 520000
+    },
+    {
+      "id": "ATM-DL-05",
+      "name": "Canara ATM - Pari Chowk Metro, Gr. Noida",
+      "lat": 28.4682,
+      "lon": 77.5108,
+      "base_flow": 310000
+    },
+    {
+      "id": "ATM-MH-01",
+      "name": "Axis Bank - Bandra West Linking Rd, Mumbai",
+      "lat": 19.06,
+      "lon": 72.8339,
+      "base_flow": 640000
+    },
+    {
+      "id": "ATM-MH-02",
+      "name": "SBI Offsite - Andheri East Station, Mumbai",
+      "lat": 19.1197,
+      "lon": 72.8464,
+      "base_flow": 490000
+    },
+    {
+      "id": "ATM-MH-03",
+      "name": "Bank of Baroda - Thane West Station Rd",
+      "lat": 19.186,
+      "lon": 72.9759,
+      "base_flow": 280000
+    },
+    {
+      "id": "ATM-KA-01",
+      "name": "SBI E-Corner - Koramangala 5th Block, Bengaluru",
+      "lat": 12.9352,
+      "lon": 77.6245,
+      "base_flow": 420000
+    },
+    {
+      "id": "ATM-UP-01",
+      "name": "HDFC ATM - Hazratganj Main Market, Lucknow",
+      "lat": 26.8467,
+      "lon": 80.9462,
+      "base_flow": 260000
+    }
+  ],
+  "complaints": [
+    {
+      "ack_no": "NCRP-2026-100001",
+      "timestamp": "2026-09-05T08:51:27Z",
+      "disputed_amount_inr": 48100.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_148@okbank",
+      "layer_1_mule": "mule_tier1_24@paytm",
+      "layer_2_mule": "runner_acc_3405",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100002",
+      "timestamp": "2026-09-05T10:29:27Z",
+      "disputed_amount_inr": 12300.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_405@okbank",
+      "layer_1_mule": "mule_tier1_16@paytm",
+      "layer_2_mule": "runner_acc_1911",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100003",
+      "timestamp": "2026-09-05T10:06:27Z",
+      "disputed_amount_inr": 85500.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_658@okbank",
+      "layer_1_mule": "mule_tier1_40@paytm",
+      "layer_2_mule": "runner_acc_4168",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100004",
+      "timestamp": "2026-09-05T08:57:27Z",
+      "disputed_amount_inr": 11600.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_936@okbank",
+      "layer_1_mule": "mule_tier1_35@paytm",
+      "layer_2_mule": "runner_acc_6631",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100005",
+      "timestamp": "2026-09-05T09:54:27Z",
+      "disputed_amount_inr": 6800.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_743@okbank",
+      "layer_1_mule": "mule_tier1_32@paytm",
+      "layer_2_mule": "runner_acc_7109",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100006",
+      "timestamp": "2026-09-05T07:46:27Z",
+      "disputed_amount_inr": 20900.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_482@okbank",
+      "layer_1_mule": "mule_tier1_58@paytm",
+      "layer_2_mule": "runner_acc_3434",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100007",
+      "timestamp": "2026-09-05T09:04:27Z",
+      "disputed_amount_inr": 9900.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_378@okbank",
+      "layer_1_mule": "mule_tier1_19@paytm",
+      "layer_2_mule": "runner_acc_6785",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100008",
+      "timestamp": "2026-09-05T08:12:27Z",
+      "disputed_amount_inr": 76300.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_534@okbank",
+      "layer_1_mule": "mule_tier1_43@paytm",
+      "layer_2_mule": "runner_acc_8883",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100009",
+      "timestamp": "2026-09-05T08:16:27Z",
+      "disputed_amount_inr": 100800.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_982@okbank",
+      "layer_1_mule": "mule_tier1_40@paytm",
+      "layer_2_mule": "runner_acc_1173",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100010",
+      "timestamp": "2026-09-05T07:48:27Z",
+      "disputed_amount_inr": 36300.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_769@okbank",
+      "layer_1_mule": "mule_tier1_54@paytm",
+      "layer_2_mule": "runner_acc_7922",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100011",
+      "timestamp": "2026-09-05T09:36:27Z",
+      "disputed_amount_inr": 96400.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_569@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_7582",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100012",
+      "timestamp": "2026-09-05T10:03:27Z",
+      "disputed_amount_inr": 18500.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_296@okbank",
+      "layer_1_mule": "mule_tier1_75@paytm",
+      "layer_2_mule": "runner_acc_8508",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100013",
+      "timestamp": "2026-09-05T08:45:27Z",
+      "disputed_amount_inr": 10800.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_551@okbank",
+      "layer_1_mule": "mule_tier1_24@paytm",
+      "layer_2_mule": "runner_acc_4371",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100014",
+      "timestamp": "2026-09-05T10:00:27Z",
+      "disputed_amount_inr": 32500.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_576@okbank",
+      "layer_1_mule": "mule_tier1_71@paytm",
+      "layer_2_mule": "runner_acc_7203",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100015",
+      "timestamp": "2026-09-05T10:53:27Z",
+      "disputed_amount_inr": 158000.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_836@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_3280",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100016",
+      "timestamp": "2026-09-05T09:46:27Z",
+      "disputed_amount_inr": 48600.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_926@okbank",
+      "layer_1_mule": "mule_tier1_32@paytm",
+      "layer_2_mule": "runner_acc_6537",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100017",
+      "timestamp": "2026-09-05T10:52:27Z",
+      "disputed_amount_inr": 68100.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_345@okbank",
+      "layer_1_mule": "mule_tier1_18@paytm",
+      "layer_2_mule": "runner_acc_8170",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100018",
+      "timestamp": "2026-09-05T08:53:27Z",
+      "disputed_amount_inr": 5500.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_669@okbank",
+      "layer_1_mule": "mule_tier1_50@paytm",
+      "layer_2_mule": "runner_acc_9831",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100019",
+      "timestamp": "2026-09-05T10:57:27Z",
+      "disputed_amount_inr": 35000.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_735@okbank",
+      "layer_1_mule": "mule_tier1_70@paytm",
+      "layer_2_mule": "runner_acc_2977",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100020",
+      "timestamp": "2026-09-05T07:17:27Z",
+      "disputed_amount_inr": 35700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_827@okbank",
+      "layer_1_mule": "mule_tier1_32@paytm",
+      "layer_2_mule": "runner_acc_2161",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100021",
+      "timestamp": "2026-09-05T09:55:27Z",
+      "disputed_amount_inr": 5900.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_732@okbank",
+      "layer_1_mule": "mule_tier1_10@paytm",
+      "layer_2_mule": "runner_acc_1516",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100022",
+      "timestamp": "2026-09-05T10:39:27Z",
+      "disputed_amount_inr": 20400.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_868@okbank",
+      "layer_1_mule": "mule_tier1_40@paytm",
+      "layer_2_mule": "runner_acc_9788",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100023",
+      "timestamp": "2026-09-05T06:36:27Z",
+      "disputed_amount_inr": 60600.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_531@okbank",
+      "layer_1_mule": "mule_tier1_45@paytm",
+      "layer_2_mule": "runner_acc_9004",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100024",
+      "timestamp": "2026-09-05T06:24:27Z",
+      "disputed_amount_inr": 17700.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_470@okbank",
+      "layer_1_mule": "mule_tier1_54@paytm",
+      "layer_2_mule": "runner_acc_9531",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100025",
+      "timestamp": "2026-09-05T09:46:27Z",
+      "disputed_amount_inr": 28100.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_866@okbank",
+      "layer_1_mule": "mule_tier1_27@paytm",
+      "layer_2_mule": "runner_acc_3235",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100026",
+      "timestamp": "2026-09-05T10:57:27Z",
+      "disputed_amount_inr": 7400.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_535@okbank",
+      "layer_1_mule": "mule_tier1_63@paytm",
+      "layer_2_mule": "runner_acc_3340",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100027",
+      "timestamp": "2026-09-05T06:45:27Z",
+      "disputed_amount_inr": 5200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_916@okbank",
+      "layer_1_mule": "mule_tier1_34@paytm",
+      "layer_2_mule": "runner_acc_9617",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100028",
+      "timestamp": "2026-09-05T06:30:27Z",
+      "disputed_amount_inr": 18300.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_414@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_5246",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100029",
+      "timestamp": "2026-09-05T10:36:27Z",
+      "disputed_amount_inr": 19400.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_780@okbank",
+      "layer_1_mule": "mule_tier1_47@paytm",
+      "layer_2_mule": "runner_acc_6907",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100030",
+      "timestamp": "2026-09-05T06:46:27Z",
+      "disputed_amount_inr": 11000.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_169@okbank",
+      "layer_1_mule": "mule_tier1_40@paytm",
+      "layer_2_mule": "runner_acc_2891",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100031",
+      "timestamp": "2026-09-05T09:49:27Z",
+      "disputed_amount_inr": 57200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_748@okbank",
+      "layer_1_mule": "mule_tier1_48@paytm",
+      "layer_2_mule": "runner_acc_5746",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100032",
+      "timestamp": "2026-09-05T07:31:27Z",
+      "disputed_amount_inr": 8700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_225@okbank",
+      "layer_1_mule": "mule_tier1_50@paytm",
+      "layer_2_mule": "runner_acc_4141",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100033",
+      "timestamp": "2026-09-05T09:08:27Z",
+      "disputed_amount_inr": 9900.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_593@okbank",
+      "layer_1_mule": "mule_tier1_70@paytm",
+      "layer_2_mule": "runner_acc_9908",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100034",
+      "timestamp": "2026-09-05T08:45:27Z",
+      "disputed_amount_inr": 11800.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_325@okbank",
+      "layer_1_mule": "mule_tier1_71@paytm",
+      "layer_2_mule": "runner_acc_2330",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100035",
+      "timestamp": "2026-09-05T07:44:27Z",
+      "disputed_amount_inr": 42800.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_546@okbank",
+      "layer_1_mule": "mule_tier1_11@paytm",
+      "layer_2_mule": "runner_acc_5165",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100036",
+      "timestamp": "2026-09-05T08:23:27Z",
+      "disputed_amount_inr": 39600.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_561@okbank",
+      "layer_1_mule": "mule_tier1_23@paytm",
+      "layer_2_mule": "runner_acc_2808",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100037",
+      "timestamp": "2026-09-05T07:06:27Z",
+      "disputed_amount_inr": 115000.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_902@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_9502",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100038",
+      "timestamp": "2026-09-05T06:58:27Z",
+      "disputed_amount_inr": 24200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_330@okbank",
+      "layer_1_mule": "mule_tier1_60@paytm",
+      "layer_2_mule": "runner_acc_5902",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100039",
+      "timestamp": "2026-09-05T10:27:27Z",
+      "disputed_amount_inr": 18200.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_751@okbank",
+      "layer_1_mule": "mule_tier1_66@paytm",
+      "layer_2_mule": "runner_acc_2607",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100040",
+      "timestamp": "2026-09-05T07:18:27Z",
+      "disputed_amount_inr": 12300.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_600@okbank",
+      "layer_1_mule": "mule_tier1_43@paytm",
+      "layer_2_mule": "runner_acc_6221",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100041",
+      "timestamp": "2026-09-05T09:55:27Z",
+      "disputed_amount_inr": 70100.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_670@okbank",
+      "layer_1_mule": "mule_tier1_43@paytm",
+      "layer_2_mule": "runner_acc_3179",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100042",
+      "timestamp": "2026-09-05T10:20:27Z",
+      "disputed_amount_inr": 73600.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_320@okbank",
+      "layer_1_mule": "mule_tier1_80@paytm",
+      "layer_2_mule": "runner_acc_4052",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100043",
+      "timestamp": "2026-09-05T09:46:27Z",
+      "disputed_amount_inr": 34100.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_574@okbank",
+      "layer_1_mule": "mule_tier1_40@paytm",
+      "layer_2_mule": "runner_acc_7643",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100044",
+      "timestamp": "2026-09-05T10:35:27Z",
+      "disputed_amount_inr": 24700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_526@okbank",
+      "layer_1_mule": "mule_tier1_34@paytm",
+      "layer_2_mule": "runner_acc_8225",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100045",
+      "timestamp": "2026-09-05T07:32:27Z",
+      "disputed_amount_inr": 14600.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_368@okbank",
+      "layer_1_mule": "mule_tier1_77@paytm",
+      "layer_2_mule": "runner_acc_2805",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100046",
+      "timestamp": "2026-09-05T08:30:27Z",
+      "disputed_amount_inr": 15500.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_835@okbank",
+      "layer_1_mule": "mule_tier1_18@paytm",
+      "layer_2_mule": "runner_acc_3966",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100047",
+      "timestamp": "2026-09-05T10:45:27Z",
+      "disputed_amount_inr": 25000.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_441@okbank",
+      "layer_1_mule": "mule_tier1_74@paytm",
+      "layer_2_mule": "runner_acc_2089",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100048",
+      "timestamp": "2026-09-05T06:30:27Z",
+      "disputed_amount_inr": 8200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_584@okbank",
+      "layer_1_mule": "mule_tier1_25@paytm",
+      "layer_2_mule": "runner_acc_2689",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100049",
+      "timestamp": "2026-09-05T10:38:27Z",
+      "disputed_amount_inr": 32900.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_439@okbank",
+      "layer_1_mule": "mule_tier1_18@paytm",
+      "layer_2_mule": "runner_acc_5023",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100050",
+      "timestamp": "2026-09-05T06:36:27Z",
+      "disputed_amount_inr": 43000.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_510@okbank",
+      "layer_1_mule": "mule_tier1_67@paytm",
+      "layer_2_mule": "runner_acc_9220",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100051",
+      "timestamp": "2026-09-05T07:55:27Z",
+      "disputed_amount_inr": 15800.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_175@okbank",
+      "layer_1_mule": "mule_tier1_10@paytm",
+      "layer_2_mule": "runner_acc_6276",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100052",
+      "timestamp": "2026-09-05T06:47:27Z",
+      "disputed_amount_inr": 10200.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_908@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_5233",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100053",
+      "timestamp": "2026-09-05T07:07:27Z",
+      "disputed_amount_inr": 29400.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_297@okbank",
+      "layer_1_mule": "mule_tier1_77@paytm",
+      "layer_2_mule": "runner_acc_7985",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100054",
+      "timestamp": "2026-09-05T07:52:27Z",
+      "disputed_amount_inr": 9000.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_119@okbank",
+      "layer_1_mule": "mule_tier1_13@paytm",
+      "layer_2_mule": "runner_acc_9739",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100055",
+      "timestamp": "2026-09-05T10:34:27Z",
+      "disputed_amount_inr": 9500.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_965@okbank",
+      "layer_1_mule": "mule_tier1_16@paytm",
+      "layer_2_mule": "runner_acc_3809",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100056",
+      "timestamp": "2026-09-05T07:13:27Z",
+      "disputed_amount_inr": 18100.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_582@okbank",
+      "layer_1_mule": "mule_tier1_36@paytm",
+      "layer_2_mule": "runner_acc_1937",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100057",
+      "timestamp": "2026-09-05T06:36:27Z",
+      "disputed_amount_inr": 71500.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_229@okbank",
+      "layer_1_mule": "mule_tier1_75@paytm",
+      "layer_2_mule": "runner_acc_8165",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100058",
+      "timestamp": "2026-09-05T06:37:27Z",
+      "disputed_amount_inr": 39300.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_408@okbank",
+      "layer_1_mule": "mule_tier1_21@paytm",
+      "layer_2_mule": "runner_acc_7451",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100059",
+      "timestamp": "2026-09-05T08:53:27Z",
+      "disputed_amount_inr": 38800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_258@okbank",
+      "layer_1_mule": "mule_tier1_53@paytm",
+      "layer_2_mule": "runner_acc_1610",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100060",
+      "timestamp": "2026-09-05T10:56:27Z",
+      "disputed_amount_inr": 30200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_511@okbank",
+      "layer_1_mule": "mule_tier1_34@paytm",
+      "layer_2_mule": "runner_acc_5303",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100061",
+      "timestamp": "2026-09-05T06:29:27Z",
+      "disputed_amount_inr": 14700.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_493@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_6500",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100062",
+      "timestamp": "2026-09-05T09:37:27Z",
+      "disputed_amount_inr": 72700.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_181@okbank",
+      "layer_1_mule": "mule_tier1_44@paytm",
+      "layer_2_mule": "runner_acc_2560",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100063",
+      "timestamp": "2026-09-05T08:57:27Z",
+      "disputed_amount_inr": 54600.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_797@okbank",
+      "layer_1_mule": "mule_tier1_63@paytm",
+      "layer_2_mule": "runner_acc_6479",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100064",
+      "timestamp": "2026-09-05T10:08:27Z",
+      "disputed_amount_inr": 40900.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_523@okbank",
+      "layer_1_mule": "mule_tier1_29@paytm",
+      "layer_2_mule": "runner_acc_1186",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100065",
+      "timestamp": "2026-09-05T08:14:27Z",
+      "disputed_amount_inr": 40100.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_196@okbank",
+      "layer_1_mule": "mule_tier1_10@paytm",
+      "layer_2_mule": "runner_acc_3376",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100066",
+      "timestamp": "2026-09-05T07:15:27Z",
+      "disputed_amount_inr": 7300.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_602@okbank",
+      "layer_1_mule": "mule_tier1_50@paytm",
+      "layer_2_mule": "runner_acc_3581",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100067",
+      "timestamp": "2026-09-05T09:35:27Z",
+      "disputed_amount_inr": 50300.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_321@okbank",
+      "layer_1_mule": "mule_tier1_58@paytm",
+      "layer_2_mule": "runner_acc_3061",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100068",
+      "timestamp": "2026-09-05T09:01:27Z",
+      "disputed_amount_inr": 27500.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_380@okbank",
+      "layer_1_mule": "mule_tier1_60@paytm",
+      "layer_2_mule": "runner_acc_9976",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100069",
+      "timestamp": "2026-09-05T07:31:27Z",
+      "disputed_amount_inr": 53200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_681@okbank",
+      "layer_1_mule": "mule_tier1_58@paytm",
+      "layer_2_mule": "runner_acc_6139",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100070",
+      "timestamp": "2026-09-05T08:59:27Z",
+      "disputed_amount_inr": 189900.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_756@okbank",
+      "layer_1_mule": "mule_tier1_36@paytm",
+      "layer_2_mule": "runner_acc_3066",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100071",
+      "timestamp": "2026-09-05T08:50:27Z",
+      "disputed_amount_inr": 25700.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_439@okbank",
+      "layer_1_mule": "mule_tier1_64@paytm",
+      "layer_2_mule": "runner_acc_3256",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100072",
+      "timestamp": "2026-09-05T07:03:27Z",
+      "disputed_amount_inr": 8800.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_953@okbank",
+      "layer_1_mule": "mule_tier1_23@paytm",
+      "layer_2_mule": "runner_acc_9725",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100073",
+      "timestamp": "2026-09-05T10:39:27Z",
+      "disputed_amount_inr": 22300.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_642@okbank",
+      "layer_1_mule": "mule_tier1_12@paytm",
+      "layer_2_mule": "runner_acc_9669",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100074",
+      "timestamp": "2026-09-05T08:24:27Z",
+      "disputed_amount_inr": 40500.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_836@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_9740",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100075",
+      "timestamp": "2026-09-05T07:19:27Z",
+      "disputed_amount_inr": 12700.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_492@okbank",
+      "layer_1_mule": "mule_tier1_70@paytm",
+      "layer_2_mule": "runner_acc_9430",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100076",
+      "timestamp": "2026-09-05T10:30:27Z",
+      "disputed_amount_inr": 19500.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_750@okbank",
+      "layer_1_mule": "mule_tier1_44@paytm",
+      "layer_2_mule": "runner_acc_8919",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100077",
+      "timestamp": "2026-09-05T10:23:27Z",
+      "disputed_amount_inr": 20400.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_477@okbank",
+      "layer_1_mule": "mule_tier1_47@paytm",
+      "layer_2_mule": "runner_acc_5734",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100078",
+      "timestamp": "2026-09-05T10:53:27Z",
+      "disputed_amount_inr": 32700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_721@okbank",
+      "layer_1_mule": "mule_tier1_51@paytm",
+      "layer_2_mule": "runner_acc_6528",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100079",
+      "timestamp": "2026-09-05T10:19:27Z",
+      "disputed_amount_inr": 58600.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_802@okbank",
+      "layer_1_mule": "mule_tier1_36@paytm",
+      "layer_2_mule": "runner_acc_8160",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100080",
+      "timestamp": "2026-09-05T09:59:27Z",
+      "disputed_amount_inr": 21900.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_403@okbank",
+      "layer_1_mule": "mule_tier1_52@paytm",
+      "layer_2_mule": "runner_acc_7975",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100081",
+      "timestamp": "2026-09-05T06:34:27Z",
+      "disputed_amount_inr": 64100.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_921@okbank",
+      "layer_1_mule": "mule_tier1_49@paytm",
+      "layer_2_mule": "runner_acc_9575",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100082",
+      "timestamp": "2026-09-05T10:08:27Z",
+      "disputed_amount_inr": 47800.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_317@okbank",
+      "layer_1_mule": "mule_tier1_55@paytm",
+      "layer_2_mule": "runner_acc_7475",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100083",
+      "timestamp": "2026-09-05T10:22:27Z",
+      "disputed_amount_inr": 12900.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_884@okbank",
+      "layer_1_mule": "mule_tier1_78@paytm",
+      "layer_2_mule": "runner_acc_2612",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100084",
+      "timestamp": "2026-09-05T09:34:27Z",
+      "disputed_amount_inr": 15800.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_440@okbank",
+      "layer_1_mule": "mule_tier1_47@paytm",
+      "layer_2_mule": "runner_acc_2426",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100085",
+      "timestamp": "2026-09-05T09:17:27Z",
+      "disputed_amount_inr": 5000,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_457@okbank",
+      "layer_1_mule": "mule_tier1_13@paytm",
+      "layer_2_mule": "runner_acc_4822",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100086",
+      "timestamp": "2026-09-05T08:59:27Z",
+      "disputed_amount_inr": 13400.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_102@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_4709",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100087",
+      "timestamp": "2026-09-05T09:02:27Z",
+      "disputed_amount_inr": 91500.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_794@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_7204",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100088",
+      "timestamp": "2026-09-05T09:03:27Z",
+      "disputed_amount_inr": 53800.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_705@okbank",
+      "layer_1_mule": "mule_tier1_27@paytm",
+      "layer_2_mule": "runner_acc_3326",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100089",
+      "timestamp": "2026-09-05T09:21:27Z",
+      "disputed_amount_inr": 28800.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_301@okbank",
+      "layer_1_mule": "mule_tier1_22@paytm",
+      "layer_2_mule": "runner_acc_8711",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100090",
+      "timestamp": "2026-09-05T11:00:27Z",
+      "disputed_amount_inr": 14000.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_868@okbank",
+      "layer_1_mule": "mule_tier1_68@paytm",
+      "layer_2_mule": "runner_acc_8347",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100091",
+      "timestamp": "2026-09-05T07:34:27Z",
+      "disputed_amount_inr": 57800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_619@okbank",
+      "layer_1_mule": "mule_tier1_63@paytm",
+      "layer_2_mule": "runner_acc_4910",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100092",
+      "timestamp": "2026-09-05T10:16:27Z",
+      "disputed_amount_inr": 22800.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_914@okbank",
+      "layer_1_mule": "mule_tier1_79@paytm",
+      "layer_2_mule": "runner_acc_1630",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100093",
+      "timestamp": "2026-09-05T11:01:27Z",
+      "disputed_amount_inr": 86100.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_661@okbank",
+      "layer_1_mule": "mule_tier1_17@paytm",
+      "layer_2_mule": "runner_acc_6070",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100094",
+      "timestamp": "2026-09-05T10:41:27Z",
+      "disputed_amount_inr": 30500.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_249@okbank",
+      "layer_1_mule": "mule_tier1_10@paytm",
+      "layer_2_mule": "runner_acc_8126",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100095",
+      "timestamp": "2026-09-05T10:24:27Z",
+      "disputed_amount_inr": 15200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_890@okbank",
+      "layer_1_mule": "mule_tier1_80@paytm",
+      "layer_2_mule": "runner_acc_9366",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100096",
+      "timestamp": "2026-09-05T08:01:27Z",
+      "disputed_amount_inr": 5600.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_633@okbank",
+      "layer_1_mule": "mule_tier1_32@paytm",
+      "layer_2_mule": "runner_acc_2420",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100097",
+      "timestamp": "2026-09-05T10:07:27Z",
+      "disputed_amount_inr": 45200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_883@okbank",
+      "layer_1_mule": "mule_tier1_16@paytm",
+      "layer_2_mule": "runner_acc_3933",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100098",
+      "timestamp": "2026-09-05T07:40:27Z",
+      "disputed_amount_inr": 65500.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_452@okbank",
+      "layer_1_mule": "mule_tier1_18@paytm",
+      "layer_2_mule": "runner_acc_4596",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100099",
+      "timestamp": "2026-09-05T09:17:27Z",
+      "disputed_amount_inr": 12900.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_419@okbank",
+      "layer_1_mule": "mule_tier1_53@paytm",
+      "layer_2_mule": "runner_acc_9100",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100100",
+      "timestamp": "2026-09-05T08:41:27Z",
+      "disputed_amount_inr": 22000.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_957@okbank",
+      "layer_1_mule": "mule_tier1_13@paytm",
+      "layer_2_mule": "runner_acc_8287",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100101",
+      "timestamp": "2026-09-05T10:53:27Z",
+      "disputed_amount_inr": 7200.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_179@okbank",
+      "layer_1_mule": "mule_tier1_51@paytm",
+      "layer_2_mule": "runner_acc_8892",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100102",
+      "timestamp": "2026-09-05T06:47:27Z",
+      "disputed_amount_inr": 83500.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_239@okbank",
+      "layer_1_mule": "mule_tier1_48@paytm",
+      "layer_2_mule": "runner_acc_6499",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100103",
+      "timestamp": "2026-09-05T09:03:27Z",
+      "disputed_amount_inr": 20500.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_832@okbank",
+      "layer_1_mule": "mule_tier1_21@paytm",
+      "layer_2_mule": "runner_acc_4183",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100104",
+      "timestamp": "2026-09-05T10:02:27Z",
+      "disputed_amount_inr": 26300.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_791@okbank",
+      "layer_1_mule": "mule_tier1_80@paytm",
+      "layer_2_mule": "runner_acc_5867",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100105",
+      "timestamp": "2026-09-05T06:48:27Z",
+      "disputed_amount_inr": 51800.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_648@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_4024",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100106",
+      "timestamp": "2026-09-05T07:50:27Z",
+      "disputed_amount_inr": 128400.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_178@okbank",
+      "layer_1_mule": "mule_tier1_40@paytm",
+      "layer_2_mule": "runner_acc_4379",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100107",
+      "timestamp": "2026-09-05T09:28:27Z",
+      "disputed_amount_inr": 42100.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_864@okbank",
+      "layer_1_mule": "mule_tier1_78@paytm",
+      "layer_2_mule": "runner_acc_7573",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100108",
+      "timestamp": "2026-09-05T10:46:27Z",
+      "disputed_amount_inr": 18800.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_178@okbank",
+      "layer_1_mule": "mule_tier1_49@paytm",
+      "layer_2_mule": "runner_acc_6345",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100109",
+      "timestamp": "2026-09-05T07:45:27Z",
+      "disputed_amount_inr": 39200.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_836@okbank",
+      "layer_1_mule": "mule_tier1_68@paytm",
+      "layer_2_mule": "runner_acc_8098",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100110",
+      "timestamp": "2026-09-05T08:47:27Z",
+      "disputed_amount_inr": 9900.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_221@okbank",
+      "layer_1_mule": "mule_tier1_36@paytm",
+      "layer_2_mule": "runner_acc_2594",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100111",
+      "timestamp": "2026-09-05T08:59:27Z",
+      "disputed_amount_inr": 13200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_250@okbank",
+      "layer_1_mule": "mule_tier1_22@paytm",
+      "layer_2_mule": "runner_acc_8307",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100112",
+      "timestamp": "2026-09-05T08:26:27Z",
+      "disputed_amount_inr": 20000.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_113@okbank",
+      "layer_1_mule": "mule_tier1_21@paytm",
+      "layer_2_mule": "runner_acc_5155",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100113",
+      "timestamp": "2026-09-05T08:02:27Z",
+      "disputed_amount_inr": 8000.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_982@okbank",
+      "layer_1_mule": "mule_tier1_77@paytm",
+      "layer_2_mule": "runner_acc_1700",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100114",
+      "timestamp": "2026-09-05T06:47:27Z",
+      "disputed_amount_inr": 119800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_922@okbank",
+      "layer_1_mule": "mule_tier1_78@paytm",
+      "layer_2_mule": "runner_acc_2997",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100115",
+      "timestamp": "2026-09-05T07:48:27Z",
+      "disputed_amount_inr": 16600.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_244@okbank",
+      "layer_1_mule": "mule_tier1_15@paytm",
+      "layer_2_mule": "runner_acc_2980",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100116",
+      "timestamp": "2026-09-05T10:05:27Z",
+      "disputed_amount_inr": 72400.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_382@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_6773",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100117",
+      "timestamp": "2026-09-05T07:45:27Z",
+      "disputed_amount_inr": 78400.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_867@okbank",
+      "layer_1_mule": "mule_tier1_22@paytm",
+      "layer_2_mule": "runner_acc_8227",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100118",
+      "timestamp": "2026-09-05T09:32:27Z",
+      "disputed_amount_inr": 13100.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_754@okbank",
+      "layer_1_mule": "mule_tier1_32@paytm",
+      "layer_2_mule": "runner_acc_3252",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100119",
+      "timestamp": "2026-09-05T07:25:27Z",
+      "disputed_amount_inr": 11200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_881@okbank",
+      "layer_1_mule": "mule_tier1_15@paytm",
+      "layer_2_mule": "runner_acc_9979",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100120",
+      "timestamp": "2026-09-05T08:53:27Z",
+      "disputed_amount_inr": 14800.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_499@okbank",
+      "layer_1_mule": "mule_tier1_66@paytm",
+      "layer_2_mule": "runner_acc_9756",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100121",
+      "timestamp": "2026-09-05T10:10:27Z",
+      "disputed_amount_inr": 37200.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_380@okbank",
+      "layer_1_mule": "mule_tier1_15@paytm",
+      "layer_2_mule": "runner_acc_6587",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100122",
+      "timestamp": "2026-09-05T09:19:27Z",
+      "disputed_amount_inr": 43600.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_396@okbank",
+      "layer_1_mule": "mule_tier1_36@paytm",
+      "layer_2_mule": "runner_acc_5552",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100123",
+      "timestamp": "2026-09-05T09:29:27Z",
+      "disputed_amount_inr": 45700.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_936@okbank",
+      "layer_1_mule": "mule_tier1_30@paytm",
+      "layer_2_mule": "runner_acc_8764",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100124",
+      "timestamp": "2026-09-05T08:38:27Z",
+      "disputed_amount_inr": 19400.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_339@okbank",
+      "layer_1_mule": "mule_tier1_14@paytm",
+      "layer_2_mule": "runner_acc_2465",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100125",
+      "timestamp": "2026-09-05T06:51:27Z",
+      "disputed_amount_inr": 20700.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_574@okbank",
+      "layer_1_mule": "mule_tier1_46@paytm",
+      "layer_2_mule": "runner_acc_7951",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100126",
+      "timestamp": "2026-09-05T07:23:27Z",
+      "disputed_amount_inr": 20100.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_466@okbank",
+      "layer_1_mule": "mule_tier1_20@paytm",
+      "layer_2_mule": "runner_acc_1945",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100127",
+      "timestamp": "2026-09-05T08:19:27Z",
+      "disputed_amount_inr": 5000,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_836@okbank",
+      "layer_1_mule": "mule_tier1_15@paytm",
+      "layer_2_mule": "runner_acc_6178",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100128",
+      "timestamp": "2026-09-05T07:53:27Z",
+      "disputed_amount_inr": 38600.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_878@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_1020",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100129",
+      "timestamp": "2026-09-05T07:06:27Z",
+      "disputed_amount_inr": 5000.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_762@okbank",
+      "layer_1_mule": "mule_tier1_27@paytm",
+      "layer_2_mule": "runner_acc_7022",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100130",
+      "timestamp": "2026-09-05T07:09:27Z",
+      "disputed_amount_inr": 46900.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_828@okbank",
+      "layer_1_mule": "mule_tier1_77@paytm",
+      "layer_2_mule": "runner_acc_3772",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100131",
+      "timestamp": "2026-09-05T07:05:27Z",
+      "disputed_amount_inr": 40900.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_897@okbank",
+      "layer_1_mule": "mule_tier1_27@paytm",
+      "layer_2_mule": "runner_acc_7091",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100132",
+      "timestamp": "2026-09-05T06:21:27Z",
+      "disputed_amount_inr": 27100.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_256@okbank",
+      "layer_1_mule": "mule_tier1_79@paytm",
+      "layer_2_mule": "runner_acc_5861",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100133",
+      "timestamp": "2026-09-05T07:57:27Z",
+      "disputed_amount_inr": 38300.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_396@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_2726",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100134",
+      "timestamp": "2026-09-05T08:34:27Z",
+      "disputed_amount_inr": 17800.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_902@okbank",
+      "layer_1_mule": "mule_tier1_17@paytm",
+      "layer_2_mule": "runner_acc_1594",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100135",
+      "timestamp": "2026-09-05T10:27:27Z",
+      "disputed_amount_inr": 27700.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_218@okbank",
+      "layer_1_mule": "mule_tier1_48@paytm",
+      "layer_2_mule": "runner_acc_7544",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100136",
+      "timestamp": "2026-09-05T09:20:27Z",
+      "disputed_amount_inr": 11900.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_562@okbank",
+      "layer_1_mule": "mule_tier1_43@paytm",
+      "layer_2_mule": "runner_acc_5824",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100137",
+      "timestamp": "2026-09-05T06:43:27Z",
+      "disputed_amount_inr": 37400.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_588@okbank",
+      "layer_1_mule": "mule_tier1_36@paytm",
+      "layer_2_mule": "runner_acc_2993",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100138",
+      "timestamp": "2026-09-05T07:39:27Z",
+      "disputed_amount_inr": 63400.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_670@okbank",
+      "layer_1_mule": "mule_tier1_62@paytm",
+      "layer_2_mule": "runner_acc_8524",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100139",
+      "timestamp": "2026-09-05T07:44:27Z",
+      "disputed_amount_inr": 73800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_756@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_5583",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100140",
+      "timestamp": "2026-09-05T10:22:27Z",
+      "disputed_amount_inr": 6700.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_251@okbank",
+      "layer_1_mule": "mule_tier1_78@paytm",
+      "layer_2_mule": "runner_acc_3019",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100141",
+      "timestamp": "2026-09-05T10:12:27Z",
+      "disputed_amount_inr": 295700.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_918@okbank",
+      "layer_1_mule": "mule_tier1_14@paytm",
+      "layer_2_mule": "runner_acc_3322",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100142",
+      "timestamp": "2026-09-05T08:46:27Z",
+      "disputed_amount_inr": 10100.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_100@okbank",
+      "layer_1_mule": "mule_tier1_61@paytm",
+      "layer_2_mule": "runner_acc_6651",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100143",
+      "timestamp": "2026-09-05T06:25:27Z",
+      "disputed_amount_inr": 22500.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_636@okbank",
+      "layer_1_mule": "mule_tier1_11@paytm",
+      "layer_2_mule": "runner_acc_7516",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100144",
+      "timestamp": "2026-09-05T09:38:27Z",
+      "disputed_amount_inr": 13400.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_364@okbank",
+      "layer_1_mule": "mule_tier1_30@paytm",
+      "layer_2_mule": "runner_acc_4441",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100145",
+      "timestamp": "2026-09-05T09:11:27Z",
+      "disputed_amount_inr": 9700.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_883@okbank",
+      "layer_1_mule": "mule_tier1_48@paytm",
+      "layer_2_mule": "runner_acc_3387",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100146",
+      "timestamp": "2026-09-05T06:39:27Z",
+      "disputed_amount_inr": 24700.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_199@okbank",
+      "layer_1_mule": "mule_tier1_42@paytm",
+      "layer_2_mule": "runner_acc_9129",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100147",
+      "timestamp": "2026-09-05T07:36:27Z",
+      "disputed_amount_inr": 33200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_159@okbank",
+      "layer_1_mule": "mule_tier1_58@paytm",
+      "layer_2_mule": "runner_acc_3990",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100148",
+      "timestamp": "2026-09-05T10:15:27Z",
+      "disputed_amount_inr": 23500.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_264@okbank",
+      "layer_1_mule": "mule_tier1_23@paytm",
+      "layer_2_mule": "runner_acc_1232",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100149",
+      "timestamp": "2026-09-05T07:30:27Z",
+      "disputed_amount_inr": 17400.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_621@okbank",
+      "layer_1_mule": "mule_tier1_34@paytm",
+      "layer_2_mule": "runner_acc_5553",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100150",
+      "timestamp": "2026-09-05T10:06:27Z",
+      "disputed_amount_inr": 23000.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_129@okbank",
+      "layer_1_mule": "mule_tier1_30@paytm",
+      "layer_2_mule": "runner_acc_2969",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100151",
+      "timestamp": "2026-09-05T09:40:27Z",
+      "disputed_amount_inr": 31200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_139@okbank",
+      "layer_1_mule": "mule_tier1_40@paytm",
+      "layer_2_mule": "runner_acc_1498",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100152",
+      "timestamp": "2026-09-05T08:20:27Z",
+      "disputed_amount_inr": 54200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_875@okbank",
+      "layer_1_mule": "mule_tier1_44@paytm",
+      "layer_2_mule": "runner_acc_6942",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100153",
+      "timestamp": "2026-09-05T08:39:27Z",
+      "disputed_amount_inr": 23300.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_965@okbank",
+      "layer_1_mule": "mule_tier1_24@paytm",
+      "layer_2_mule": "runner_acc_4589",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100154",
+      "timestamp": "2026-09-05T09:03:27Z",
+      "disputed_amount_inr": 30800.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_187@okbank",
+      "layer_1_mule": "mule_tier1_70@paytm",
+      "layer_2_mule": "runner_acc_8658",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100155",
+      "timestamp": "2026-09-05T09:07:27Z",
+      "disputed_amount_inr": 33200.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_317@okbank",
+      "layer_1_mule": "mule_tier1_63@paytm",
+      "layer_2_mule": "runner_acc_3128",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100156",
+      "timestamp": "2026-09-05T09:03:27Z",
+      "disputed_amount_inr": 222900.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_868@okbank",
+      "layer_1_mule": "mule_tier1_14@paytm",
+      "layer_2_mule": "runner_acc_1267",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100157",
+      "timestamp": "2026-09-05T08:06:27Z",
+      "disputed_amount_inr": 83300.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_166@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_1967",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100158",
+      "timestamp": "2026-09-05T09:38:27Z",
+      "disputed_amount_inr": 33300.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_555@okbank",
+      "layer_1_mule": "mule_tier1_11@paytm",
+      "layer_2_mule": "runner_acc_6649",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100159",
+      "timestamp": "2026-09-05T07:28:27Z",
+      "disputed_amount_inr": 27500.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_375@okbank",
+      "layer_1_mule": "mule_tier1_73@paytm",
+      "layer_2_mule": "runner_acc_5661",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100160",
+      "timestamp": "2026-09-05T09:31:27Z",
+      "disputed_amount_inr": 14500.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_679@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_7323",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100161",
+      "timestamp": "2026-09-05T09:06:27Z",
+      "disputed_amount_inr": 28500.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_872@okbank",
+      "layer_1_mule": "mule_tier1_56@paytm",
+      "layer_2_mule": "runner_acc_6606",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100162",
+      "timestamp": "2026-09-05T08:07:27Z",
+      "disputed_amount_inr": 16200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_692@okbank",
+      "layer_1_mule": "mule_tier1_43@paytm",
+      "layer_2_mule": "runner_acc_2962",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100163",
+      "timestamp": "2026-09-05T09:02:27Z",
+      "disputed_amount_inr": 18500.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_603@okbank",
+      "layer_1_mule": "mule_tier1_58@paytm",
+      "layer_2_mule": "runner_acc_5516",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100164",
+      "timestamp": "2026-09-05T08:24:27Z",
+      "disputed_amount_inr": 131400.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_582@okbank",
+      "layer_1_mule": "mule_tier1_42@paytm",
+      "layer_2_mule": "runner_acc_9600",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100165",
+      "timestamp": "2026-09-05T07:29:27Z",
+      "disputed_amount_inr": 27300.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_829@okbank",
+      "layer_1_mule": "mule_tier1_45@paytm",
+      "layer_2_mule": "runner_acc_8404",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100166",
+      "timestamp": "2026-09-05T08:00:27Z",
+      "disputed_amount_inr": 8400.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_685@okbank",
+      "layer_1_mule": "mule_tier1_12@paytm",
+      "layer_2_mule": "runner_acc_5061",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100167",
+      "timestamp": "2026-09-05T09:50:27Z",
+      "disputed_amount_inr": 8500.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_182@okbank",
+      "layer_1_mule": "mule_tier1_18@paytm",
+      "layer_2_mule": "runner_acc_4848",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100168",
+      "timestamp": "2026-09-05T08:53:27Z",
+      "disputed_amount_inr": 11900.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_227@okbank",
+      "layer_1_mule": "mule_tier1_56@paytm",
+      "layer_2_mule": "runner_acc_5246",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100169",
+      "timestamp": "2026-09-05T07:27:27Z",
+      "disputed_amount_inr": 58600.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_890@okbank",
+      "layer_1_mule": "mule_tier1_74@paytm",
+      "layer_2_mule": "runner_acc_5640",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100170",
+      "timestamp": "2026-09-05T09:01:27Z",
+      "disputed_amount_inr": 14400.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_313@okbank",
+      "layer_1_mule": "mule_tier1_58@paytm",
+      "layer_2_mule": "runner_acc_6002",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100171",
+      "timestamp": "2026-09-05T09:40:27Z",
+      "disputed_amount_inr": 11600.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_909@okbank",
+      "layer_1_mule": "mule_tier1_80@paytm",
+      "layer_2_mule": "runner_acc_9634",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100172",
+      "timestamp": "2026-09-05T07:48:27Z",
+      "disputed_amount_inr": 15500.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_861@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_2553",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100173",
+      "timestamp": "2026-09-05T08:03:27Z",
+      "disputed_amount_inr": 25600.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_548@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_1583",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100174",
+      "timestamp": "2026-09-05T09:36:27Z",
+      "disputed_amount_inr": 20100.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_879@okbank",
+      "layer_1_mule": "mule_tier1_12@paytm",
+      "layer_2_mule": "runner_acc_8155",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100175",
+      "timestamp": "2026-09-05T06:19:27Z",
+      "disputed_amount_inr": 9500.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_796@okbank",
+      "layer_1_mule": "mule_tier1_43@paytm",
+      "layer_2_mule": "runner_acc_7335",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100176",
+      "timestamp": "2026-09-05T08:20:27Z",
+      "disputed_amount_inr": 26500.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_897@okbank",
+      "layer_1_mule": "mule_tier1_53@paytm",
+      "layer_2_mule": "runner_acc_8493",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100177",
+      "timestamp": "2026-09-05T08:58:27Z",
+      "disputed_amount_inr": 12500.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_611@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_3493",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100178",
+      "timestamp": "2026-09-05T10:04:27Z",
+      "disputed_amount_inr": 52000.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_124@okbank",
+      "layer_1_mule": "mule_tier1_16@paytm",
+      "layer_2_mule": "runner_acc_7333",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100179",
+      "timestamp": "2026-09-05T07:49:27Z",
+      "disputed_amount_inr": 10500.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_860@okbank",
+      "layer_1_mule": "mule_tier1_16@paytm",
+      "layer_2_mule": "runner_acc_4274",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100180",
+      "timestamp": "2026-09-05T07:32:27Z",
+      "disputed_amount_inr": 33900.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_940@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_7723",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100181",
+      "timestamp": "2026-09-05T09:54:27Z",
+      "disputed_amount_inr": 29700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_233@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_2435",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100182",
+      "timestamp": "2026-09-05T08:16:27Z",
+      "disputed_amount_inr": 14200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_223@okbank",
+      "layer_1_mule": "mule_tier1_61@paytm",
+      "layer_2_mule": "runner_acc_7120",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100183",
+      "timestamp": "2026-09-05T09:30:27Z",
+      "disputed_amount_inr": 60700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_230@okbank",
+      "layer_1_mule": "mule_tier1_22@paytm",
+      "layer_2_mule": "runner_acc_3423",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100184",
+      "timestamp": "2026-09-05T06:32:27Z",
+      "disputed_amount_inr": 63700.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_115@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_8020",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100185",
+      "timestamp": "2026-09-05T07:41:27Z",
+      "disputed_amount_inr": 53500.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_421@okbank",
+      "layer_1_mule": "mule_tier1_73@paytm",
+      "layer_2_mule": "runner_acc_8961",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100186",
+      "timestamp": "2026-09-05T10:32:27Z",
+      "disputed_amount_inr": 16000.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_581@okbank",
+      "layer_1_mule": "mule_tier1_12@paytm",
+      "layer_2_mule": "runner_acc_8066",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100187",
+      "timestamp": "2026-09-05T08:10:27Z",
+      "disputed_amount_inr": 23500.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_928@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_5447",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100188",
+      "timestamp": "2026-09-05T08:11:27Z",
+      "disputed_amount_inr": 24700.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_389@okbank",
+      "layer_1_mule": "mule_tier1_61@paytm",
+      "layer_2_mule": "runner_acc_3312",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100189",
+      "timestamp": "2026-09-05T08:09:27Z",
+      "disputed_amount_inr": 18800.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_206@okbank",
+      "layer_1_mule": "mule_tier1_14@paytm",
+      "layer_2_mule": "runner_acc_2855",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100190",
+      "timestamp": "2026-09-05T08:38:27Z",
+      "disputed_amount_inr": 93200.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_636@okbank",
+      "layer_1_mule": "mule_tier1_10@paytm",
+      "layer_2_mule": "runner_acc_4890",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100191",
+      "timestamp": "2026-09-05T07:30:27Z",
+      "disputed_amount_inr": 44400.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_742@okbank",
+      "layer_1_mule": "mule_tier1_75@paytm",
+      "layer_2_mule": "runner_acc_2219",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100192",
+      "timestamp": "2026-09-05T07:13:27Z",
+      "disputed_amount_inr": 25300.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_334@okbank",
+      "layer_1_mule": "mule_tier1_35@paytm",
+      "layer_2_mule": "runner_acc_1742",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100193",
+      "timestamp": "2026-09-05T08:30:27Z",
+      "disputed_amount_inr": 92800.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_663@okbank",
+      "layer_1_mule": "mule_tier1_62@paytm",
+      "layer_2_mule": "runner_acc_6652",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100194",
+      "timestamp": "2026-09-05T10:56:27Z",
+      "disputed_amount_inr": 7800.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_525@okbank",
+      "layer_1_mule": "mule_tier1_30@paytm",
+      "layer_2_mule": "runner_acc_8954",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100195",
+      "timestamp": "2026-09-05T07:35:27Z",
+      "disputed_amount_inr": 29200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_305@okbank",
+      "layer_1_mule": "mule_tier1_72@paytm",
+      "layer_2_mule": "runner_acc_6381",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100196",
+      "timestamp": "2026-09-05T09:41:27Z",
+      "disputed_amount_inr": 16200.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_786@okbank",
+      "layer_1_mule": "mule_tier1_10@paytm",
+      "layer_2_mule": "runner_acc_4471",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100197",
+      "timestamp": "2026-09-05T10:56:27Z",
+      "disputed_amount_inr": 35400.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_379@okbank",
+      "layer_1_mule": "mule_tier1_21@paytm",
+      "layer_2_mule": "runner_acc_3691",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100198",
+      "timestamp": "2026-09-05T10:59:27Z",
+      "disputed_amount_inr": 36300.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_540@okbank",
+      "layer_1_mule": "mule_tier1_22@paytm",
+      "layer_2_mule": "runner_acc_9421",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100199",
+      "timestamp": "2026-09-05T09:31:27Z",
+      "disputed_amount_inr": 12200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_437@okbank",
+      "layer_1_mule": "mule_tier1_67@paytm",
+      "layer_2_mule": "runner_acc_7209",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100200",
+      "timestamp": "2026-09-05T09:24:27Z",
+      "disputed_amount_inr": 21200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_591@okbank",
+      "layer_1_mule": "mule_tier1_44@paytm",
+      "layer_2_mule": "runner_acc_2781",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100201",
+      "timestamp": "2026-09-05T10:17:27Z",
+      "disputed_amount_inr": 28700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_446@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_8691",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100202",
+      "timestamp": "2026-09-05T10:16:27Z",
+      "disputed_amount_inr": 11300.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_910@okbank",
+      "layer_1_mule": "mule_tier1_47@paytm",
+      "layer_2_mule": "runner_acc_7193",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100203",
+      "timestamp": "2026-09-05T09:40:27Z",
+      "disputed_amount_inr": 43200.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_819@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_9600",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100204",
+      "timestamp": "2026-09-05T07:31:27Z",
+      "disputed_amount_inr": 85500.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_781@okbank",
+      "layer_1_mule": "mule_tier1_76@paytm",
+      "layer_2_mule": "runner_acc_6353",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100205",
+      "timestamp": "2026-09-05T09:24:27Z",
+      "disputed_amount_inr": 13400.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_727@okbank",
+      "layer_1_mule": "mule_tier1_34@paytm",
+      "layer_2_mule": "runner_acc_6607",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100206",
+      "timestamp": "2026-09-05T08:32:27Z",
+      "disputed_amount_inr": 28800.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_525@okbank",
+      "layer_1_mule": "mule_tier1_67@paytm",
+      "layer_2_mule": "runner_acc_6553",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100207",
+      "timestamp": "2026-09-05T09:05:27Z",
+      "disputed_amount_inr": 44700.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_619@okbank",
+      "layer_1_mule": "mule_tier1_66@paytm",
+      "layer_2_mule": "runner_acc_9894",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100208",
+      "timestamp": "2026-09-05T09:28:27Z",
+      "disputed_amount_inr": 65900.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_615@okbank",
+      "layer_1_mule": "mule_tier1_53@paytm",
+      "layer_2_mule": "runner_acc_8834",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100209",
+      "timestamp": "2026-09-05T06:38:27Z",
+      "disputed_amount_inr": 6900.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_980@okbank",
+      "layer_1_mule": "mule_tier1_52@paytm",
+      "layer_2_mule": "runner_acc_1823",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100210",
+      "timestamp": "2026-09-05T08:33:27Z",
+      "disputed_amount_inr": 17100.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_601@okbank",
+      "layer_1_mule": "mule_tier1_22@paytm",
+      "layer_2_mule": "runner_acc_3185",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100211",
+      "timestamp": "2026-09-05T06:25:27Z",
+      "disputed_amount_inr": 27400.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_464@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_1236",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100212",
+      "timestamp": "2026-09-05T10:20:27Z",
+      "disputed_amount_inr": 21500.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_445@okbank",
+      "layer_1_mule": "mule_tier1_57@paytm",
+      "layer_2_mule": "runner_acc_4098",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100213",
+      "timestamp": "2026-09-05T09:33:27Z",
+      "disputed_amount_inr": 32200.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_208@okbank",
+      "layer_1_mule": "mule_tier1_42@paytm",
+      "layer_2_mule": "runner_acc_4570",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100214",
+      "timestamp": "2026-09-05T09:30:27Z",
+      "disputed_amount_inr": 9400.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_490@okbank",
+      "layer_1_mule": "mule_tier1_54@paytm",
+      "layer_2_mule": "runner_acc_1689",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100215",
+      "timestamp": "2026-09-05T06:31:27Z",
+      "disputed_amount_inr": 8800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_132@okbank",
+      "layer_1_mule": "mule_tier1_54@paytm",
+      "layer_2_mule": "runner_acc_7052",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100216",
+      "timestamp": "2026-09-05T07:21:27Z",
+      "disputed_amount_inr": 8000.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_980@okbank",
+      "layer_1_mule": "mule_tier1_17@paytm",
+      "layer_2_mule": "runner_acc_3848",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100217",
+      "timestamp": "2026-09-05T08:22:27Z",
+      "disputed_amount_inr": 42600.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_796@okbank",
+      "layer_1_mule": "mule_tier1_17@paytm",
+      "layer_2_mule": "runner_acc_8736",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100218",
+      "timestamp": "2026-09-05T10:36:27Z",
+      "disputed_amount_inr": 27800.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_453@okbank",
+      "layer_1_mule": "mule_tier1_12@paytm",
+      "layer_2_mule": "runner_acc_5593",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100219",
+      "timestamp": "2026-09-05T10:37:27Z",
+      "disputed_amount_inr": 7300.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_995@okbank",
+      "layer_1_mule": "mule_tier1_42@paytm",
+      "layer_2_mule": "runner_acc_2126",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100220",
+      "timestamp": "2026-09-05T09:55:27Z",
+      "disputed_amount_inr": 65200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_913@okbank",
+      "layer_1_mule": "mule_tier1_56@paytm",
+      "layer_2_mule": "runner_acc_9483",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100221",
+      "timestamp": "2026-09-05T09:53:27Z",
+      "disputed_amount_inr": 6600.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_824@okbank",
+      "layer_1_mule": "mule_tier1_44@paytm",
+      "layer_2_mule": "runner_acc_9571",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100222",
+      "timestamp": "2026-09-05T10:17:27Z",
+      "disputed_amount_inr": 199500.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_459@okbank",
+      "layer_1_mule": "mule_tier1_23@paytm",
+      "layer_2_mule": "runner_acc_9328",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100223",
+      "timestamp": "2026-09-05T06:47:27Z",
+      "disputed_amount_inr": 31600.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_111@okbank",
+      "layer_1_mule": "mule_tier1_65@paytm",
+      "layer_2_mule": "runner_acc_1752",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100224",
+      "timestamp": "2026-09-05T08:59:27Z",
+      "disputed_amount_inr": 35400.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_404@okbank",
+      "layer_1_mule": "mule_tier1_48@paytm",
+      "layer_2_mule": "runner_acc_6451",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100225",
+      "timestamp": "2026-09-05T06:50:27Z",
+      "disputed_amount_inr": 49900.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_676@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_6931",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100226",
+      "timestamp": "2026-09-05T10:49:27Z",
+      "disputed_amount_inr": 43200.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_385@okbank",
+      "layer_1_mule": "mule_tier1_71@paytm",
+      "layer_2_mule": "runner_acc_8535",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100227",
+      "timestamp": "2026-09-05T06:55:27Z",
+      "disputed_amount_inr": 32800.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_122@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_5180",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100228",
+      "timestamp": "2026-09-05T09:41:27Z",
+      "disputed_amount_inr": 14100.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_108@okbank",
+      "layer_1_mule": "mule_tier1_54@paytm",
+      "layer_2_mule": "runner_acc_9244",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100229",
+      "timestamp": "2026-09-05T06:20:27Z",
+      "disputed_amount_inr": 27300.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_421@okbank",
+      "layer_1_mule": "mule_tier1_78@paytm",
+      "layer_2_mule": "runner_acc_1154",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100230",
+      "timestamp": "2026-09-05T08:18:27Z",
+      "disputed_amount_inr": 13800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_563@okbank",
+      "layer_1_mule": "mule_tier1_69@paytm",
+      "layer_2_mule": "runner_acc_9570",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100231",
+      "timestamp": "2026-09-05T09:17:27Z",
+      "disputed_amount_inr": 14100.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_998@okbank",
+      "layer_1_mule": "mule_tier1_63@paytm",
+      "layer_2_mule": "runner_acc_7332",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100232",
+      "timestamp": "2026-09-05T10:21:27Z",
+      "disputed_amount_inr": 155100.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_733@okbank",
+      "layer_1_mule": "mule_tier1_18@paytm",
+      "layer_2_mule": "runner_acc_8029",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100233",
+      "timestamp": "2026-09-05T07:03:27Z",
+      "disputed_amount_inr": 79700.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_696@okbank",
+      "layer_1_mule": "mule_tier1_48@paytm",
+      "layer_2_mule": "runner_acc_7366",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100234",
+      "timestamp": "2026-09-05T09:06:27Z",
+      "disputed_amount_inr": 25200.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_626@okbank",
+      "layer_1_mule": "mule_tier1_32@paytm",
+      "layer_2_mule": "runner_acc_5113",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100235",
+      "timestamp": "2026-09-05T10:15:27Z",
+      "disputed_amount_inr": 29000.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_275@okbank",
+      "layer_1_mule": "mule_tier1_33@paytm",
+      "layer_2_mule": "runner_acc_5194",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100236",
+      "timestamp": "2026-09-05T09:01:27Z",
+      "disputed_amount_inr": 22700.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_397@okbank",
+      "layer_1_mule": "mule_tier1_18@paytm",
+      "layer_2_mule": "runner_acc_7330",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100237",
+      "timestamp": "2026-09-05T08:53:27Z",
+      "disputed_amount_inr": 30900.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_501@okbank",
+      "layer_1_mule": "mule_tier1_48@paytm",
+      "layer_2_mule": "runner_acc_2013",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100238",
+      "timestamp": "2026-09-05T08:16:27Z",
+      "disputed_amount_inr": 22200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_171@okbank",
+      "layer_1_mule": "mule_tier1_57@paytm",
+      "layer_2_mule": "runner_acc_7717",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100239",
+      "timestamp": "2026-09-05T07:31:27Z",
+      "disputed_amount_inr": 111700.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_444@okbank",
+      "layer_1_mule": "mule_tier1_33@paytm",
+      "layer_2_mule": "runner_acc_3110",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100240",
+      "timestamp": "2026-09-05T07:00:27Z",
+      "disputed_amount_inr": 24500.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_186@okbank",
+      "layer_1_mule": "mule_tier1_74@paytm",
+      "layer_2_mule": "runner_acc_5395",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100241",
+      "timestamp": "2026-09-05T06:38:27Z",
+      "disputed_amount_inr": 68500.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_388@okbank",
+      "layer_1_mule": "mule_tier1_45@paytm",
+      "layer_2_mule": "runner_acc_4607",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100242",
+      "timestamp": "2026-09-05T10:39:27Z",
+      "disputed_amount_inr": 5000,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_659@okbank",
+      "layer_1_mule": "mule_tier1_62@paytm",
+      "layer_2_mule": "runner_acc_9003",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100243",
+      "timestamp": "2026-09-05T10:06:27Z",
+      "disputed_amount_inr": 66200.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_673@okbank",
+      "layer_1_mule": "mule_tier1_62@paytm",
+      "layer_2_mule": "runner_acc_2087",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100244",
+      "timestamp": "2026-09-05T06:32:27Z",
+      "disputed_amount_inr": 32000.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_710@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_4859",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100245",
+      "timestamp": "2026-09-05T10:26:27Z",
+      "disputed_amount_inr": 35200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_181@okbank",
+      "layer_1_mule": "mule_tier1_56@paytm",
+      "layer_2_mule": "runner_acc_2683",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100246",
+      "timestamp": "2026-09-05T09:37:27Z",
+      "disputed_amount_inr": 12000.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_138@okbank",
+      "layer_1_mule": "mule_tier1_10@paytm",
+      "layer_2_mule": "runner_acc_1570",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100247",
+      "timestamp": "2026-09-05T10:43:27Z",
+      "disputed_amount_inr": 45800.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_255@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_9261",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100248",
+      "timestamp": "2026-09-05T07:52:27Z",
+      "disputed_amount_inr": 22300.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_859@okbank",
+      "layer_1_mule": "mule_tier1_53@paytm",
+      "layer_2_mule": "runner_acc_3709",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100249",
+      "timestamp": "2026-09-05T07:56:27Z",
+      "disputed_amount_inr": 43900.0,
+      "target_terminal_id": "ATM-DL-03",
+      "victim_vpa": "user_554@okbank",
+      "layer_1_mule": "mule_tier1_53@paytm",
+      "layer_2_mule": "runner_acc_5978",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100250",
+      "timestamp": "2026-09-05T07:56:27Z",
+      "disputed_amount_inr": 39200.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_741@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_4521",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100251",
+      "timestamp": "2026-09-05T07:28:27Z",
+      "disputed_amount_inr": 37400.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_834@okbank",
+      "layer_1_mule": "mule_tier1_21@paytm",
+      "layer_2_mule": "runner_acc_2752",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100252",
+      "timestamp": "2026-09-05T07:07:27Z",
+      "disputed_amount_inr": 13900.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_642@okbank",
+      "layer_1_mule": "mule_tier1_71@paytm",
+      "layer_2_mule": "runner_acc_7791",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100253",
+      "timestamp": "2026-09-05T08:30:27Z",
+      "disputed_amount_inr": 37800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_822@okbank",
+      "layer_1_mule": "mule_tier1_21@paytm",
+      "layer_2_mule": "runner_acc_8449",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100254",
+      "timestamp": "2026-09-05T07:53:27Z",
+      "disputed_amount_inr": 17000.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_568@okbank",
+      "layer_1_mule": "mule_tier1_26@paytm",
+      "layer_2_mule": "runner_acc_3609",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100255",
+      "timestamp": "2026-09-05T10:34:27Z",
+      "disputed_amount_inr": 15100.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_282@okbank",
+      "layer_1_mule": "mule_tier1_60@paytm",
+      "layer_2_mule": "runner_acc_7691",
+      "hop_count": 4
+    },
+    {
+      "ack_no": "NCRP-2026-100256",
+      "timestamp": "2026-09-05T08:07:27Z",
+      "disputed_amount_inr": 59500.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_976@okbank",
+      "layer_1_mule": "mule_tier1_26@paytm",
+      "layer_2_mule": "runner_acc_3990",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100257",
+      "timestamp": "2026-09-05T07:02:27Z",
+      "disputed_amount_inr": 9700.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_563@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_5731",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100258",
+      "timestamp": "2026-09-05T07:28:27Z",
+      "disputed_amount_inr": 22000.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_819@okbank",
+      "layer_1_mule": "mule_tier1_79@paytm",
+      "layer_2_mule": "runner_acc_3252",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100259",
+      "timestamp": "2026-09-05T09:14:27Z",
+      "disputed_amount_inr": 28700.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_610@okbank",
+      "layer_1_mule": "mule_tier1_30@paytm",
+      "layer_2_mule": "runner_acc_1746",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100260",
+      "timestamp": "2026-09-05T07:31:27Z",
+      "disputed_amount_inr": 5000,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_328@okbank",
+      "layer_1_mule": "mule_tier1_26@paytm",
+      "layer_2_mule": "runner_acc_6161",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100261",
+      "timestamp": "2026-09-05T07:42:27Z",
+      "disputed_amount_inr": 13900.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_612@okbank",
+      "layer_1_mule": "mule_tier1_19@paytm",
+      "layer_2_mule": "runner_acc_4475",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100262",
+      "timestamp": "2026-09-05T08:30:27Z",
+      "disputed_amount_inr": 152900.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_835@okbank",
+      "layer_1_mule": "mule_tier1_50@paytm",
+      "layer_2_mule": "runner_acc_9780",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100263",
+      "timestamp": "2026-09-05T08:17:27Z",
+      "disputed_amount_inr": 32600.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_869@okbank",
+      "layer_1_mule": "mule_tier1_64@paytm",
+      "layer_2_mule": "runner_acc_1094",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100264",
+      "timestamp": "2026-09-05T08:39:27Z",
+      "disputed_amount_inr": 57900.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_720@okbank",
+      "layer_1_mule": "mule_tier1_63@paytm",
+      "layer_2_mule": "runner_acc_5949",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100265",
+      "timestamp": "2026-09-05T09:25:27Z",
+      "disputed_amount_inr": 117700.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_116@okbank",
+      "layer_1_mule": "mule_tier1_34@paytm",
+      "layer_2_mule": "runner_acc_6797",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100266",
+      "timestamp": "2026-09-05T07:53:27Z",
+      "disputed_amount_inr": 17800.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_819@okbank",
+      "layer_1_mule": "mule_tier1_37@paytm",
+      "layer_2_mule": "runner_acc_2790",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100267",
+      "timestamp": "2026-09-05T10:33:27Z",
+      "disputed_amount_inr": 84200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_171@okbank",
+      "layer_1_mule": "mule_tier1_38@paytm",
+      "layer_2_mule": "runner_acc_4571",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100268",
+      "timestamp": "2026-09-05T08:20:27Z",
+      "disputed_amount_inr": 24200.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_203@okbank",
+      "layer_1_mule": "mule_tier1_72@paytm",
+      "layer_2_mule": "runner_acc_1401",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100269",
+      "timestamp": "2026-09-05T07:42:27Z",
+      "disputed_amount_inr": 34700.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_294@okbank",
+      "layer_1_mule": "mule_tier1_66@paytm",
+      "layer_2_mule": "runner_acc_6555",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100270",
+      "timestamp": "2026-09-05T06:31:27Z",
+      "disputed_amount_inr": 13000.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_871@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_6611",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100271",
+      "timestamp": "2026-09-05T07:46:27Z",
+      "disputed_amount_inr": 32800.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_447@okbank",
+      "layer_1_mule": "mule_tier1_13@paytm",
+      "layer_2_mule": "runner_acc_2092",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100272",
+      "timestamp": "2026-09-05T10:29:27Z",
+      "disputed_amount_inr": 21500.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_513@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_3503",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100273",
+      "timestamp": "2026-09-05T10:35:27Z",
+      "disputed_amount_inr": 10100.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_722@okbank",
+      "layer_1_mule": "mule_tier1_52@paytm",
+      "layer_2_mule": "runner_acc_5801",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100274",
+      "timestamp": "2026-09-05T08:21:27Z",
+      "disputed_amount_inr": 38100.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_802@okbank",
+      "layer_1_mule": "mule_tier1_46@paytm",
+      "layer_2_mule": "runner_acc_5197",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100275",
+      "timestamp": "2026-09-05T07:07:27Z",
+      "disputed_amount_inr": 10500.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_698@okbank",
+      "layer_1_mule": "mule_tier1_62@paytm",
+      "layer_2_mule": "runner_acc_9377",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100276",
+      "timestamp": "2026-09-05T10:47:27Z",
+      "disputed_amount_inr": 149300.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_622@okbank",
+      "layer_1_mule": "mule_tier1_45@paytm",
+      "layer_2_mule": "runner_acc_1524",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100277",
+      "timestamp": "2026-09-05T08:07:27Z",
+      "disputed_amount_inr": 5900.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_357@okbank",
+      "layer_1_mule": "mule_tier1_77@paytm",
+      "layer_2_mule": "runner_acc_8836",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100278",
+      "timestamp": "2026-09-05T08:12:27Z",
+      "disputed_amount_inr": 37500.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_755@okbank",
+      "layer_1_mule": "mule_tier1_13@paytm",
+      "layer_2_mule": "runner_acc_6302",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100279",
+      "timestamp": "2026-09-05T08:51:27Z",
+      "disputed_amount_inr": 16500.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_909@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_6430",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100280",
+      "timestamp": "2026-09-05T07:25:27Z",
+      "disputed_amount_inr": 42600.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_259@okbank",
+      "layer_1_mule": "mule_tier1_47@paytm",
+      "layer_2_mule": "runner_acc_5243",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100281",
+      "timestamp": "2026-09-05T09:03:27Z",
+      "disputed_amount_inr": 60400.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_652@okbank",
+      "layer_1_mule": "mule_tier1_74@paytm",
+      "layer_2_mule": "runner_acc_5565",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100282",
+      "timestamp": "2026-09-05T07:15:27Z",
+      "disputed_amount_inr": 54300.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_545@okbank",
+      "layer_1_mule": "mule_tier1_35@paytm",
+      "layer_2_mule": "runner_acc_4525",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100283",
+      "timestamp": "2026-09-05T07:00:27Z",
+      "disputed_amount_inr": 50100.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_715@okbank",
+      "layer_1_mule": "mule_tier1_36@paytm",
+      "layer_2_mule": "runner_acc_9459",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100284",
+      "timestamp": "2026-09-05T08:12:27Z",
+      "disputed_amount_inr": 12200.0,
+      "target_terminal_id": "ATM-KA-01",
+      "victim_vpa": "user_670@okbank",
+      "layer_1_mule": "mule_tier1_39@paytm",
+      "layer_2_mule": "runner_acc_1459",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100285",
+      "timestamp": "2026-09-05T06:27:27Z",
+      "disputed_amount_inr": 33500.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_347@okbank",
+      "layer_1_mule": "mule_tier1_69@paytm",
+      "layer_2_mule": "runner_acc_2598",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100286",
+      "timestamp": "2026-09-05T06:36:27Z",
+      "disputed_amount_inr": 22500.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_318@okbank",
+      "layer_1_mule": "mule_tier1_31@paytm",
+      "layer_2_mule": "runner_acc_3604",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100287",
+      "timestamp": "2026-09-05T06:52:27Z",
+      "disputed_amount_inr": 20300.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_184@okbank",
+      "layer_1_mule": "mule_tier1_29@paytm",
+      "layer_2_mule": "runner_acc_7897",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100288",
+      "timestamp": "2026-09-05T09:19:27Z",
+      "disputed_amount_inr": 39800.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_769@okbank",
+      "layer_1_mule": "mule_tier1_77@paytm",
+      "layer_2_mule": "runner_acc_3176",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100289",
+      "timestamp": "2026-09-05T09:16:27Z",
+      "disputed_amount_inr": 16100.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_980@okbank",
+      "layer_1_mule": "mule_tier1_15@paytm",
+      "layer_2_mule": "runner_acc_2108",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100290",
+      "timestamp": "2026-09-05T07:00:27Z",
+      "disputed_amount_inr": 11700.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_323@okbank",
+      "layer_1_mule": "mule_tier1_67@paytm",
+      "layer_2_mule": "runner_acc_8252",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100291",
+      "timestamp": "2026-09-05T07:18:27Z",
+      "disputed_amount_inr": 22700.0,
+      "target_terminal_id": "ATM-DL-01",
+      "victim_vpa": "user_233@okbank",
+      "layer_1_mule": "mule_tier1_41@paytm",
+      "layer_2_mule": "runner_acc_4973",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100292",
+      "timestamp": "2026-09-05T06:23:27Z",
+      "disputed_amount_inr": 10400.0,
+      "target_terminal_id": "ATM-MH-02",
+      "victim_vpa": "user_472@okbank",
+      "layer_1_mule": "mule_tier1_59@paytm",
+      "layer_2_mule": "runner_acc_9128",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100293",
+      "timestamp": "2026-09-05T10:21:27Z",
+      "disputed_amount_inr": 40600.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_253@okbank",
+      "layer_1_mule": "mule_tier1_30@paytm",
+      "layer_2_mule": "runner_acc_1000",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100294",
+      "timestamp": "2026-09-05T10:44:27Z",
+      "disputed_amount_inr": 11100.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_635@okbank",
+      "layer_1_mule": "mule_tier1_28@paytm",
+      "layer_2_mule": "runner_acc_1872",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100295",
+      "timestamp": "2026-09-05T10:07:27Z",
+      "disputed_amount_inr": 65300.0,
+      "target_terminal_id": "ATM-MH-03",
+      "victim_vpa": "user_475@okbank",
+      "layer_1_mule": "mule_tier1_44@paytm",
+      "layer_2_mule": "runner_acc_3082",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100296",
+      "timestamp": "2026-09-05T07:26:27Z",
+      "disputed_amount_inr": 28400.0,
+      "target_terminal_id": "ATM-DL-02",
+      "victim_vpa": "user_659@okbank",
+      "layer_1_mule": "mule_tier1_80@paytm",
+      "layer_2_mule": "runner_acc_3694",
+      "hop_count": 1
+    },
+    {
+      "ack_no": "NCRP-2026-100297",
+      "timestamp": "2026-09-05T08:46:27Z",
+      "disputed_amount_inr": 42000.0,
+      "target_terminal_id": "ATM-UP-01",
+      "victim_vpa": "user_198@okbank",
+      "layer_1_mule": "mule_tier1_80@paytm",
+      "layer_2_mule": "runner_acc_1334",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100298",
+      "timestamp": "2026-09-05T11:02:27Z",
+      "disputed_amount_inr": 28000.0,
+      "target_terminal_id": "ATM-DL-04",
+      "victim_vpa": "user_803@okbank",
+      "layer_1_mule": "mule_tier1_71@paytm",
+      "layer_2_mule": "runner_acc_1648",
+      "hop_count": 2
+    },
+    {
+      "ack_no": "NCRP-2026-100299",
+      "timestamp": "2026-09-05T08:46:27Z",
+      "disputed_amount_inr": 31900.0,
+      "target_terminal_id": "ATM-DL-05",
+      "victim_vpa": "user_181@okbank",
+      "layer_1_mule": "mule_tier1_54@paytm",
+      "layer_2_mule": "runner_acc_3996",
+      "hop_count": 3
+    },
+    {
+      "ack_no": "NCRP-2026-100300",
+      "timestamp": "2026-09-05T09:19:27Z",
+      "disputed_amount_inr": 34100.0,
+      "target_terminal_id": "ATM-MH-01",
+      "victim_vpa": "user_352@okbank",
+      "layer_1_mule": "mule_tier1_52@paytm",
+      "layer_2_mule": "runner_acc_2926",
+      "hop_count": 3
+    }
+  ]
+}
