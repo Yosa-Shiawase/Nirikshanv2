@@ -5,6 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 PORT = int(os.environ.get("PORT", 8080))
 PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
 
 DB_LOCK = threading.Lock()
 DB = sqlite3.connect("live_data.db", check_same_thread=False)
@@ -13,6 +14,8 @@ DB.execute("""CREATE TABLE IF NOT EXISTS complaints(
   disputed_amount_inr INTEGER, hop_count INTEGER, source TEXT)""")
 DB.execute("""CREATE TABLE IF NOT EXISTS atm_cache(
   node_id TEXT PRIMARY KEY, fetched_at REAL, payload TEXT)""")
+DB.execute("""CREATE TABLE IF NOT EXISTS sms(
+  ts TEXT, sender TEXT, text TEXT, verdict TEXT, risk INTEGER)""")
 DB.commit()
 
 TERMINALS = ["DL-01","MUM-01","BLR-01","HYD-01","LKO-01","JAI-01","SGR-01",
@@ -185,6 +188,49 @@ MIME = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8
         ".css":"text/css; charset=utf-8",".png":"image/png",".json":"application/json",
         ".svg":"image/svg+xml",".ico":"image/x-icon"}
 
+
+# ==== SMS INGEST + ALERT DISPATCH ====
+SMS_RULES = [
+    (25, ["kyc", "e-kyc", "re-kyc", "account blocked", "account suspended",
+          "will be blocked", "block your", "expire", "suspended"]),
+    (25, ["otp", "one time password", "share your pin"]),
+    (30, ["lottery", "lucky draw", "prize", "you have won", "won rs", "kbc"]),
+    (20, ["refund", "cashback", "upi failed", "reverse the amount", "unblock"]),
+    (25, ["anydesk", "teamviewer", "screen share", "download app",
+          "download the app", "apk file"]),
+    (20, ["click here", "bit.ly", "tinyurl", "tiny.cc", "http://", "https://"]),
+    (15, ["income tax", "cbdt", "electricity", "disconnected", "power cut",
+          "gas booking", "insurance lapsed"]),
+    (10, ["customer care", "helpline", "whatsapp us", "call now"]),
+]
+def score_sms(sender, text):
+    t = (text or "").lower(); score = 0; hits = []
+    for pts, words in SMS_RULES:
+        for w in words:
+            if w in t:
+                score += pts; hits.append(w); break
+    if sender:
+        if sender.lower().startswith("+92") or sender.lower().startswith("92"):
+            score += 25; hits.append("foreign sender")
+        elif sum(c.isdigit() for c in sender) >= 10:
+            score += 10; hits.append("numeric sender")
+    score = min(99, score)
+    verdict = "SMS_FRAUD_ALERT" if score >= 45 else ("SMS_SUSPICIOUS" if score >= 20 else "SMS_INFO")
+    return {"verdict": verdict, "risk_score": score, "matched": hits,
+            "sender": sender or "unknown", "text": (text or "")[:200]}
+def ntfy_push(title, body, click):
+    if not NTFY_TOPIC: return
+    try:
+        req = urllib.request.Request("https://ntfy.sh/" + NTFY_TOPIC,
+            data=json.dumps({"topic": NTFY_TOPIC, "title": title, "body": body,
+                             "tags": ["rotating_light"], "priority": "high",
+                             "click": click}).encode(),
+            headers={"Content-Type": "application/json"})
+        urllib.request.urlopen(req, timeout=10)
+        print("[ntfy] pushed:", title, flush=True)
+    except Exception as ex:
+        print("[ntfy] failed:", ex, flush=True)
+
 class H(BaseHTTPRequestHandler):
     def log_message(self,*a): pass
     def _cors(self):
@@ -237,6 +283,25 @@ class H(BaseHTTPRequestHandler):
             c.setdefault("source","WEB"); c.setdefault("timestamp",time.strftime("%H:%M:%S"))
             c.setdefault("hop_count",2); c.setdefault("ack_no","MANUAL-%d"%int(time.time()))
             record_complaint(c); broadcast(c); self._json({"ok":True})
+        elif self.path == "/ingest-sms":
+            try:
+                d = json.loads(body)
+                r = score_sms(str(d.get("from", "")), str(d.get("text", "")))
+            except Exception:
+                return self._json({"error": "bad json"}, 400)
+            r["type"] = "sms_alert"; r["ts"] = time.strftime("%H:%M:%S")
+            with DB_LOCK:
+                DB.execute("INSERT INTO sms VALUES(?,?,?,?,?)",
+                    (r["ts"], r["sender"], r["text"], r["verdict"], r["risk_score"]))
+                DB.commit()
+            broadcast(r)
+            if r["risk_score"] >= 45:
+                ntfy_push("SMS FRAUD ALERT (" + str(r["risk_score"]) + ")",
+                          r["text"][:120] + " | From: " + r["sender"],
+                          "https://nirikshanv2.onrender.com")
+            elif r["risk_score"] >= 20:
+                ntfy_push("SMS suspicious (" + str(r["risk_score"]) + ")",
+                          r["text"][:120], "https://nirikshanv2.onrender.com")
         elif self.path in ("/qr/verify","/api/verify-qr"):
             try: self._json(verify_qr(json.loads(body).get("uri","")))
             except Exception: self._json({"error":"bad json"},400)

@@ -81,6 +81,7 @@
       try {
         var c = JSON.parse(ev.data);
         if (c.type === "anomaly") { showAnomaly(c); return; }
+        if (c.type === "sms_alert") { showSms(c); return; }
         prependRow(c); pulse(c.target_terminal_id); bumpNode(c.target_terminal_id, c.disputed_amount_inr);
       } catch (e) {}
     };
@@ -195,8 +196,89 @@
     row.appendChild(f); row.appendChild(l);
   }
 
+
+  /* ==== SMS ALERT CENTER: banner + klaxon + vibrate + notification ==== */
+  var audioCtx = null, alertsOn = false;
+  function alarmSound() {
+    if (!alertsOn || !audioCtx) return;
+    try {
+      var t0 = audioCtx.currentTime;
+      for (var i = 0; i < 8; i++) {
+        var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = "square"; o.frequency.value = (i % 2) ? 980 : 660;
+        g.gain.value = 0.09;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t0 + i * 0.17); o.stop(t0 + i * 0.17 + 0.13);
+      }
+    } catch (e) {}
+  }
+  function pushNotif(title, body) {
+    try {
+      if (!alertsOn || !("Notification" in window)) return;
+      if (Notification.permission === "granted") {
+        var n = new Notification(title, { body: body, icon: "sih.png", tag: "nirakshan" });
+        n.onclick = function () { window.focus(); n.close(); };
+      }
+    } catch (e) {}
+  }
+  var smsBanner = null;
+  function showSms(c) {
+    if (!smsBanner) {
+      smsBanner = document.createElement("div");
+      smsBanner.style.cssText = "position:fixed;top:10px;left:50%;transform:translateX(-50%);" +
+        "z-index:2147482000;background:#2a0709;border:1px solid #ef4444;color:#fecaca;" +
+        "font-family:monospace;font-size:11px;padding:10px 16px;border-radius:4px;" +
+        "box-shadow:0 0 30px rgba(239,68,68,.5);display:none;max-width:92vw;";
+      document.body.appendChild(smsBanner);
+    }
+    var col = c.risk_score >= 45 ? "#ef4444" : "#eab308";
+    smsBanner.style.borderColor = col;
+    smsBanner.innerHTML = "\uD83D\uDCF1 <b>" + c.verdict + "</b> (" + c.risk_score +
+      ") from <b>" + c.sender + "</b><br>" + c.text.replace(/</g, "&lt;") +
+      (c.matched && c.matched.length ? "<br><span style='color:#eab308'>rules: " +
+       c.matched.join(", ") + "</span>" : "");
+    smsBanner.style.display = "block";
+    alarmSound();
+    if (navigator.vibrate) navigator.vibrate([300, 120, 300, 120, 300]);
+    pushNotif(c.verdict + " \u2014 " + c.sender, c.text.slice(0, 110));
+    clearTimeout(smsBanner._t);
+    smsBanner._t = setTimeout(function () { smsBanner.style.display = "none"; }, 10000);
+    var tb = document.querySelector("#pane-alerts tbody");
+    if (tb) {
+      var tr = document.createElement("tr");
+      tr.style.background = "rgba(239,68,68,.08)";
+      tr.innerHTML = "<td class='font-mono'>" + c.ts + "</td>" +
+        "<td style='color:" + col + ";font-weight:700;'>" + c.verdict + " \u00b7 " + c.risk_score + "</td>" +
+        "<td><b>LIVE SMS</b> from " + c.sender + "<br><span style='font-size:8.5px;'>" +
+        c.text.replace(/</g, "&lt;") + "</span></td>" +
+        "<td class='font-mono'>\u2014</td>" +
+        "<td style='color:#eab308;'>NIRAKSHAN SMS Sensor</td>";
+      tb.prepend(tr);
+    }
+  }
+  function addAlertsEnableButton() {
+    var row = document.querySelector(".z3-actions .btn-row"); if (!row) return;
+    var b = document.createElement("button");
+    b.className = "act-btn"; b.style.flex = "1";
+    b.textContent = "ENABLE ALERTS \uD83D\uDD14";
+    b.onclick = function () {
+      var arm = function () {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        alertsOn = true;
+        b.textContent = "ALERTS ARMED \uD83D\uDD14";
+        if (navigator.vibrate) navigator.vibrate(200);
+        alarmSound();
+      };
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission().then(function () { arm(); });
+      } else arm();
+    };
+    row.appendChild(b);
+  }
+
   window.NIRAKSHAN_LIVE = { loadAtms: loadAtms, LIVE: LIVE };
 
-  function boot() { addBadge(); addAtmButton(); addAiButton(); addQrDemoButtons(); connect(); }
+  function boot() { addBadge(); addAtmButton(); addAiButton(); addQrDemoButtons(); addAlertsEnableButton(); connect(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();
