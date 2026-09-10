@@ -4,3 +4,5 @@ __pycache__/
 live_data.db
 *.log
 *.bak
+DEMO_SCRIPT.txt
+SYSTEM_KNOWLEDGE.txt
