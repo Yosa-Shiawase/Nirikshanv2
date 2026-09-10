@@ -128,6 +128,21 @@ SMS_RULES = [
     (10, ["customer care","helpline","whatsapp us","call now"]),
 ]
 
+CASE_TRACE = {
+  "case_id": "NCRP-2026-991823",
+  "stolen_inr": 380000,
+  "victim": "victim_891@okaxis",
+  "layers": [
+    {"hop": 0, "label": "Victim account", "amount": 380000, "vpas": ["victim_891@okaxis"]},
+    {"hop": 1, "label": "Layer-1 splitters", "amount": 380000,
+     "vpas": ["mule_tier1_A@paytm", "mule_tier1_B@icici"]},
+    {"hop": 2, "label": "Layer-2 aggregators", "amount": 340000,
+     "vpas": ["acc_runner_8891@sbi", "acc_runner_4412@kotak", "acc_runner_7709@ybl"]},
+    {"hop": 3, "label": "Cash-out ATMs", "amount": 310000,
+     "vpas": ["DL-01", "MUM-01", "BLR-01"]}
+  ]
+}
+
 def score_sms(sender, text):
     t = (text or "").lower(); score = 0; hits = []
     for pts, words in SMS_RULES:
@@ -342,6 +357,25 @@ class H(BaseHTTPRequestHandler):
                            float(q.get("lon",[79.5])[0]), int(q.get("r",[6000])[0]))
             res["source"] = "OpenStreetMap/Overpass (LIVE)"
             self._json(res)
+        elif p.path == "/case/trace":
+            now = time.time()
+            with RECENT_LOCK:
+                rows = [(t, term, amt) for (t, term, amt) in RECENT if now - t < 1800]
+            seen = {}
+            for t, term, amt in rows:
+                d = seen.setdefault(term, {"events": 0, "inr": 0, "last_seen": t})
+                d["events"] += 1; d["inr"] += amt; d["last_seen"] = max(d["last_seen"], t)
+            layers = []
+            for L in CASE_TRACE["layers"]:
+                live = []
+                for v in L["vpas"]:
+                    if v in seen:
+                        d = seen[v]
+                        live.append({"id": v, "events": d["events"], "inr": d["inr"],
+                                     "minutes_ago": int((now - d["last_seen"]) / 60)})
+                layers.append(dict(L, live=live))
+            self._json({"case": CASE_TRACE, "layers": layers,
+                        "window_min": 30, "total_live_events": len(rows)})
         elif p.path == "/ai/briefing":
             self._json(ai_briefing())
         elif p.path == "/health":
