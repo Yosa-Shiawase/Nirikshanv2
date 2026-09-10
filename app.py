@@ -254,6 +254,7 @@ class H(BaseHTTPRequestHandler):
         self.send_header("Cache-Control","no-cache"); self.end_headers()
         self.wfile.write(body)
     def do_GET(self):
+        self.path = self.path.strip().rstrip("/")
         p=urllib.parse.urlparse(self.path)
         if p.path=="/events":
             self.send_response(200)
@@ -272,6 +273,21 @@ class H(BaseHTTPRequestHandler):
             res=get_atms(q.get("node",[""])[0],float(q.get("lat",[22.5])[0]),
                          float(q.get("lon",[79.5])[0]),int(q.get("r",[6000])[0]))
             res["source"]="OpenStreetMap/Overpass (LIVE)"; self._json(res)
+        elif p.path.startswith("/sms"):
+            q = urllib.parse.parse_qs(p.query)
+            r = score_sms(q.get("from",[""])[0], q.get("text",[""])[0])
+            r["type"] = "sms_alert"; r["ts"] = time.strftime("%H:%M:%S")
+            with DB_LOCK:
+                DB.execute("INSERT INTO sms VALUES(?,?,?,?,?)",
+                    (r["ts"], r["sender"], r["text"], r["verdict"], r["risk_score"]))
+                DB.commit()
+            broadcast(r)
+            if r["risk_score"] >= 45:
+                ntfy_push("SMS FRAUD ALERT (" + str(r["risk_score"]) + ")",
+                          r["text"][:120] + " | From: " + r["sender"])
+            elif r["risk_score"] >= 20:
+                ntfy_push("SMS suspicious (" + str(r["risk_score"]) + ")", r["text"][:120])
+            self._json(r)
         elif p.path=="/ai/briefing": self._json(ai_briefing())
         elif p.path=="/health": self._json({"ok": True, "clients": len(CLIENTS), "ntfy": ("set" if NTFY_TOPIC else "NOT SET")})
         else: self._static(p.path)
