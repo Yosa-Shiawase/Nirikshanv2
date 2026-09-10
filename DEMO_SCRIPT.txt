@@ -1,0 +1,301 @@
+=======================================================
+NIRAKSHAN - SIH 26184 - DEMO SCRIPT + JUDGE Q&A
+Team CYPHORA - Sept 12, 2026 - PLAIN-LANGUAGE EDITION
+=======================================================
+
+--- THE STORY (everyone memorizes this) ---
+
+When someone gets scammed on UPI, the stolen money jumps
+through many bank accounts and comes out as CASH from ATMs
+within hours. Police usually find out AFTER it is gone.
+NIRAKSHAN predicts WHICH ATM area and WHEN - so police can
+be there first. It also checks QR codes and scam SMS at the
+entry point, and lets any citizen report a scam through a
+bot. Every alert is fast, loud, and stays inside what the
+court allows.
+
+--- WHO DID WHAT (edit the names, learn YOUR card) ---
+
+MEMBER 1 - [YOU / NAME] - TEAM LEAD + ARCHITECTURE
+  Claim: "I designed the overall system, connected all the
+  parts, built the deployment pipeline, and fixed the hard
+  integration bugs."
+  Presents: Beat 1 (opening) + Beat 5 (legal report).
+  Safety net: if ANYONE is stuck on a question, hand it to
+  Member 1.
+
+MEMBER 2 - [NAME] - PREDICTION ENGINE
+  Claim: "I built the prediction math - the aftershock-style
+  model that scores every ATM area for the next 2/6/24 hours,
+  with the time, distance and money-hop factors."
+  Presents: Beat 2 (risk map + slider).
+  Owns Q&A: the earthquake math, the three numbers
+  (0.42 / 1.38 / 350 km), calibration.
+
+MEMBER 3 - [NAME] - LIVE DATA PIPELINE
+  Claim: "I built the live feed - complaints flow in and
+  every screen updates by itself - plus the database and the
+  sudden-spike detector that catches coordinated attacks."
+  Presents: Beat 1 (proves it is live) + supports Beat 4.
+  Owns Q&A: how the live stream works, the spike detector,
+  the database.
+
+MEMBER 4 - [NAME] - QR FORENSICS
+  Claim: "I built the camera QR reader and the UPI scam
+  checklist - it reads any QR and gives a verdict with the
+  exact reasons."
+  Presents: Beat 3 second half (QR part).
+  Owns Q&A: how QR checking works, what the rules are.
+
+MEMBER 5 - [NAME] - SMS INTELLIGENCE + CITIZEN ALERTS
+  Claim: "I built the SMS scoring engine, the citizen
+  reporting bot, and the alarm system - console siren plus
+  phone push, with a verdict reply sent back to the
+  reporter."
+  Presents: Beat 3 first half (SMS sensor) + Beat 4 (bot).
+  Owns Q&A: SMS rules, the 45/100 threshold, the citizen
+  channel.
+
+MEMBER 6 - [NAME] - DEPLOYMENT, DOCS & DEMO OPS
+  Claim: "I handle cloud hosting with auto-deploy from
+  GitHub, the 24/7 uptime monitor, the project docs and
+  presentation, and I ran the testing sessions."
+  Presents: pre-flight narration + closes with timekeeping.
+  Owns Q&A: hosting cost, how deployment works, where the
+  code lives. (All scripted - safe questions.)
+
+--- THE DEMO SPEAKING ORDER ---
+  Beat 1: MEMBER 1 opens, MEMBER 3 proves live feed
+  Beat 2: MEMBER 2
+  Beat 3: MEMBER 5 (SMS) then MEMBER 4 (QR)
+  Beat 4: MEMBER 5 (with teammate 2nd phone)
+  Beat 5: MEMBER 1 (legal dossier + closing line)
+
+--- WORDS -> SIMPLE MEANINGS (learn YOUR tab's words) ---
+
+Hawkes process .... "earthquake math": one fraud makes the
+                    next fraud nearby MORE likely, like
+                    aftershocks. Used to predict the next
+                    cash-out area.
+Risk score ........ 0-100 number. Higher = cash-out more
+                    likely here in this time window.
+Hop / layer ....... one bank account the stolen money jumps
+                    through. Each jump leaves less evidence.
+Spike detector .... if a area gets way more complaints than
+                    its own normal level, that's a burst -
+                    probably a coordinated attack.
+Rule engine ....... a checklist of known scam signs. Each
+                    sign adds points. 45+ points = alarm.
+Dossier ........... the official PDF report for police,
+                    with the court's money limits built in.
+Live feed ......... the dashboard updates by itself, like
+                    WhatsApp - no refresh needed.
+Simulated ......... fake but realistic test data (we say
+                    this openly - it builds trust).
+
+--- PRE-FLIGHT (10 min before slot) ---
+
+[ ] Render dashboard: service shows LIVE (green)
+[ ] Open the site - eye animation plays once - dashboard loads
+[ ] Tap ENABLE ALERTS once (bottom-right) - arms the siren
+[ ] ALERTS tab: SMS THREAT SENSOR card visible at top
+[ ] Telegram: open Nirakshan_AlertBot, send "KYC expired
+    bit.ly/x9" - your phone must buzz (tests whole chain)
+[ ] RISK MAP: click ATM LAYER (LIVE OSM) once - first click
+    is slow, then cached 6 hours. Warm it NOW.
+[ ] Leave time slider at +2h
+[ ] Backup tab: the fraud-URL bookmark open
+[ ] Phone hotspot ready as backup internet
+[ ] Second phone loaded: bot chat open, scam text ready to
+    paste (Beat 4)
+
+--- THE DEMO: 5 BEATS, ~4 MINUTES ---
+
+BEAT 1 - THE PROBLEM (30s) - MEMBER 1 opens, MEMBER 3 proves
+  M1 SAY: "Fraud money reaches an ATM within 2 hours. Police
+  find out after it is gone. We flip that - we predict the
+  ATM area BEFORE the money arrives."
+  M3 DO: stay on DASHBOARD tab. Point at rows arriving by
+  themselves + INGEST counter climbing.
+  M3 SAY: "This feed is live right now - each row just
+  arrived. Blue pulses on the map are these same complaints
+  landing."
+
+BEAT 2 - THE PREDICTION (60s) - MEMBER 2 - RISK MAP tab
+  M2 DO: drag bottom slider NOW -> +2h -> +6h -> +24h.
+  Numbers and dots change on their own.
+  M2 SAY: "Each dot is an ATM cluster area. The number is
+  the chance cash comes out there in this window. The math
+  is aftershock math: one fraud makes nearby fraud more
+  likely for a while, then it fades."
+  M2 DO: tap the Delhi dot - right panel opens (score,
+  badge, window, factors, decision trail).
+  M2 SAY: "Police watch the top 2-3 areas. This ATM button
+  shows the REAL ATMs there, from OpenStreetMap - real
+  places, real names." (click ATM LAYER - pins appear)
+
+BEAT 3 - THE SCANNERS (60s) - MEMBER 5 then MEMBER 4
+  M5 DO: ALERTS tab -> top card -> FRAUD SAMPLE -> ANALYZE.
+  ALARM: red banner + siren + your phone buzzes.
+  M5 SAY: "A scam SMS came in. Our checklist found three
+  signs: a KYC scare, a short link, a number-only sender.
+  55 out of 100 - that is an alert. My phone just buzzed
+  too - the operator is warned wherever they are."
+  M5 DO: BENIGN CONTROL -> ANALYZE -> risk 0, silence.
+  M5 SAY: "A normal shopping SMS. No alarm. The system only
+  screams when it should."
+  M4 DO: QR ANALYSIS tab -> FRAUD QR DEMO -> RUN HEURISTIC
+  ANALYSIS -> FLAGGED_FRAUD_RISK with reasons listed.
+  M4 SAY: "Same idea at the payment entry point - point the
+  camera at any QR and the checklist runs on the spot."
+
+BEAT 4 - ANYONE CAN REPORT (60s) - MEMBER 5 + second phone
+  M5 SAY: "Now the citizen channel. Anyone, anywhere, can
+  report a scam SMS to our bot - watch."
+  DO: teammate (or a JUDGE) opens t.me/Nirakshan_AlertBot on
+  the second phone and pastes:
+  "Dear Customer, Your KYC is expired. Account will be
+  blocked in 24 hrs. Update now: bit.ly/kyc-upd9"
+  SHOW all three reactions:
+    1) the bot REPLIES to them: verdict + risk + rules
+    2) YOUR phone buzzes (operator push)
+    3) dashboard: banner + new row in ALERTS
+  M5 SAY: "Real message, real time, and the reporter gets an
+  answer back - not a black hole."
+
+BEAT 5 - THE LEGAL REPORT (30s) - MEMBER 1
+  M1 DO: right panel -> EXPORT REPORT -> PDF downloads -> open.
+  M1 SAY: "The official dossier for the bank and police.
+  Look at the freeze amount: only the DISPUTED money, never
+  the whole account. That is a court rule from the Rajasthan
+  High Court - and it is built into the software, not just
+  the paperwork."
+  CLOSING LINE: "NIRAKSHAN - we watch, so you're safe."
+
+--- IF SOMETHING BREAKS ON STAGE ---
+
+Telegram slow?      -> console siren is the main show; keep
+                       going: "console first, push as backup."
+ATM pins slow?      -> "first query warms a 6-hour cache."
+                       (You warmed it in pre-flight anyway.)
+Website asleep?     -> it won't be - opened 10 min early,
+                       and our monitor pings it every 5 min.
+Everything frozen?  -> play the backup video, smoothly:
+                       "a recorded run of the full system."
+
+--- GOLDEN RULES (all members) ---
+
+1. Never say "fake data" - say "simulated complaint stream,
+   adapter-ready for the real NCRP feed. The SMS reports and
+   ATM locations are genuinely live."
+2. Never say "the AI guesses" - say "a rule engine with
+   explainable scores - every point has a reason."
+3. Stuck? -> "Great question - that is in our calibration
+   plan once official data access opens." Then move on.
+4. One person drives the mouse. One talks. Never both.
+5. Do NOT click OPEN INVESTIGATION / ADD WATCHLIST / EXPORT
+   JSON TRACE - they are prototype stubs. Stick to the
+   scripted clicks.
+
+=======================================================
+JUDGE QUESTIONS - who answers, and the answer in
+normal words. [M1]..[M6] = who speaks. Anyone can
+pass to another member: "Member 2 built this part -
+want to add?"
+=======================================================
+
+Q: Where does your data come from? [M1 or M3]
+A: "Three places. The complaint stream is simulated for
+   now, because the government NCRP system has no public
+   API - our connector plugs into it the day we get access.
+   The SMS scam reports are genuinely live - you just saw
+   one arrive through the bot. And ATM locations are real,
+   from OpenStreetMap. Everything is labeled on screen -
+   we never mix the two silently."
+
+Q: Explain that earthquake math. [M2]
+A: "It is the Hawkes process. Simple version: when a fraud
+   happens, more frauds become likely nearby, soon after -
+   like aftershocks. The system keeps a running danger
+   score for every area from all past events. The same
+   math is used by police departments abroad to predict
+   crime hotspots."
+
+Q: Why the numbers 0.42, 1.38, 350 km? [M2]
+A: "They match how these gangs actually work: money passes
+   2-3 accounts - that is the 42% evidence loss per hop.
+   The urgency fades over hours - that is 1.38. And crews
+   hit places within a few hundred km - that is the 350 km
+   spread. All three are sliders in the System tab - when
+   real data flows in, the model recalibrates itself."
+
+Q: Is the spike detection really AI? [M3]
+A: "It is statistical AI - a spike detector. Every area
+   has a rolling normal level. If complaints suddenly go
+   way above it, that is probably a coordinated attack, and
+   we flag it. It needs no training data - so it works on
+   day one in a brand-new city."
+
+Q: Scammers write 'K Y C' with spaces - then what? [M5 or M1]
+A: "Three layers. The rule list catches the simple tricks
+   today. Next, the AI text layer we already use for briefs
+   handles messy wording. And every genuine bank SMS has a
+   verified sender header - checking that kills most fakes
+   instantly. All three fit our connector design."
+
+Q: How is this different from what cyber police do now?
+   [M1]
+A: "Today: complaint comes in, someone freezes accounts,
+   hours pass, cash is gone. We flip the order: the system
+   predicts where cash will surface in the next 2 to 24
+   hours, officers pre-position there, and new scam reports
+   alarm in seconds. We turn waiting time into action
+   time."
+
+Q: Can you freeze anyone's account? [M1]
+A: "No - by design. The system only suggests holding the
+   DISPUTED amount, never the whole account. That is the
+   Rajasthan High Court rule, and it is written into the
+   report generator. There is even a blanket-freeze switch
+   in our System tab that shows a big red ILLEGAL warning -
+   we built the law into the product."
+
+Q: Will it scale to all of India? [M6 or M1]
+A: "The backend is one Python file with zero special
+   dependencies - it runs on any government server as-is.
+   For national scale, we swap the small database file for
+   a big one and run more copies behind a load balancer.
+   Standard practice - designed for it from day one."
+
+Q: What did the deployment look like? [M6]
+A: "The site is hosted free on Render, connected to our
+   GitHub - every push to the main branch redeploys the
+   live site automatically in about two minutes. A free
+   monitor pings the health page every five minutes so it
+   never sleeps. Total running cost: essentially zero."
+
+Q: How much does it cost to run? [M6]
+A: "Near zero. No paid tools, no special servers - plain
+   Python on any machine. For a police department that
+   means it can run inside their own building, on their
+   own machines, with the data never leaving their
+   network."
+
+Q: What did each of you build? (EVERYONE - your own card)
+A: See the WHO DID WHAT section - each member says their
+   own 2-3 lines from there. Say your real name, your
+   part, one concrete thing. Then stop talking.
+
+Q: Can we see the code? [M6 or M1]
+A: "Yes - github.com/Yosa-Shiawase/Nirikshanv2. The README
+   has the architecture diagram and a table showing exactly
+   what is live versus simulated. The live site is
+   nirikshanv2.onrender.com."
+
+Q: (Curveball you cannot answer) [M1]
+A: "Good question - beyond today's prototype, but here is
+   how we would approach it: [one sensible sentence]. And
+   it fits the adapter design we already have." Then STOP.
+   Never invent numbers on stage.
+
+=== END OF FILE - DEMO_SCRIPT COMPLETE ===
