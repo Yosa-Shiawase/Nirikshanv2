@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 PORT = int(os.environ.get("PORT", 8080))
 PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
-NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
 
 DB_LOCK = threading.Lock()
 DB = sqlite3.connect("live_data.db", check_same_thread=False)
@@ -227,7 +227,7 @@ def ntfy_push(title, body, click):
                              "click": click}).encode(),
             headers={"Content-Type": "application/json"})
         urllib.request.urlopen(req, timeout=10)
-        print("[ntfy] pushed:", title, flush=True)
+        print("[ntfy] pushed to topic:", repr(NTFY_TOPIC), "|", title, flush=True)
     except Exception as ex:
         print("[ntfy] failed:", ex, flush=True)
 
