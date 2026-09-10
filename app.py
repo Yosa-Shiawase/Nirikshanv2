@@ -273,7 +273,7 @@ class H(BaseHTTPRequestHandler):
                          float(q.get("lon",[79.5])[0]),int(q.get("r",[6000])[0]))
             res["source"]="OpenStreetMap/Overpass (LIVE)"; self._json(res)
         elif p.path=="/ai/briefing": self._json(ai_briefing())
-        elif p.path=="/health": self._json({"ok":True,"clients":len(CLIENTS)})
+        elif p.path=="/health": self._json({"ok": True, "clients": len(CLIENTS), "ntfy": ("set" if NTFY_TOPIC else "NOT SET")})
         else: self._static(p.path)
     def do_POST(self):
         n=int(self.headers.get("Content-Length",0)); body=self.rfile.read(n)
