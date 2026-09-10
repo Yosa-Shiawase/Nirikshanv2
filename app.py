@@ -1,4 +1,4 @@
-"""NIRAKSHAN v3 — static + live API + anomaly AI + LLM briefings. stdlib only."""
+"""NIRAKSHAN v4 — static + live API + anomaly AI + SMS (all routes, rebuilt clean)."""
 import os, json, sqlite3, time, random, threading, urllib.parse, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -6,6 +6,8 @@ PORT = int(os.environ.get("PORT", 8080))
 PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT = os.environ.get("TELEGRAM_CHAT_ID", "")
 
 DB_LOCK = threading.Lock()
 DB = sqlite3.connect("live_data.db", check_same_thread=False)
@@ -20,13 +22,13 @@ DB.commit()
 
 TERMINALS = ["DL-01","MUM-01","BLR-01","HYD-01","LKO-01","JAI-01","SGR-01",
              "AMD-01","IND-01","CCU-01","MAA-01"]
-WEIGHTS  = [22, 20, 12, 9, 8, 6, 3, 6, 5, 5, 4]   # metro-skewed, like real NCRP load
+WEIGHTS = [22,20,12,9,8,6,3,6,5,5,4]
 VPAS = ["rahul.k","priya_s","arun_t","meena.b","vikram99","shop_no4","geeta.dev",
         "anil_88","qshop.mart","fastag.recharge","krishna.traders","sahil_99"]
 DOMS = ["okaxis","icici","paytm","ybl","sbi","okhdfcbank"]
 CLIENTS = []; CL_LOCK = threading.Lock()
 RECENT = []; RECENT_LOCK = threading.Lock()
-ANOM = {}   # terminal -> {"ewma":x,"last":ts}
+ANOM = {}
 AMTS = [4999,18900,42500,78000,120000,185000,240000]
 
 def broadcast(obj):
@@ -48,15 +50,14 @@ def record_complaint(c):
     with RECENT_LOCK:
         RECENT.append((now, c["target_terminal_id"], c["disputed_amount_inr"]))
         while RECENT and now - RECENT[0][0] > 3600: RECENT.pop(0)
-        c30 = sum(1 for t,_,_ in RECENT if t > now-30 and _==c["target_terminal_id"] or
-                  (t > now-30 and _==c["target_terminal_id"]))
-    st = ANOM.setdefault(c["target_terminal_id"], {"ewma":1.0,"std":0.6,"last":0})
+        c30 = sum(1 for t,term,_ in RECENT if t > now-30 and term==c["target_terminal_id"])
+    st = ANOM.setdefault(c["target_terminal_id"], {"ewma":1.0,"last":0})
     st["ewma"] = 0.8*st["ewma"] + 0.2*min(c30,20)
     if c30 >= 5 and c30 > st["ewma"]*2.2 and now - st["last"] > 60:
         st["last"] = now
         broadcast({"type":"anomaly","terminal_id":c["target_terminal_id"],
                    "count_30s":c30,"baseline":round(st["ewma"],1),
-                   "note":"EWMA burst detector (z>2.2)"})
+                   "note":"EWMA burst detector (threshold 2.2x baseline)"})
 
 def emit(term=None, source="SIM"):
     amt = int(random.choice(AMTS) * random.uniform(.8,1.25))
@@ -71,7 +72,7 @@ def emit(term=None, source="SIM"):
 def simulator():
     while True:
         emit()
-        if random.random() < 0.055:                 # coordinated cash-out burst
+        if random.random() < 0.055:
             t = random.choices(TERMINALS, weights=WEIGHTS)[0]
             for _ in range(random.randint(5,9)):
                 time.sleep(random.uniform(.15,.5)); emit(t)
@@ -103,7 +104,7 @@ def verify_qr(uri):
     for w in BAD_WORDS:
         if w in low: hit(45,"SE-PHRASE","Social-engineering keyword: '%s'" % w); break
     if am:
-        hit(15,"AMT-PRE,".rstrip(",") ,"Amount pre-filled (Rs.%s) — unsolicited push" % am)
+        hit(15,"AMT-PRE","Amount pre-filled (Rs.%s) — unsolicited push" % am)
         if am.isdigit() and int(am) >= 50000: hit(10,"AMT-HIGH","High-value demand (>=50k)")
     if handle and pa.split("@")[0].isdigit() and len(pa.split("@")[0]) >= 8:
         hit(10,"VPA-NUMHEAP","Numeric-heap personal VPA pattern")
@@ -113,43 +114,76 @@ def verify_qr(uri):
     return {"verdict":verdict,"risk_score":score,"payee":pn,"vpa":pa,
             "amount":am or "0","matched_rules":rules,"reasons":reasons}
 
-def stats_snapshot():
-    now = time.time()
-    with RECENT_LOCK: rows = list(RECENT)
-    per = {}
-    for t,term,amt in rows:
-        d = per.setdefault(term, {"n":0,"inr":0})
-        d["n"] += 1; d["inr"] += amt
-    hot = sorted(per.items(), key=lambda kv:-kv[1]["n"])[:3]
-    anomalous = [k for k,v in ANOM.items() if time.time()-v["last"] < 300]
-    return {"window_min":60,"total":sum(v["n"] for _,v in per.items()),
-            "total_inr":sum(v["inr"] for _,v in per.items()),
-            "top":hot,"anomaly_active":anomalous}
+SMS_RULES = [
+    (25, ["kyc","e-kyc","re-kyc","account blocked","account suspended",
+          "will be blocked","block your","expire","suspended"]),
+    (25, ["otp","one time password","share your pin"]),
+    (30, ["lottery","lucky draw","prize","you have won","won rs","kbc"]),
+    (20, ["refund","cashback","upi failed","reverse the amount","unblock"]),
+    (25, ["anydesk","teamviewer","screen share","download app",
+          "download the app","apk file"]),
+    (20, ["click here","bit.ly","tinyurl","tiny.cc","http://","https://"]),
+    (15, ["income tax","cbdt","electricity","disconnected","power cut",
+          "gas booking","insurance lapsed"]),
+    (10, ["customer care","helpline","whatsapp us","call now"]),
+]
 
-def ai_briefing():
-    s = stats_snapshot()
-    top = ", ".join("%s(%d evt, Rs.%d)" % (k, v["n"], v["inr"]) for k,v in s["top"]) or "no data yet"
-    fact = ("Live NCRP-sim stream, last 60 min: total=%d events, Rs.%d disputed. "
-            "Hot terminals: %s. Active burst anomalies: %s. "
-            "Draft a <=120-word LE situation briefing. Lines starting with '- '. "
-            "End with one recommended Section-102 action.") % (
-            s["total"], s["total_inr"], top, ", ".join(s["anomaly_active"]) or "none")
-    if GEMINI_KEY:
-        try:
-            body = json.dumps({"contents":[{"parts":[{"text":fact}]}]}).encode()
-            req = urllib.request.Request(
-              "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+GEMINI_KEY,
-              data=body, headers={"Content-Type":"application/json"})
-            r = json.loads(urllib.request.urlopen(req, timeout=20).read())
-            txt = r["candidates"][0]["content"]["parts"][0]["text"].strip()
-            return {"engine":"gemini-1.5-flash","text":txt}
-        except Exception as ex:
-            fact += " [LLM unavailable: %s]" % ex
-    burst = ("ACTIVE BURST: %s — treat as coordinated cash-out." % ", ".join(s["anomaly_active"])) if s["anomaly_active"] else "No burst anomalies in last 5 min."
-    return {"engine":"rules-v1","text":
-      "- Window: %d events / Rs.%d disputed in last 60 min.\n"
-      "- Hot terminals: %s.\n- %s\n- Recommended Sec-102 action: cap liens at disputed value on top terminal; alert bank nodal for ATM pre-positioning." % (
-        s["total"], s["total_inr"], top, burst)}
+def score_sms(sender, text):
+    t = (text or "").lower(); score = 0; hits = []
+    for pts, words in SMS_RULES:
+        for w in words:
+            if w in t:
+                score += pts; hits.append(w); break
+    if sender:
+        if sender.lower().startswith("+92") or sender.lower().startswith("92"):
+            score += 25; hits.append("foreign sender")
+        elif sum(c.isdigit() for c in sender) >= 10:
+            score += 10; hits.append("numeric sender")
+    score = min(99, score)
+    verdict = "SMS_FRAUD_ALERT" if score >= 45 else ("SMS_SUSPICIOUS" if score >= 20 else "SMS_INFO")
+    return {"verdict": verdict, "risk_score": score, "matched": hits,
+            "sender": sender or "unknown", "text": (text or "")[:200]}
+
+def ntfy_push(title, body, click=None):
+    if not NTFY_TOPIC: return
+    try:
+        data = (title + "\n" + body).encode("utf-8")
+        req = urllib.request.Request("https://ntfy.sh/" + NTFY_TOPIC,
+            data=data, headers={"Priority": "high", "Tags": "rotating_light"})
+        urllib.request.urlopen(req, timeout=10)
+        print("[ntfy] pushed to topic:", repr(NTFY_TOPIC), "|", title, flush=True)
+    except Exception as ex:
+        print("[ntfy] failed:", ex, flush=True)
+
+def tg_push(title, body):
+    if not (TELEGRAM_TOKEN and TELEGRAM_CHAT): return
+    try:
+        u = ("https://api.telegram.org/bot" + TELEGRAM_TOKEN + "/sendMessage?"
+             + urllib.parse.urlencode({"chat_id": TELEGRAM_CHAT,
+             "text": "\U0001F6A8 " + title + "\n" + body}))
+        urllib.request.urlopen(u, timeout=10)
+        print("[tg] pushed:", title, flush=True)
+    except Exception as ex:
+        print("[tg] failed:", ex, flush=True)
+
+def sms_process(frm, txt, tag):
+    r = score_sms(frm, txt)
+    r["type"] = "sms_alert"; r["ts"] = time.strftime("%H:%M:%S")
+    with DB_LOCK:
+        DB.execute("INSERT INTO sms VALUES(?,?,?,?,?)",
+            (r["ts"], r["sender"], r["text"], r["verdict"], r["risk_score"]))
+        DB.commit()
+    broadcast(r)
+    print("[%s] from %r score %d %s text %r" % (tag, r["sender"],
+          r["risk_score"], r["verdict"], r["text"][:100]), flush=True)
+    if r["risk_score"] >= 45:
+        ntfy_push("SMS FRAUD ALERT (" + str(r["risk_score"]) + ")",
+                  r["text"][:120] + " | From: " + r["sender"])
+        tg_push("SMS FRAUD ALERT (" + str(r["risk_score"]) + ")", r["text"][:120])
+    elif r["risk_score"] >= 20:
+        ntfy_push("SMS suspicious (" + str(r["risk_score"]) + ")", r["text"][:120])
+        tg_push("SMS suspicious (" + str(r["risk_score"]) + ")", r["text"][:120])
+    return r
 
 OVERPASS = ["https://overpass-api.de/api/interpreter",
             "https://overpass.kumi.systems/api/interpreter"]
@@ -184,52 +218,40 @@ def get_atms(node_id, lat, lon, r):
         except Exception as ex: last = "%s -> %s" % (ep, ex)
     return {"atms": [], "error": last}
 
+def ai_briefing():
+    now = time.time()
+    with RECENT_LOCK: rows = list(RECENT)
+    per = {}
+    for t,term,amt in rows:
+        d = per.setdefault(term, {"n":0,"inr":0}); d["n"]+=1; d["inr"]+=amt
+    hot = sorted(per.items(), key=lambda kv:-kv[1]["n"])[:3]
+    anomalous = [k for k,v in ANOM.items() if time.time()-v["last"] < 300]
+    top = ", ".join("%s(%d evt, Rs.%d)" % (k, v["n"], v["inr"]) for k,v in hot) or "no data yet"
+    fact = ("Live NCRP-sim stream, last 60 min: total=%d events, Rs.%d disputed. "
+            "Hot terminals: %s. Active burst anomalies: %s. "
+            "Draft a <=120-word LE situation briefing. Lines starting with '- '. "
+            "End with one recommended Section-102 action.") % (
+            sum(v["n"] for _,v in per.items()), sum(v["inr"] for _,v in per.items()),
+            top, ", ".join(anomalous) or "none")
+    if GEMINI_KEY:
+        try:
+            body = json.dumps({"contents":[{"parts":[{"text":fact}]}]}).encode()
+            req = urllib.request.Request(
+              "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+GEMINI_KEY,
+              data=body, headers={"Content-Type":"application/json"})
+            r = json.loads(urllib.request.urlopen(req, timeout=20).read())
+            return {"engine":"gemini-1.5-flash","text":r["candidates"][0]["content"]["parts"][0]["text"].strip()}
+        except Exception as ex:
+            fact += " [LLM unavailable: %s]" % ex
+    burst = ("ACTIVE BURST: %s — treat as coordinated cash-out." % ", ".join(anomalous)) if anomalous else "No burst anomalies in last 5 min."
+    return {"engine":"rules-v1","text":
+      "- Window: %d events / Rs.%d disputed in last 60 min.\n"
+      "- Hot terminals: %s.\n- %s\n- Recommended Sec-102 action: cap liens at disputed value on top terminal; alert bank nodal for ATM pre-positioning." % (
+        sum(v["n"] for _,v in per.items()), sum(v["inr"] for _,v in per.items()), top, burst)}
+
 MIME = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",
         ".css":"text/css; charset=utf-8",".png":"image/png",".json":"application/json",
         ".svg":"image/svg+xml",".ico":"image/x-icon"}
-
-
-# ==== SMS INGEST + ALERT DISPATCH ====
-SMS_RULES = [
-    (25, ["kyc", "e-kyc", "re-kyc", "account blocked", "account suspended",
-          "will be blocked", "block your", "expire", "suspended"]),
-    (25, ["otp", "one time password", "share your pin"]),
-    (30, ["lottery", "lucky draw", "prize", "you have won", "won rs", "kbc"]),
-    (20, ["refund", "cashback", "upi failed", "reverse the amount", "unblock"]),
-    (25, ["anydesk", "teamviewer", "screen share", "download app",
-          "download the app", "apk file"]),
-    (20, ["click here", "bit.ly", "tinyurl", "tiny.cc", "http://", "https://"]),
-    (15, ["income tax", "cbdt", "electricity", "disconnected", "power cut",
-          "gas booking", "insurance lapsed"]),
-    (10, ["customer care", "helpline", "whatsapp us", "call now"]),
-]
-def score_sms(sender, text):
-    t = (text or "").lower(); score = 0; hits = []
-    for pts, words in SMS_RULES:
-        for w in words:
-            if w in t:
-                score += pts; hits.append(w); break
-    if sender:
-        if sender.lower().startswith("+92") or sender.lower().startswith("92"):
-            score += 25; hits.append("foreign sender")
-        elif sum(c.isdigit() for c in sender) >= 10:
-            score += 10; hits.append("numeric sender")
-    score = min(99, score)
-    verdict = "SMS_FRAUD_ALERT" if score >= 45 else ("SMS_SUSPICIOUS" if score >= 20 else "SMS_INFO")
-    return {"verdict": verdict, "risk_score": score, "matched": hits,
-            "sender": sender or "unknown", "text": (text or "")[:200]}
-def ntfy_push(title, body, click=None):
-    """Plain-text publish - exact format proven to reach the phone app."""
-    if not NTFY_TOPIC: return
-    try:
-        data = (title + "\n" + body).encode("utf-8")
-        req = urllib.request.Request("https://ntfy.sh/" + NTFY_TOPIC,
-            data=data,
-            headers={"Priority": "high", "Tags": "rotating_light"})
-        urllib.request.urlopen(req, timeout=10)
-        print("[ntfy] pushed to topic:", repr(NTFY_TOPIC), "|", title, flush=True)
-    except Exception as ex:
-        print("[ntfy] failed:", ex, flush=True)
 
 class H(BaseHTTPRequestHandler):
     def log_message(self,*a): pass
@@ -246,7 +268,8 @@ class H(BaseHTTPRequestHandler):
     def _static(self,path):
         if path in ("/",""): path="/index.html"
         fp=os.path.normpath(os.path.join(PUBLIC,path.lstrip("/")))
-        if not fp.startswith(PUBLIC) or not os.path.isfile(fp): print("[404 GET]", repr(self.path), flush=True) or self._json({"error":"nf"},404)
+        if not fp.startswith(PUBLIC) or not os.path.isfile(fp):
+            return self._json({"error":"nf"},404)
         body=open(fp,"rb").read()
         self.send_response(200)
         self.send_header("Content-Type",MIME.get(os.path.splitext(fp)[1].lower(),"application/octet-stream"))
@@ -254,9 +277,9 @@ class H(BaseHTTPRequestHandler):
         self.send_header("Cache-Control","no-cache"); self.end_headers()
         self.wfile.write(body)
     def do_GET(self):
-        self.path = self.path.strip().rstrip("/")
-        p=urllib.parse.urlparse(self.path)
-        if p.path=="/events":
+        self.path = self.path.strip().rstrip("/") or "/"
+        p = urllib.parse.urlparse(self.path)
+        if p.path == "/events":
             self.send_response(200)
             self.send_header("Content-Type","text/event-stream")
             self.send_header("Cache-Control","no-cache"); self._cors(); self.end_headers()
@@ -268,64 +291,56 @@ class H(BaseHTTPRequestHandler):
             except Exception:
                 with CL_LOCK:
                     if c in CLIENTS: CLIENTS.remove(c)
-        elif p.path=="/atms":
-            q=urllib.parse.parse_qs(p.query)
-            res=get_atms(q.get("node",[""])[0],float(q.get("lat",[22.5])[0]),
-                         float(q.get("lon",[79.5])[0]),int(q.get("r",[6000])[0]))
-            res["source"]="OpenStreetMap/Overpass (LIVE)"; self._json(res)
-        elif p.path.startswith("/sms"):
+        elif p.path == "/sms":
             q = urllib.parse.parse_qs(p.query)
-            r = score_sms(q.get("from",[""])[0], q.get("text",[""])[0])
-            print("[sms]", r["ts"], "from", repr(r["sender"]), "score", r["risk_score"], r["verdict"], "text", repr(r["text"][:100]), flush=True)
-            r["type"] = "sms_alert"; r["ts"] = time.strftime("%H:%M:%S")
-            with DB_LOCK:
-                DB.execute("INSERT INTO sms VALUES(?,?,?,?,?)",
-                    (r["ts"], r["sender"], r["text"], r["verdict"], r["risk_score"]))
-                DB.commit()
-            broadcast(r)
-            if r["risk_score"] >= 45:
-                ntfy_push("SMS FRAUD ALERT (" + str(r["risk_score"]) + ")",
-                          r["text"][:120] + " | From: " + r["sender"])
-            elif r["risk_score"] >= 20:
-                ntfy_push("SMS suspicious (" + str(r["risk_score"]) + ")", r["text"][:120])
+            r = sms_process(q.get("from",[""])[0], q.get("text",[""])[0], "sms")
             self._json(r)
-        elif p.path=="/ai/briefing": self._json(ai_briefing())
-        elif p.path=="/health": self._json({"ok": True, "clients": len(CLIENTS), "ntfy": ("set" if NTFY_TOPIC else "NOT SET")})
-        else: self._static(p.path)
+        elif p.path == "/atms":
+            q = urllib.parse.parse_qs(p.query)
+            res = get_atms(q.get("node",[""])[0], float(q.get("lat",[22.5])[0]),
+                           float(q.get("lon",[79.5])[0]), int(q.get("r",[6000])[0]))
+            res["source"] = "OpenStreetMap/Overpass (LIVE)"
+            self._json(res)
+        elif p.path == "/ai/briefing":
+            self._json(ai_briefing())
+        elif p.path == "/health":
+            self._json({"ok": True, "clients": len(CLIENTS),
+                        "ntfy": ("set" if NTFY_TOPIC else "NOT SET")})
+        else:
+            self._static(p.path)
     def do_POST(self):
         self.path = self.path.strip().rstrip("/")
-        n=int(self.headers.get("Content-Length",0)); body=self.rfile.read(n)
-        if self.path=="/ingest":
-            try: c=json.loads(body)
-            except Exception: return self._json({"error":"bad json"},400)
-            c.setdefault("source","WEB"); c.setdefault("timestamp",time.strftime("%H:%M:%S"))
-            c.setdefault("hop_count",2); c.setdefault("ack_no","MANUAL-%d"%int(time.time()))
-            record_complaint(c); broadcast(c); self._json({"ok":True})
-        elif self.path == "/ingest-sms":
+        n = int(self.headers.get("Content-Length",0) or 0)
+        body = self.rfile.read(n)
+        if self.path == "/ingest-sms":
             try:
                 d = json.loads(body)
-                r = score_sms(str(d.get("from", "")), str(d.get("text", "")))
+                r = sms_process(str(d.get("from","")), str(d.get("text","")), "ingest-sms")
             except Exception:
-                return self._json({"error": "bad json"}, 400)
-            r["type"] = "sms_alert"; r["ts"] = time.strftime("%H:%M:%S")
-            with DB_LOCK:
-                DB.execute("INSERT INTO sms VALUES(?,?,?,?,?)",
-                    (r["ts"], r["sender"], r["text"], r["verdict"], r["risk_score"]))
-                DB.commit()
-            broadcast(r)
-            if r["risk_score"] >= 45:
-                ntfy_push("SMS FRAUD ALERT (" + str(r["risk_score"]) + ")",
-                          r["text"][:120] + " | From: " + r["sender"],
-                          "https://nirikshanv2.onrender.com")
-            elif r["risk_score"] >= 20:
-                ntfy_push("SMS suspicious (" + str(r["risk_score"]) + ")",
-                          r["text"][:120], "https://nirikshanv2.onrender.com")
+                return self._json({"error":"bad json"},400)
+            self._json(r)
+        elif self.path == "/sms-plain":
+            raw = body.decode("utf-8","replace")
+            if "|" in raw: frm, txt = raw.split("|",1)
+            else: frm, txt = "unknown", raw
+            r = sms_process(frm.strip(), txt, "sms-plain")
+            self._json(r)
         elif self.path in ("/qr/verify","/api/verify-qr"):
             try: self._json(verify_qr(json.loads(body).get("uri","")))
             except Exception: self._json({"error":"bad json"},400)
-        else: print("[404 POST]", repr(self.path), flush=True); self._json({"error":"nf"},404)
+        elif self.path == "/ingest":
+            try: c = json.loads(body)
+            except Exception: return self._json({"error":"bad json"},400)
+            c.setdefault("source","WEB"); c.setdefault("timestamp", time.strftime("%H:%M:%S"))
+            c.setdefault("hop_count",2); c.setdefault("ack_no","MANUAL-%d"%int(time.time()))
+            record_complaint(c); broadcast(c); self._json({"ok":True})
+        else:
+            print("[404 POST]", repr(self.path), flush=True)
+            self._json({"error":"nf"},404)
 
 if __name__ == "__main__":
-    threading.Thread(target=simulator,daemon=True).start()
-    print("NIRAKSHAN v3 on :%d | LLM:%s" % (PORT, "gemini" if GEMINI_KEY else "rules"), flush=True)
-    ThreadingHTTPServer(("0.0.0.0",PORT),H).serve_forever()
+    threading.Thread(target=simulator, daemon=True).start()
+    print("NIRAKSHAN v4 on :%d | LLM:%s | ntfy:%s" % (PORT,
+          "gemini" if GEMINI_KEY else "rules",
+          NTFY_TOPIC or "unset"), flush=True)
+    ThreadingHTTPServer(("0.0.0.0", PORT), H).serve_forever()
