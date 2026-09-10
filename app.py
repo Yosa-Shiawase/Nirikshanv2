@@ -276,6 +276,7 @@ class H(BaseHTTPRequestHandler):
         elif p.path.startswith("/sms"):
             q = urllib.parse.parse_qs(p.query)
             r = score_sms(q.get("from",[""])[0], q.get("text",[""])[0])
+            print("[sms]", r["ts"], "from", repr(r["sender"]), "score", r["risk_score"], r["verdict"], "text", repr(r["text"][:100]), flush=True)
             r["type"] = "sms_alert"; r["ts"] = time.strftime("%H:%M:%S")
             with DB_LOCK:
                 DB.execute("INSERT INTO sms VALUES(?,?,?,?,?)",
