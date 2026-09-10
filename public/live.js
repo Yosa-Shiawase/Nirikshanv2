@@ -277,8 +277,103 @@
     row.appendChild(b);
   }
 
+
+  /* ==== LIVE SMS THREAT SENSOR (paste-intake + one-click samples) ==== */
+  function addSmsSensor() {
+    var pane = document.getElementById("pane-alerts"); if (!pane) return;
+    var card = document.createElement("div");
+    card.style.cssText = "background:var(--bg-card);border:1px solid var(--border);" +
+      "border-left:3px solid var(--c-very-high);border-radius:3px;padding:10px;" +
+      "margin-bottom:12px;display:flex;flex-direction:column;gap:8px;";
+    card.innerHTML =
+      "<div class='hud-title' style='margin:0;'>LIVE SMS THREAT SENSOR — paste any received SMS</div>" +
+      "<input id='smsFrom' class='font-mono' placeholder='Sender number (optional)' " +
+        "style='background:#040812;border:1px solid var(--border);color:#fff;padding:6px 10px;font-size:10px;border-radius:2px;' value='unknown'>" +
+      "<textarea id='smsText' rows='3' placeholder='Paste the suspicious SMS text here…' " +
+        "style='background:#040812;border:1px solid var(--border);color:#fff;padding:8px 10px;font-size:10px;font-family:monospace;border-radius:2px;resize:vertical;'></textarea>" +
+      "<div style='display:flex;gap:6px;flex-wrap:wrap;'>" +
+        "<button class='cbtn primary' id='smsAnalyze'>⚠ ANALYZE SMS</button>" +
+        "<button class='cbtn' id='smsFillFraud'>FRAUD SAMPLE</button>" +
+        "<button class='cbtn' id='smsFillLottery'>LOTTERY SAMPLE</button>" +
+        "<button class='cbtn' id='smsFillBenign'>BENIGN CONTROL</button>" +
+      "</div>" +
+      "<div id='smsSensorOut' class='font-mono' style='font-size:9px;color:var(--text-muted);'></div>";
+    pane.prepend(card);
+    var SAMPLES = {
+      smsFillFraud: ["+919876543210", "Dear Customer, Your KYC is expired. A/C will be blocked in 24 hrs. Update now: bit.ly/kyc-upd9"],
+      smsFillLottery: ["+929811223344", "Congrats! You won Rs 25,00,000 LUCKY DRAW 2026. Claim your prize now: tinyurl.com/claim99"],
+      smsFillBenign: ["VM-SHOPNOW", "Thank you for shopping. Your order #48211 has been dispatched, arriving Friday."]
+    };
+    Object.keys(SAMPLES).forEach(function (id) {
+      document.getElementById(id).onclick = function () {
+        document.getElementById("smsFrom").value = SAMPLES[id][0];
+        document.getElementById("smsText").value = SAMPLES[id][1];
+      };
+    });
+    document.getElementById("smsAnalyze").onclick = function () {
+      var b = this; b.disabled = true; b.textContent = "SCORING…";
+      var frm = document.getElementById("smsFrom").value || "unknown";
+      var txt = document.getElementById("smsText").value || "";
+      var out = document.getElementById("smsSensorOut");
+      out.textContent = "running rule engine…";
+      fetch(LIVE + "/sms-plain", { method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: frm + "|" + txt
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        b.disabled = false; b.textContent = "⚠ ANALYZE SMS";
+        var col = d.risk_score >= 45 ? "#ef4444" : (d.risk_score >= 20 ? "#eab308" : "#10b981");
+        out.innerHTML = "<span style='color:" + col + ";font-weight:bold;'>" + d.verdict +
+          " · risk " + d.risk_score + "</span>" +
+          (d.matched && d.matched.length ? " — rules: " + d.matched.join(", ") : " — no rule hits");
+      }).catch(function (e) {
+        b.disabled = false; b.textContent = "⚠ ANALYZE SMS";
+        out.textContent = "backend unreachable: " + e.message;
+      });
+    };
+  }
+
+  /* ==== CASE TRACE: one theft, split & tracked live ==== */
+  function addCaseTrace() {
+    var pane = document.getElementById("pane-transactions"); if (!pane) return;
+    var card = document.createElement("div");
+    card.style.cssText = "background:var(--bg-card);border:1px solid var(--border);" +
+      "border-left:3px solid var(--c-very-high);border-radius:3px;padding:10px;margin-bottom:12px;";
+    card.innerHTML = "<div style='display:flex;justify-content:space-between;align-items:center;'>" +
+      "<div class='hud-title' style='margin:0;'>ACTIVE CASE TRACE — NCRP-2026-991823 · ₹3,80,000 stolen</div>" +
+      "<button class='cbtn' id='ctRefresh'>REFRESH TRACE ⟳</button></div>" +
+      "<div id='ctBody' class='font-mono' style='font-size:9.5px;margin-top:8px;color:var(--text-muted);'>loading…</div>";
+    pane.prepend(card);
+    document.getElementById("ctRefresh").onclick = loadTrace;
+    loadTrace();
+  }
+  function loadTrace() {
+    var body = document.getElementById("ctBody"); if (!body) return;
+    fetch(LIVE + "/case/trace").then(function (r) { return r.json(); }).then(function (d) {
+      var html = "";
+      d.layers.forEach(function (L) {
+        html += "<div style='margin:6px 0;'><b style='color:#fff;'>H" + L.hop + " · " +
+          L.label + "</b> — ₹" + Number(L.amount).toLocaleString("en-IN") +
+          " <span style='color:#7e91a7;'>(" + L.vpas.length + " legs)</span></div>";
+        if (!L.live.length) {
+          html += "<div style='padding-left:14px;color:#51605c;'>awaiting live activity…</div>";
+        } else {
+          L.live.forEach(function (v) {
+            var hot = v.minutes_ago <= 10;
+            html += "<div style='padding-left:14px;color:" + (hot ? "#ef4444" : "#38bdf8") + ";'>" +
+              (hot ? "◉ LIVE " : "○ seen ") + v.id + " — " + v.events +
+              " evt / ₹" + Number(v.inr).toLocaleString("en-IN") +
+              " — " + v.minutes_ago + " min ago" + (hot ? " ⚠ INTERCEPT NOW" : "") + "</div>";
+          });
+        }
+      });
+      html += "<div style='margin-top:8px;color:#eab308;'>window: last " + d.window_min +
+        " min · live events matched: " + d.total_live_events + "</div>";
+      body.innerHTML = html;
+    }).catch(function () { body.textContent = "trace endpoint unreachable"; });
+  }
+
   window.NIRAKSHAN_LIVE = { loadAtms: loadAtms, LIVE: LIVE };
 
-  function boot() { addBadge(); addAtmButton(); addAiButton(); addQrDemoButtons(); addAlertsEnableButton(); connect(); }
+  function boot() { addBadge(); addAtmButton(); addAiButton(); addQrDemoButtons(); addAlertsEnableButton(); addBadge; addAtmButton; addAiButton; addQrDemoButtons; addAlertsEnableButton; addSmsSensor; addCaseTrace; connect(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();

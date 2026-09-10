@@ -119,7 +119,7 @@ SMS_RULES = [
           "will be blocked","block your","expire","suspended"]),
     (25, ["otp","one time password","share your pin"]),
     (30, ["lottery","lucky draw","prize","you have won","won rs","kbc"]),
-    (20, ["refund","cashback","upi failed","reverse the amount","unblock"]),
+    (20, ["refund","cashback","upi failed","reverse the amount","unblock","fake","unauthorized","failed transaction"]),
     (25, ["anydesk","teamviewer","screen share","download app",
           "download the app","apk file"]),
     (20, ["click here","bit.ly","tinyurl","tiny.cc","http://","https://"]),
