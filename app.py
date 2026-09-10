@@ -218,14 +218,14 @@ def score_sms(sender, text):
     verdict = "SMS_FRAUD_ALERT" if score >= 45 else ("SMS_SUSPICIOUS" if score >= 20 else "SMS_INFO")
     return {"verdict": verdict, "risk_score": score, "matched": hits,
             "sender": sender or "unknown", "text": (text or "")[:200]}
-def ntfy_push(title, body, click):
+def ntfy_push(title, body, click=None):
+    """Plain-text publish - exact format proven to reach the phone app."""
     if not NTFY_TOPIC: return
     try:
+        data = (title + "\n" + body).encode("utf-8")
         req = urllib.request.Request("https://ntfy.sh/" + NTFY_TOPIC,
-            data=json.dumps({"topic": NTFY_TOPIC, "title": title, "body": body,
-                             "tags": ["rotating_light"], "priority": "high",
-                             "click": click}).encode(),
-            headers={"Content-Type": "application/json"})
+            data=data,
+            headers={"Priority": "high", "Tags": "rotating_light"})
         urllib.request.urlopen(req, timeout=10)
         print("[ntfy] pushed to topic:", repr(NTFY_TOPIC), "|", title, flush=True)
     except Exception as ex:
@@ -276,6 +276,7 @@ class H(BaseHTTPRequestHandler):
         elif p.path=="/health": self._json({"ok": True, "clients": len(CLIENTS), "ntfy": ("set" if NTFY_TOPIC else "NOT SET")})
         else: self._static(p.path)
     def do_POST(self):
+        self.path = self.path.strip().rstrip("/")
         n=int(self.headers.get("Content-Length",0)); body=self.rfile.read(n)
         if self.path=="/ingest":
             try: c=json.loads(body)
@@ -305,7 +306,7 @@ class H(BaseHTTPRequestHandler):
         elif self.path in ("/qr/verify","/api/verify-qr"):
             try: self._json(verify_qr(json.loads(body).get("uri","")))
             except Exception: self._json({"error":"bad json"},400)
-        else: self._json({"error":"nf"},404)
+        else: print("[404 POST]", repr(self.path), flush=True); else: self._json({"error":"nf"},404)
 
 if __name__ == "__main__":
     threading.Thread(target=simulator,daemon=True).start()
