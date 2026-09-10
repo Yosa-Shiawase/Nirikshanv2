@@ -374,6 +374,6 @@
 
   window.NIRAKSHAN_LIVE = { loadAtms: loadAtms, LIVE: LIVE };
 
-  function boot() { addBadge(); addAtmButton(); addAiButton(); addQrDemoButtons(); addAlertsEnableButton(); addBadge; addAtmButton; addAiButton; addQrDemoButtons; addAlertsEnableButton; addSmsSensor; addCaseTrace; connect(); }
+  function boot() { addBadge(); addAtmButton(); addAiButton(); addQrDemoButtons(); addAlertsEnableButton(); addSmsSensor(); addCaseTrace(); connect(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();
