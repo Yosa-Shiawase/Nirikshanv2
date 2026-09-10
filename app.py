@@ -246,7 +246,7 @@ class H(BaseHTTPRequestHandler):
     def _static(self,path):
         if path in ("/",""): path="/index.html"
         fp=os.path.normpath(os.path.join(PUBLIC,path.lstrip("/")))
-        if not fp.startswith(PUBLIC) or not os.path.isfile(fp): return self._json({"error":"nf"},404)
+        if not fp.startswith(PUBLIC) or not os.path.isfile(fp): print("[404 GET]", repr(self.path), flush=True) or self._json({"error":"nf"},404)
         body=open(fp,"rb").read()
         self.send_response(200)
         self.send_header("Content-Type",MIME.get(os.path.splitext(fp)[1].lower(),"application/octet-stream"))
@@ -322,7 +322,7 @@ class H(BaseHTTPRequestHandler):
         elif self.path in ("/qr/verify","/api/verify-qr"):
             try: self._json(verify_qr(json.loads(body).get("uri","")))
             except Exception: self._json({"error":"bad json"},400)
-        else: print("[404 POST]", repr(self.path), flush=True); else: self._json({"error":"nf"},404)
+        else: print("[404 POST]", repr(self.path), flush=True); self._json({"error":"nf"},404)
 
 if __name__ == "__main__":
     threading.Thread(target=simulator,daemon=True).start()
