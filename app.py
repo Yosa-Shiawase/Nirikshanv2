@@ -166,6 +166,47 @@ def tg_push(title, body):
     except Exception as ex:
         print("[tg] failed:", ex, flush=True)
 
+def tg_send(chat_id, text):
+    try:
+        u = ("https://api.telegram.org/bot" + TELEGRAM_TOKEN + "/sendMessage?"
+             + urllib.parse.urlencode({"chat_id": chat_id, "text": text}))
+        urllib.request.urlopen(u, timeout=10)
+    except Exception as ex:
+        print("[tg] reply failed:", ex, flush=True)
+
+def telegram_listener():
+    """Citizen-report channel: anyone who messages the bot gets scored,
+    the operator gets alarmed, the reporter gets a verdict reply."""
+    if not (TELEGRAM_TOKEN and TELEGRAM_CHAT):
+        print("[tg-listener] disabled (no token/chat)"); return
+    offset = 0
+    while True:
+        try:
+            u = ("https://api.telegram.org/bot" + TELEGRAM_TOKEN
+                 + "/getUpdates?timeout=25&offset=%d" % offset)
+            data = json.loads(urllib.request.urlopen(u, timeout=35).read())
+            for upd in data.get("result", []):
+                offset = upd["update_id"] + 1
+                msg = upd.get("message") or {}
+                txt = msg.get("text") or ""
+                chat = msg.get("chat") or {}
+                cid = chat.get("id")
+                if not txt or cid is None: continue
+                frm = str((msg.get("from") or {}).get("username")
+                          or (msg.get("from") or {}).get("first_name") or "tg-user")
+                r = sms_process(frm, txt, "tg-in")
+                col = "FRAUD" if r["risk_score"] >= 45 else ("SUSPICIOUS" if r["risk_score"] >= 20 else "OK")
+                reply = ("\U0001F6E1 NIRAKSHAN SMS report received.\n"
+                         "Verdict: %s (risk %d/100)\n"
+                         "Matched rules: %s\n"
+                         "Forwarded to command console.") % (
+                         r["verdict"], r["risk_score"],
+                         ", ".join(r["matched"]) or "none")
+                tg_send(cid, reply)
+                print("[tg-in] from %r score %d (%s)" % (frm, r["risk_score"], col), flush=True)
+        except Exception as ex:
+            time.sleep(5)
+
 def sms_process(frm, txt, tag):
     r = score_sms(frm, txt)
     r["type"] = "sms_alert"; r["ts"] = time.strftime("%H:%M:%S")
@@ -340,6 +381,7 @@ class H(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     threading.Thread(target=simulator, daemon=True).start()
+    threading.Thread(target=telegram_listener, daemon=True).start()
     print("NIRAKSHAN v4 on :%d | LLM:%s | ntfy:%s" % (PORT,
           "gemini" if GEMINI_KEY else "rules",
           NTFY_TOPIC or "unset"), flush=True)
