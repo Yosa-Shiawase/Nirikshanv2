@@ -343,7 +343,12 @@
       "<button class='cbtn' id='ctRefresh'>REFRESH TRACE ⟳</button></div>" +
       "<div id='ctBody' class='font-mono' style='font-size:9.5px;margin-top:8px;color:var(--text-muted);'>loading…</div>";
     pane.prepend(card);
-    document.getElementById("ctRefresh").onclick = loadTrace;
+    document.getElementById("ctRefresh").onclick = function () {
+      loadTrace();
+      var b = document.getElementById("ctRefresh"), o = b.textContent;
+      b.textContent = "UPDATED " + new Date().toLocaleTimeString();
+      setTimeout(function () { b.textContent = o; }, 2000);
+    };
     loadTrace();
   }
   function loadTrace() {
@@ -354,7 +359,11 @@
         html += "<div style='margin:6px 0;'><b style='color:#fff;'>H" + L.hop + " · " +
           L.label + "</b> — ₹" + Number(L.amount).toLocaleString("en-IN") +
           " <span style='color:#7e91a7;'>(" + L.vpas.length + " legs)</span></div>";
-        if (!L.live.length) {
+        if (L.inferred) {
+          html += "<div style='padding-left:14px;color:#f59e0b;'>\u25C9 INFERRED ACTIVE — est. ₹" +
+            Number(L.inferred.inr).toLocaleString("en-IN") + " upstream · " + L.inferred.events +
+            " evt · " + L.inferred.minutes_ago + " min ago <span style='color:#7e91a7;'>(alpha^h back-propagation from live cash-out)</span></div>";
+        } else if (!L.live.length) {
           html += "<div style='padding-left:14px;color:#51605c;'>awaiting live activity…</div>";
         } else {
           L.live.forEach(function (v) {

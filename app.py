@@ -374,8 +374,25 @@ class H(BaseHTTPRequestHandler):
                         live.append({"id": v, "events": d["events"], "inr": d["inr"],
                                      "minutes_ago": int((now - d["last_seen"]) / 60)})
                 layers.append(dict(L, live=live))
-            self._json({"case": CASE_TRACE, "layers": layers,
+self._json({"case": CASE_TRACE, "layers": layers,
                         "window_min": 30, "total_live_events": len(rows)})
+        elif p.path == "/case/trace":
+            now = time.time()
+            with RECENT_LOCK:
+                rows = [(t, term, amt) for (t, term, amt) in RECENT if now - t < 1800]
+            seen = {}
+            for t, term, amt in rows:
+                d = seen.setdefault(term, {"events": 0, "inr": 0, "last_seen": t})
+                d["events"] += 1; d["inr"] += amt
+                d["last_seen"] = max(d["last_seen"], t)
+            layers = []
+            for L in CASE_TRACE["layers"]:
+                live = []
+                for v in L["vpas"]:
+                    if v in seen:
+                        d = seen[v]
+                        live.append({"id": v, "events": d["events"],
+                            "inr": d["inr"], "minutes_ago": int((now - d["last_seen"]) / 60)})
         elif p.path == "/ai/briefing":
             self._json(ai_briefing())
         elif p.path == "/health":
