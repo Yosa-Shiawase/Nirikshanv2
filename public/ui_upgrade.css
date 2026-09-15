@@ -1,0 +1,63 @@
+/* NIRAKSHAN v4 — visual upgrade: bigger type, refined palette */
+:root {
+  --bg-core:#050b1a; --bg-z1:#081226; --bg-z2:#0a1730; --bg-z3:#081226;
+  --bg-card:#0e1d38; --border:#1c3357; --accent-cyan:#53c7f0;
+  --text-muted:#94a9c4; --text-dim:#5d7396;
+}
+body { font-size:13px !important;
+  background: radial-gradient(1100px 700px at 75% -10%, #0d1f3d 0%, #050b1a 55%) fixed !important; }
+
+/* chrome + nav */
+.zl { font-size:10px !important; } .zl span { font-size:9px !important; }
+.brand-titles h2 { font-size:14px !important; }
+.brand-titles h3 { font-size:10px !important; }
+.rail-btn .txt { font-size:12px !important; }
+.rail-btn .txt small { font-size:10px !important; }
+.rail-btn .ico { font-size:16px !important; }
+.rail-btn.active { background:linear-gradient(90deg,rgba(83,199,240,.16),transparent) !important; }
+.op-info b { font-size:11.5px !important; } .op-info small { font-size:9.5px !important; }
+.z2-top h2 { font-size:14px !important; } .z2-top p { font-size:10px !important; }
+.z2-sync { font-size:10px !important; }
+.z3-top { font-size:13px !important; }
+
+/* hud + labels */
+.hud-title { font-size:10px !important; }
+.leg-row { font-size:10.5px !important; }
+.map-layers label, .map-layers button { font-size:10.5px !important; }
+.lbl { font-size:10px !important; }
+.score-val { font-size:27px !important; } .score-val small { font-size:12px !important; }
+.score-badge { font-size:10px !important; }
+.pill-val { font-size:11.5px !important; }
+.pill { font-size:10px !important; }
+
+/* tables + trails */
+.dtable { font-size:11px !important; }
+.t-r1 { font-size:10.5px !important; } .t-r2 { font-size:9.5px !important; }
+.t-r3 { font-size:8.5px !important; }
+.legal-card b { font-size:10px !important; } .legal-card p { font-size:9.5px !important; }
+
+/* slider + controls */
+.hz-meta b { font-size:12px !important; } .hz-meta small { font-size:9.5px !important; }
+.tick-top { font-size:11px !important; } .tick-bot { font-size:9.5px !important; }
+.hz-conf .row { font-size:10px !important; } .hz-conf small { font-size:9px !important; }
+.cbtn { font-size:11px !important; } .act-btn { font-size:10px !important; }
+.bot-strip { font-size:9.5px !important; }
+.audit-out { font-size:10.5px !important; }
+.sensor-tag { font-size:9.5px !important; }
+
+/* map readability */
+.leaflet-tooltip { background:#0e1d38 !important; color:#e8fbff !important;
+  border:1px solid #1c3357 !important; font-size:12px !important; }
+.leaflet-control-layers, .leaflet-control-scale { font-size:12px !important; }
+
+/* feel: glow on interactive */
+.cbtn:hover, .act-btn:hover, .map-layers button:hover {
+  border-color:var(--accent-cyan) !important; color:#fff !important;
+  box-shadow:0 0 14px rgba(83,199,240,.28) !important; }
+
+/* prominent theme switcher */
+#themeCycle { position:fixed; left:10px; bottom:34px; z-index:800;
+  background:var(--bg-card); border:1px solid var(--border); color:var(--accent-cyan);
+  font-family:var(--font-mono); font-size:11px; padding:6px 10px; border-radius:3px;
+  cursor:pointer; }
+#themeCycle:hover { border-color:var(--accent-cyan); box-shadow:0 0 14px rgba(83,199,240,.3); }
