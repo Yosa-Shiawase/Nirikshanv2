@@ -241,6 +241,21 @@ def sms_process(frm, txt, tag):
         tg_push("SMS suspicious (" + str(r["risk_score"]) + ")", r["text"][:120])
     return r
 
+FALLBACK_ATMS = [
+  {"name":"SBI ATM - Connaught Place","operator":"State Bank of India","lat":28.6304,"lon":77.2177},
+  {"name":"HDFC Bank ATM - Karol Bagh","operator":"HDFC Bank","lat":28.6519,"lon":77.1909},
+  {"name":"Axis Bank ATM - Nehru Place","operator":"Axis Bank","lat":28.5521,"lon":77.2517},
+  {"name":"ICICI ATM - Nehru Place Metro","operator":"ICICI Bank","lat":28.5494,"lon":77.2519},
+  {"name":"Canara Bank ATM - Pari Chowk","operator":"Canara Bank","lat":28.4744,"lon":77.5040},
+  {"name":"SBI ATM - Bandra West","operator":"State Bank of India","lat":19.0596,"lon":72.8295},
+  {"name":"HDFC ATM - Andheri East","operator":"HDFC Bank","lat":19.1136,"lon":72.8697},
+  {"name":"ICICI ATM - Lower Parel","operator":"ICICI Bank","lat":18.9977,"lon":72.8267},
+  {"name":"SBI ATM - MG Road","operator":"State Bank of India","lat":12.9757,"lon":77.6068},
+  {"name":"Kotak ATM - Indiranagar","operator":"Kotak Mahindra Bank","lat":12.9784,"lon":77.6408},
+  {"name":"HDFC ATM - Koramangala","operator":"HDFC Bank","lat":12.9352,"lon":77.6245},
+  {"name":"Axis ATM - Hazratganj","operator":"Axis Bank","lat":26.8500,"lon":80.9470}
+]
+
 OVERPASS = ["https://overpass-api.de/api/interpreter",
             "https://overpass.kumi.systems/api/interpreter"]
 
@@ -272,7 +287,12 @@ def get_atms(node_id, lat, lon, r):
                            (node_id,time.time(),json.dumps(out))); DB.commit()
             return {"atms": out}
         except Exception as ex: last = "%s -> %s" % (ep, ex)
-    return {"atms": [], "error": last}
+    stale = None
+    with DB_LOCK:
+        stale = DB.execute("SELECT payload FROM atm_cache WHERE node_id=?",(node_id,)).fetchone()
+    if stale:
+        return {"atms": json.loads(stale[1]), "degraded": "served from older cache - Overpass busy"}
+    return {"atms": FALLBACK_ATMS, "degraded": "Overpass unavailable - showing seeded ATM set (labeled)"}
 
 def ai_briefing():
     now = time.time()
