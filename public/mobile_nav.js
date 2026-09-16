@@ -46,3 +46,31 @@
     document.addEventListener("DOMContentLoaded", build);
   else build();
 })();
+
+/* v5.1 polish: brand chip, tab attribute, fab label, theme wrap */
+(function () {
+  function go() {
+    document.body.dataset.tab = "risk-map";
+    var zt = document.querySelector(".z2-top");
+    if (zt && !zt.querySelector(".mbrand")) {
+      var b = document.createElement("div");
+      b.className = "mbrand";
+      b.innerHTML = "<img src='sih.png' alt=''><span>NIRAKSHAN</span>";
+      zt.insertBefore(b, zt.firstChild);
+    }
+    var fab = document.getElementById("caseFab");
+    if (fab) fab.textContent = "\u25C2 CASE";
+    if (typeof window.switchTab === "function") {
+      var orig = window.switchTab;
+      window.switchTab = function (k) {
+        document.body.dataset.tab = k;
+        return orig.apply(this, arguments);
+      };
+    }
+    var cob = document.getElementById("th-cobalt");
+    if (cob && cob.parentElement) cob.parentElement.style.flexWrap = "wrap";
+  }
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", go);
+  else go();
+})();
