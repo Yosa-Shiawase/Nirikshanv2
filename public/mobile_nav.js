@@ -74,3 +74,27 @@
     document.addEventListener("DOMContentLoaded", go);
   else go();
 })();
+
+/* v5.2: collapsible map layers box */
+(function () {
+  function go() {
+    var box = document.querySelector(".map-layers");
+    if (!box || document.getElementById("layersToggle")) return;
+    var btn = document.createElement("button");
+    btn.id = "layersToggle"; btn.textContent = "\u25A3 LAYERS \u25BE";
+    var body = document.createElement("div");
+    body.className = "layersBody";
+    while (box.firstChild) body.appendChild(box.firstChild);
+    box.appendChild(btn); box.appendChild(body);
+    var open = false;
+    function set() {
+      body.style.display = open ? "block" : "none";
+      btn.textContent = open ? "\u25A3 LAYERS \u25B4" : "\u25A3 LAYERS \u25BE";
+    }
+    set();
+    btn.onclick = function () { open = !open; set(); };
+  }
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", go);
+  else setTimeout(go, 400);
+})();

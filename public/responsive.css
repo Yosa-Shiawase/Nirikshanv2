@@ -140,3 +140,34 @@ body {
   .zone-3 { z-index: 960 !important; }
   .z3-actions { padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important; }
 }
+/* ==== v5.2: fixed-height lists + graph boxes ==== */
+@media (max-width: 1023px) {
+  .view-pane div[style*="overflow-y"],
+  .view-pane div[style*="overflow-y:auto"] {
+    max-height: 46vh !important;
+  }
+  #pane-alerts .dtable {
+    display: block;
+    max-height: 48vh;
+    overflow: auto;
+  }
+  #pane-entities div[style*="justify-content:center"],
+  #pane-transactions div[style*="justify-content:center"] {
+    height: 340px !important;
+    flex: none !important;
+  }
+  #pane-entities svg, #pane-transactions svg {
+    height: 320px !important;
+  }
+  .trail-feed { max-height: 40vh; overflow-y: auto; }
+}
+@media (max-width: 1023px) {
+  .map-layers { padding: 6px 8px !important; max-width: 200px; }
+  #layersToggle {
+    width: 100%; margin: 0 0 6px 0;
+    background: var(--bg-card); border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan); font-size: 10.5px;
+    font-family: var(--font-mono); padding: 5px 6px;
+    cursor: pointer; border-radius: 2px;
+  }
+}
