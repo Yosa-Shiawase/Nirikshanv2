@@ -1,0 +1,241 @@
+/* NIRAKSHAN round-2 — global styles
+   Theme tokens ported 1:1 from the legacy console (public/index.html) so the
+   five tactical palettes carry over, now driven by [data-theme] on <html>. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------- THEME TOKENS ---------------- */
+:root,
+[data-theme="cobalt"] {
+  --bg-core: #040813;
+  --bg-z1: #060c18;
+  --bg-z2: #081120;
+  --bg-z3: #060c18;
+  --bg-card: #0c182c;
+  --accent-cyan: #38bdf8;
+  --accent-blue: #1d4ed8;
+  --text-main: #f1f5f9;
+  --text-muted: #7e91a7;
+  --text-dim: #41556e;
+  --border: rgba(56, 189, 248, 0.16);
+  --glow: rgba(56, 189, 248, 0.35);
+  --danger: #f43f5e;
+  --warn: #f59e0b;
+  --ok: #22c55e;
+}
+
+[data-theme="emerald"] {
+  --bg-core: #020603;
+  --bg-z1: #030a05;
+  --bg-z2: #040d07;
+  --bg-z3: #030a05;
+  --bg-card: #081a0d;
+  --accent-cyan: #10b981;
+  --accent-blue: #059669;
+  --text-main: #ecfdf5;
+  --text-muted: #6ee7b7;
+  --text-dim: #047857;
+  --border: rgba(16, 185, 129, 0.18);
+  --glow: rgba(16, 185, 129, 0.35);
+  --danger: #fb7185;
+  --warn: #fbbf24;
+  --ok: #34d399;
+}
+
+[data-theme="amber"] {
+  --bg-core: #080501;
+  --bg-z1: #0d0903;
+  --bg-z2: #120c04;
+  --bg-z3: #0d0903;
+  --bg-card: #1c1407;
+  --accent-cyan: #f59e0b;
+  --accent-blue: #d97706;
+  --text-main: #fffbeb;
+  --text-muted: #fde68a;
+  --text-dim: #b45309;
+  --border: rgba(245, 158, 11, 0.2);
+  --glow: rgba(245, 158, 11, 0.38);
+  --danger: #fb7185;
+  --warn: #fbbf24;
+  --ok: #84cc16;
+}
+
+[data-theme="crimson"] {
+  --bg-core: #090204;
+  --bg-z1: #0f0407;
+  --bg-z2: #14050a;
+  --bg-z3: #0f0407;
+  --bg-card: #220812;
+  --accent-cyan: #fb7185;
+  --accent-blue: #e11d48;
+  --text-main: #fff1f2;
+  --text-muted: #fda4af;
+  --text-dim: #9f1239;
+  --border: rgba(251, 113, 133, 0.22);
+  --glow: rgba(251, 113, 133, 0.4);
+  --danger: #f43f5e;
+  --warn: #fb923c;
+  --ok: #4ade80;
+}
+
+[data-theme="monolith"] {
+  --bg-core: #050505;
+  --bg-z1: #0a0a0a;
+  --bg-z2: #0e0e0e;
+  --bg-z3: #0a0a0a;
+  --bg-card: #161616;
+  --accent-cyan: #e2e8f0;
+  --accent-blue: #475569;
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
+  --text-dim: #52525b;
+  --border: rgba(226, 232, 240, 0.14);
+  --glow: rgba(226, 232, 240, 0.22);
+  --danger: #f87171;
+  --warn: #facc15;
+  --ok: #4ade80;
+}
+
+/* ---------------- BASE ---------------- */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    /* fluid projectable type scale: 15px on phones -> 16px on desktop */
+    font-size: clamp(15px, 14px + 0.12vw, 16px);
+    background: var(--bg-core);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, color-mix(in srgb, var(--accent-blue) 12%, transparent), transparent),
+      var(--bg-core);
+    color: var(--text-main);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1rem;
+    line-height: 1.45;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  button {
+    font-family: inherit;
+  }
+
+  ::selection {
+    background: var(--accent-cyan);
+    color: var(--bg-core);
+  }
+
+  /* thin tactical scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-dim) transparent;
+  }
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 8px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* ---------------- HUD PRIMITIVES ---------------- */
+@layer components {
+  .hud-panel {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--bg-card) 92%, var(--accent-cyan) 8%), var(--bg-card));
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-main) 6%, transparent);
+  }
+
+  .hud-label {
+    font-size: clamp(12px, 0.62rem + 0.2vw, 13px);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .hud-btn {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--bg-z2) 88%, var(--accent-cyan) 12%);
+    color: var(--text-main);
+    padding: 0.5rem 0.85rem;
+    font-size: clamp(12px, 0.7rem, 14px);
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease, border-color 0.2s ease;
+  }
+  .hud-btn:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 16px var(--glow);
+  }
+  .hud-btn:active { transform: translateY(1px); }
+  .hud-btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+  .hud-btn:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--accent-cyan);
+    outline-offset: 2px;
+  }
+
+  .hud-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: clamp(12px, 0.65rem, 13px);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .glow-text { text-shadow: 0 0 12px var(--glow); }
+
+  .live-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--ok);
+    box-shadow: 0 0 10px var(--ok);
+    animation: pulseDot 1.6s ease-in-out infinite;
+  }
+
+  /* soft entrance used by panes + sheets */
+  .fade-in { animation: fadeIn 0.28s ease both; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
