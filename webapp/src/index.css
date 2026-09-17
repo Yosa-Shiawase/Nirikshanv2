@@ -235,6 +235,43 @@
   pointer-events: none !important;
 }
 
+/* QR camera (F3) */
+.qr-cam__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 260px;
+  background: #02060d;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.qr-cam__video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #02060d;
+}
+.qr-cam__badge {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(6, 14, 30, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--accent-cyan);
+}
+.qr-cam__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

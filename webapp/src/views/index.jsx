@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLiveFeed } from "../live/useLiveFeed";
 import { useConsole } from "../context/ConsoleContext";
 import { useTheme } from "../context/ThemeContext";
@@ -6,9 +6,12 @@ import { THEMES } from "../lib/theme";
 import api from "../lib/api";
 import Provenance from "../components/Provenance";
 import TerminalMap from "../components/TerminalMap";
+import QrCamera from "../components/QrCamera";
 import { AlertsToggle } from "../components/AlertBanner";
-import { TERMINALS, TERMINAL_META, hopDecay, rankTerminals, zoneRisk } from "../lib/hawkes";
-import { fmtINR, fmtCompactINR, riskTone, secondsAgo } from "../lib/format";
+import { NODES } from "../lib/terminals";
+import { TERMINALS, TERMINAL_META, evaluateTerminal, hopDecay, rankTerminals, zoneRisk } from "../lib/hawkes";
+import { fmtINR, fmtCompactINR, clockNow, parseClock, riskTone, secondsAgo } from "../lib/format";
+import { DEMO_URIS, makeQrDataUrl, payeeFromUri, readBlocked, writeBlocked } from "../lib/qr";
 import { exportElementToPdf } from "../lib/exportPdf";
 
 /* ---- shared bits ---------------------------------------------------------- */
@@ -742,9 +745,163 @@ function SystemView() {
 /* ---- F10 ENGINE ROOM (T4 placeholder) ------------------------------------ */
 
 function EngineRoomView() {
+  const { complaints, anomalies, smsAlerts } = useLiveFeed();
+  const { hawkes, horizonHours } = useConsole();
+  const [log, setLog] = useState([]);
+  const [, forceTick] = useState(0);
+  const seenC = useRef(new Set());
+  const lastA = useRef(null);
+  const lastS = useRef(null);
+
+  const push = useCallback((msg, color) => {
+    setLog((l) => [{ t: clockNow(), msg, color: color || "#bae6fd" }, ...l].slice(0, 40));
+  }, []);
+
+  useEffect(() => {
+    const c = complaints[0];
+    if (!c || !c.ack_no || seenC.current.has(c.ack_no)) return;
+    seenC.current.add(c.ack_no);
+    push(
+      `complaint ${String(c.ack_no).slice(-6)} @ ${c.target_terminal_id} ₹${Number(c.disputed_amount_inr).toLocaleString("en-IN")} → chain active, cash-out watch +2h`
+    );
+  }, [complaints, push]);
+
+  useEffect(() => {
+    const a = anomalies[0];
+    if (!a || a === lastA.current) return;
+    lastA.current = a;
+    push(`BURST at ${a.terminal_id} — ${a.count_30s}/30s vs baseline ${a.baseline}`, "var(--danger)");
+  }, [anomalies, push]);
+
+  useEffect(() => {
+    const s = smsAlerts[0];
+    if (!s || s === lastS.current) return;
+    lastS.current = s;
+    push(`SMS ${s.verdict} (${s.risk_score}) from ${s.sender}`, "var(--danger)");
+  }, [smsAlerts, push]);
+
+  useEffect(() => {
+    const iv = setInterval(() => forceTick((t) => t + 1), 2000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const now = Date.now();
+  const counts = {};
+  for (const c of complaints) counts[c.target_terminal_id] = (counts[c.target_terminal_id] || 0) + 1;
+  const total = complaints.length;
+  const intake = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const maxCount = intake.length ? intake[0][1] : 1;
+
+  const ranked = NODES.map((n) => ({ id: n.id, ...evaluateTerminal(n, horizonHours, hawkes) }))
+    .sort((a, b) => Number(b.probability) - Number(a.probability))
+    .slice(0, 6);
+
+  const spikes = Object.keys(counts)
+    .map((k) => {
+      const base = counts[k] / 60;
+      const cur =
+        complaints.filter((c) => c.target_terminal_id === k && now - parseClock(c.timestamp) < 300000).length / 5;
+      return { k, base, cur, hot: cur >= 5 && cur > 2.2 * base };
+    })
+    .sort((a, b) => b.cur - a.cur)
+    .slice(0, 8);
+
+  const chain = ["COMPLAINT", "L1 MULE", "L2 MULE", "ATM CASH-OUT"];
+  const horizonLabel = horizonHours === 0 ? "NOW" : `+${horizonHours}h`;
+
   return (
-    <Pane title="ENGINE ROOM" subtitle="Live prediction machinery · same Hawkes math as the map">
-      <Coming feature="F10" eta="T4" note="Complaint intake bars per terminal, λ/P ranking, chain-anatomy 0.42^n chips, spike-watch BURST pills, self-narrating decision log." />
+    <Pane
+      title="ENGINE ROOM"
+      subtitle="Live prediction machinery · same Hawkes math as the map"
+      right={<Provenance source="LIVE" />}
+    >
+      <div
+        style={{ display: "none" }}
+        data-er-intake={intake.length}
+        data-er-log={log.length}
+        data-er-spike={spikes.length}
+        data-er-burst={spikes.filter((s) => s.hot).length}
+      />
+      <div className="grid gap-3 lg:grid-cols-2">
+        <Card title="🔥 Complaint intake (60 min)" right={<span className="hud-chip">{total} total</span>}>
+          {intake.length === 0 ? (
+            <p style={{ fontSize: 12, color: "var(--text-dim)" }}>waiting for stream…</p>
+          ) : (
+            intake.map(([k, n]) => (
+              <div key={k} className="flex items-center gap-2" style={{ margin: "3px 0" }}>
+                <b style={{ width: 64, fontSize: 12 }}>{k}</b>
+                <div style={{ flex: 1, height: 8, background: "var(--bg-core)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ width: `${Math.round((n / maxCount) * 100)}%`, height: "100%", background: "var(--accent-cyan)" }} />
+                </div>
+                <b style={{ width: 24, textAlign: "right", fontSize: 12 }}>{n}</b>
+              </div>
+            ))
+          )}
+        </Card>
+
+        <Card title="🌐 Hawkes ranking — cash-out probability" right={<span className="hud-chip">P({horizonLabel})</span>}>
+          {ranked.map((n, ix) => {
+            const col = riskTone(n.score);
+            return (
+              <div key={n.id} className="flex items-center gap-2" style={{ margin: "3px 0" }}>
+                <b style={{ color: col, width: 28, fontSize: 12 }}>#{ix + 1}</b>
+                <b style={{ width: 62, fontSize: 12 }}>{n.id}</b>
+                <span style={{ color: "var(--text-muted)", fontSize: 12 }}>
+                  λ={n.intensity} · P={Math.round(Number(n.probability) * 100)}%
+                </span>
+                <b style={{ marginLeft: "auto", color: col, fontSize: 12 }}>{n.score}</b>
+              </div>
+            );
+          })}
+        </Card>
+      </div>
+
+      <Card title="⛓ Chain anatomy — complaint to cash-out">
+        <div className="flex flex-wrap items-center gap-2">
+          {chain.map((x, j) => (
+            <span key={x} className="inline-flex items-center gap-2">
+              <span className="hud-chip" title={`α^${j} = ${hopDecay(j, hawkes.alpha).toFixed(4)}`}>
+                {x}{j ? ` ×0.42^${j}` : ""}
+              </span>
+              {j < chain.length - 1 && <span style={{ color: "var(--accent-cyan)" }}>→</span>}
+            </span>
+          ))}
+        </div>
+      </Card>
+
+      <div className="grid gap-3 lg:grid-cols-2">
+        <Card title="📈 Spike watch (current vs baseline)">
+          {spikes.length === 0 ? (
+            <p style={{ fontSize: 12, color: "var(--text-dim)" }}>baselines forming…</p>
+          ) : (
+            <div className="flex flex-wrap gap-1">
+              {spikes.map((s) => (
+                <span
+                  key={s.k}
+                  className="hud-chip"
+                  style={s.hot ? { borderColor: "var(--danger)", color: "#fca5a5", margin: 2 } : { margin: 2 }}
+                >
+                  {s.k} · now {s.cur.toFixed(1)}/min vs base {s.base.toFixed(2)}{s.hot ? " ⚠ BURST" : ""}
+                </span>
+              ))}
+            </div>
+          )}
+        </Card>
+
+        <Card title="🧾 Decision log" right={<span className="hud-chip">{log.length} entries</span>}>
+          <div style={{ maxHeight: 200, overflow: "auto" }}>
+            {log.length === 0 ? (
+              <p style={{ fontSize: 12, color: "var(--text-dim)" }}>waiting for stream…</p>
+            ) : (
+              log.map((l, i) => (
+                <div key={i} style={{ borderBottom: "1px dashed var(--border)", padding: "2px 0", color: l.color, fontSize: 12 }}>
+                  [{l.t}] {l.msg}
+                </div>
+              ))
+            )}
+          </div>
+        </Card>
+      </div>
     </Pane>
   );
 }
@@ -752,9 +909,237 @@ function EngineRoomView() {
 /* ---- F3 QR (T4 placeholder) ---------------------------------------------- */
 
 function QrView() {
+  const [uri, setUri] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+  const [history, setHistory] = useState([]);
+  const [blocked, setBlocked] = useState(() => readBlocked());
+  const [qrs, setQrs] = useState({});
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const out = {};
+      for (const k of Object.keys(DEMO_URIS)) {
+        try {
+          out[k] = await makeQrDataUrl(DEMO_URIS[k].uri);
+        } catch (err) {
+          /* ignore */
+        }
+      }
+      if (alive) setQrs(out);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const analyse = useCallback(
+    async (value) => {
+      const v = String(value ?? uri).trim();
+      if (!v) return;
+      setBusy(true);
+      setError("");
+      try {
+        const r = await api.qrVerify(v);
+        setResult(r);
+        setHistory((h) => [{ uri: v, verdict: r.verdict, score: r.risk_score, ts: new Date().toLocaleTimeString() }, ...h].slice(0, 12));
+      } catch (err) {
+        setError(String(err.message || err));
+      } finally {
+        setBusy(false);
+      }
+    },
+    [uri]
+  );
+
+  const payee = result ? result.deep?.upi_id || payeeFromUri(uri) : payeeFromUri(uri);
+  const isBlocked = !!payee && blocked.includes(payee);
+  const toggleBlock = useCallback(() => {
+    if (!payee) return;
+    const next = isBlocked ? blocked.filter((p) => p !== payee) : [...blocked, payee];
+    setBlocked(next);
+    writeBlocked(next);
+  }, [payee, isBlocked, blocked]);
+
+  const d = result?.deep || {};
+
   return (
-    <Pane title="QR FORENSICS" subtitle="BarcodeDetector + ZXing fallback · paste-URI analysis · payee block">
-      <Coming feature="F3" eta="T4" note="Camera scan (torch/zoom), FRAUD/LEGIT demo QR generators, FORENSIC BREAKDOWN table, scan history with RE-RUN, BLOCK PAYEE." />
+    <Pane
+      title="QR FORENSICS"
+      subtitle="BarcodeDetector + ZXing fallback · paste-URI analysis · payee block"
+      right={<span className="hud-chip">POST /qr/verify</span>}
+    >
+      <div className="grid gap-3 lg:grid-cols-2">
+        <Card title="Sensor" right={<Provenance source="LIVE" />}>
+          <QrCamera
+            onDetected={(t) => {
+              setUri(t);
+              analyse(t);
+            }}
+          />
+        </Card>
+
+        <Card title="Analyse URI">
+          <textarea
+            className="w-full rounded-lg p-2"
+            rows={3}
+            style={{ background: "var(--bg-z2)", border: "1px solid var(--border)", color: "var(--text-main)", fontSize: 13, resize: "vertical", wordBreak: "break-all" }}
+            placeholder="upi://pay?pa=merchant@bank&am=250&tn=Order&tr=..."
+            value={uri}
+            onChange={(e) => setUri(e.target.value)}
+            aria-label="UPI URI"
+          />
+          <div className="flex flex-wrap gap-2 mt-2">
+            <button type="button" className="hud-btn" disabled={busy} onClick={() => analyse()} style={{ minHeight: 44 }}>
+              {busy ? "ANALYSING…" : "ANALYSE ▶"}
+            </button>
+            <button
+              type="button"
+              className="hud-btn"
+              style={{ minHeight: 44 }}
+              onClick={() => {
+                setUri("");
+                setResult(null);
+                setError("");
+              }}
+            >
+              CLEAR
+            </button>
+          </div>
+          {error && <p style={{ fontSize: 12, color: "var(--danger)", marginTop: 8 }}>Error: {error}</p>}
+        </Card>
+      </div>
+
+      {result && (
+        <Card title="Verdict" right={<Provenance source="LIVE" />}>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="hud-label" style={{ color: riskTone(result.risk_score) }}>{result.verdict}</span>
+            <span className="hud-chip" style={{ borderColor: riskTone(result.risk_score), color: riskTone(result.risk_score) }}>
+              risk {result.risk_score}/100
+            </span>
+            {(result.matched_rules || []).map((r) => (
+              <span key={r} className="hud-chip">{r}</span>
+            ))}
+          </div>
+          {(result.reasons || []).length > 0 && (
+            <ul style={{ marginTop: 8 }}>
+              {result.reasons.map((x, i) => (
+                <li key={i} style={{ fontSize: 12, color: "var(--text-muted)" }}>• {x}</li>
+              ))}
+            </ul>
+          )}
+          <div className="hud-label" style={{ marginTop: 10, marginBottom: 4 }}>Forensic breakdown</div>
+          <table className="w-full" style={{ fontSize: 12 }}>
+            <tbody>
+              {[
+                ["Payee VPA", d.upi_id || "—"],
+                ["PSP handle", d.psp_handle || "—"],
+                ["Bank", d.bank || "—"],
+                ["Note", d.note_text || "—"],
+                ["Txn ref", d.has_ref ? "present" : "missing"],
+                ["Params found", (d.params_found || []).join(", ") || "—"],
+                ["Confidence", d.confidence != null ? `${d.confidence}%` : "—"],
+              ].map(([k, v]) => (
+                <tr key={k} style={{ borderTop: "1px solid var(--border)" }}>
+                  <td style={{ padding: "4px 0", color: "var(--text-muted)", width: 140 }}>{k}</td>
+                  <td style={{ padding: "4px 0", wordBreak: "break-all" }}>{v}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button
+            type="button"
+            className="hud-btn mt-3"
+            onClick={toggleBlock}
+            disabled={!payee}
+            style={isBlocked ? { borderColor: "var(--danger)", color: "var(--danger)", minHeight: 44 } : { minHeight: 44 }}
+          >
+            {isBlocked ? `UNBLOCK PAYEE (${payee})` : `BLOCK PAYEE (${payee || "—"})`}
+          </button>
+        </Card>
+      )}
+
+      <div className="grid gap-3 lg:grid-cols-2">
+        <Card title="Demo generators">
+          {Object.entries(DEMO_URIS).map(([k, v]) => (
+            <div key={k} className="flex items-center gap-3" style={{ marginBottom: 8 }}>
+              {qrs[k] ? (
+                <img src={qrs[k]} alt={`${v.label} QR`} width={92} height={92} style={{ borderRadius: 6 }} />
+              ) : (
+                <div style={{ width: 92, height: 92, background: "var(--bg-z2)", borderRadius: 6 }} />
+              )}
+              <div className="min-w-0">
+                <div className="hud-label">{v.label}</div>
+                <div style={{ fontSize: 11, color: "var(--text-dim)", wordBreak: "break-all" }}>{v.uri}</div>
+                <button
+                  type="button"
+                  className="hud-btn mt-1"
+                  style={{ minHeight: 40 }}
+                  onClick={() => {
+                    setUri(v.uri);
+                    analyse(v.uri);
+                  }}
+                >
+                  LOAD &amp; ANALYSE
+                </button>
+              </div>
+            </div>
+          ))}
+        </Card>
+
+        <Card title="Scan history" right={<span className="hud-chip">{history.length}</span>}>
+          {history.length === 0 ? (
+            <p style={{ fontSize: 12, color: "var(--text-dim)" }}>no scans yet</p>
+          ) : (
+            <ul className="flex flex-col gap-1">
+              {history.map((h, i) => (
+                <li key={i} className="flex items-center gap-2" style={{ minHeight: 40 }}>
+                  <span style={{ fontSize: 11, color: "var(--text-dim)" }}>{h.ts}</span>
+                  <span style={{ fontSize: 11, color: riskTone(h.score) }}>{h.verdict}</span>
+                  <span className="truncate" style={{ fontSize: 11, color: "var(--text-muted)", flex: 1 }}>{h.uri}</span>
+                  <button
+                    type="button"
+                    className="hud-btn"
+                    style={{ minHeight: 32 }}
+                    onClick={() => {
+                      setUri(h.uri);
+                      analyse(h.uri);
+                    }}
+                  >
+                    RE-RUN
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="hud-label" style={{ marginTop: 10, marginBottom: 4 }}>Blocked payees (localStorage)</div>
+          {blocked.length === 0 ? (
+            <p style={{ fontSize: 12, color: "var(--text-dim)" }}>none blocked</p>
+          ) : (
+            <ul className="flex flex-col gap-1">
+              {blocked.map((p) => (
+                <li key={p} className="flex items-center gap-2">
+                  <span style={{ fontSize: 12, color: "var(--danger)", flex: 1 }}>{p}</span>
+                  <button
+                    type="button"
+                    className="hud-btn"
+                    style={{ minHeight: 30 }}
+                    onClick={() => {
+                      const n = blocked.filter((x) => x !== p);
+                      setBlocked(n);
+                      writeBlocked(n);
+                    }}
+                  >
+                    unblock
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      </div>
     </Pane>
   );
 }

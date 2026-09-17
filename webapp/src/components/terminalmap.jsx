@@ -16,6 +16,7 @@ import {
   TERRAIN_URL,
 } from "../lib/terminals";
 import { evaluateTerminal, riskColor } from "../lib/hawkes";
+import { clockNow } from "../lib/format";
 const HORIZONS = [
   { label: "NOW", hours: 0 },
   { label: "+2h", hours: 2 },
@@ -57,7 +58,7 @@ export default function TerminalMap() {
   }, []);
 
   const logLine = useCallback((msg, color) => {
-    const t = new Date().toLocaleTimeString();
+    const t = clockNow();
     setChaseLog((l) => [{ t, msg, color: color || "#bae6fd" }, ...l]);
   }, []);
 

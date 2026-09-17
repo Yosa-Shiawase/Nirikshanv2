@@ -1,7 +1,6 @@
 // Small formatting helpers shared across panes.
 
-export function fmtINR(n) {
-  const v = Number(n);
+export function fmtINR(n) {  const v = Number(n);
   if (!isFinite(v)) return "—";
   return "₹" + v.toLocaleString("en-IN");
 }
@@ -40,4 +39,11 @@ export function riskTone(score) {
   if (s >= 45) return "var(--danger)";
   if (s >= 20) return "var(--warn)";
   return "var(--ok)";
+}
+
+/** 24h HH:MM:SS, matching the header clock (used by the chase + decision logs). */
+export function clockNow(d = new Date()) {
+  return [d.getHours(), d.getMinutes(), d.getSeconds()]
+    .map((n) => String(n).padStart(2, "0"))
+    .join(":");
 }
