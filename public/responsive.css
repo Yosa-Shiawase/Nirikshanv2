@@ -109,7 +109,7 @@ body {
     padding: 4px 8px; font-size: 10px; z-index: 970; }
 
   #caseFab { width: auto; height: auto; border-radius: 10px 0 0 10px;
-    right: 0; top: 55%; bottom: auto; transform: translateY(-50%);
+    right: 0; top: 78%; bottom: auto; transform: translateY(-50%);
     border-right: none; writing-mode: vertical-rl;
     padding: 12px 6px; font-size: 10.5px; letter-spacing: .22em; }
 
@@ -169,5 +169,26 @@ body {
     color: var(--accent-cyan); font-size: 10.5px;
     font-family: var(--font-mono); padding: 5px 6px;
     cursor: pointer; border-radius: 2px;
+  }
+}
+/* v5.3: entities header stacks vertically on mobile */
+@media (max-width: 1023px) {
+  #pane-entities > div:first-child,
+  #pane-transactions > div:first-child,
+  #pane-reports > div:first-child,
+  #pane-system > div:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  #pane-entities h3, #pane-transactions h3,
+  #pane-reports h3, #pane-system h3 {
+    font-size: 12.5px !important;
+  }
+  #entitySearchInput { width: 100% !important; }
+  #pane-entities > div:first-child > div:last-child,
+  #pane-transactions > div:first-child > div:last-child,
+  #pane-reports > div:first-child > div:last-child {
+    flex-wrap: wrap !important;
   }
 }

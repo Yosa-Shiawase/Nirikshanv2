@@ -85,6 +85,15 @@ BAD_WORDS = ["refund","cashback","kyc","lottery","bonus","verify","wallet update
              "tax","customs","customer care","manager","official","insurance lapsed"]
 WATCHLIST = {"fraud@upi","refund-nodal09@icici","kyc-update2024@ybl","win-kyc99@paytm"}
 
+PSP_NAMES = {"okaxis":"Axis Bank","okhdfcbank":"HDFC Bank","okicici":"ICICI Bank",
+  "oksbi":"State Bank of India","okbizaxis":"Axis Bank","paytm":"Paytm Payments Bank",
+  "ybl":"Yes Bank","ibl":"IDFC First Bank","apl":"Amazon Pay (Axis)",
+  "axisbank":"Axis Bank","icici":"ICICI Bank","sbi":"SBI","hdfcbank":"HDFC Bank",
+  "kotak":"Kotak Mahindra Bank","idfcbank":"IDFC First Bank","pnb":"Punjab National Bank",
+  "barodampay":"Bank of Baroda","cnrb":"Canara Bank","unionbankofindia":"Union Bank",
+  "au":"AU Small Finance Bank","fam":"FamPay","airtel":"Airtel Payments Bank",
+  "jupiter":"Jupiter","federal":"Federal Bank","yesbank":"Yes Bank"}
+
 def verify_qr(uri):
     try: q = urllib.parse.parse_qs(uri.split("?",1)[1])
     except Exception: return {"verdict":"INVALID_URI","risk_score":0,
@@ -111,8 +120,15 @@ def verify_qr(uri):
     if not q.get("tr"): reasons.append("No transaction reference (tr) — traceability gap")
     score = min(99, score)
     verdict = "FLAGGED_FRAUD_RISK" if score>=45 else ("SAFE_WITH_CAUTION" if score>=20 else "LIKELY_LEGIT")
+    upi_id = pa
+    bank = PSP_NAMES.get(handle, "Unknown / non-PSP")
+    conf = min(99, max(5, 100 - score)) if score < 45 else max(60, score)
     return {"verdict":verdict,"risk_score":score,"payee":pn,"vpa":pa,
-            "amount":am or "0","matched_rules":rules,"reasons":reasons}
+            "amount":am or "0","matched_rules":rules,"reasons":reasons,
+            "deep": {"upi_id": upi_id, "psp_handle": handle or "none",
+                     "bank": bank, "confidence": conf,
+                     "note_text": tn or "-", "has_ref": bool(q.get("tr")),
+                     "params_found": sorted(q.keys())}}
 
 SMS_RULES = [
     (25, ["kyc","e-kyc","re-kyc","account blocked","account suspended",

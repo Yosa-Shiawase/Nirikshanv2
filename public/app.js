@@ -393,15 +393,29 @@ async function runQRAnalysis() {
     });
     const d = await res.json();
     out.innerHTML = `
-      <div style="color:${d.verdict === "FLAGGED_FRAUD_RISK" ? "#ef4444" : "#10b981"}; font-weight:bold; margin-bottom:4px;">
+      <div style="color:${d.verdict === "FLAGGED_FRAUD_RISK" ? "#ef4444" : "#10b981"}; font-weight:bold;">
         VERDICT: ${d.verdict}
       </div>
       <div>CONFIDENCE: <strong>${d.risk_score}</strong></div>
       <div style="margin:2px 0;">PAYEE: ${d.payee} | VPA: ${d.vpa}</div>
       <div style="color:#38bdf8;">OUTBOUND AMOUNT: ₹${d.amount}</div>
-      <ul style="margin:6px 0 0 14px; color:${d.verdict === "FLAGGED_FRAUD_RISK" ? "#fca5a5" : "#86efac"}; font-size:8px;">
-        ${d.reasons.map(r => `<li>${r}</li>`).join("")}
+      <div class="hud-title" style="margin-top:8px;">FORENSIC BREAKDOWN</div>
+      <table style="width:100%;font-size:8.5px;border-collapse:collapse;margin:4px 0;">
+        <tr><td style="color:#7e91a7;padding:2px 0;">PSP / BANK</td><td style="color:#fff;text-align:right;">${(d.deep && d.deep.bank) || "n/a"}</td></tr>
+        <tr><td style="color:#7e91a7;">PSP HANDLE</td><td style="color:#fff;text-align:right;">@${(d.deep && d.deep.psp_handle) || "n/a"}</td></tr>
+        <tr><td style="color:#7e91a7;">NOTE / REMARK</td><td style="color:#fff;text-align:right;">${(d.deep && d.deep.note_text) || "-"}</td></tr>
+        <tr><td style="color:#7e91a7;">TXN REFERENCE</td><td style="color:#fff;text-align:right;">${(d.deep && d.deep.has_ref) ? "present" : "MISSING"}</td></tr>
+        <tr><td style="color:#7e91a7;">PARAMS</td><td style="color:#fff;text-align:right;">${(d.deep && d.deep.params_found) ? d.deep.params_found.join(", ") : "-"}</td></tr>
+      </table>
+      <ul style="margin:6px 0 0 14px; color:${d.verdict === "FLAGGED_FRAUD_RISK" ? "#fca5a5" : "#86efac"};">
+        ${d.reasons.map(function (r) { return "<li>" + r + "</li>"; }).join("")}
       </ul>
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <button id="blockPayeeBtn" class="cbtn" style="border-color:#ef4444;color:#ef4444;"
+          onclick="window.__qrBlockPayee('${d.vpa}')">BLOCK PAYEE</button>
+      </div>
+      <div class="hud-title" style="margin-top:10px;">SCAN HISTORY (this device)</div>
+      <div id="qrHistoryBox" class="font-mono" style="font-size:8.5px;"></div>
     `;
   } catch (err) {
     out.innerHTML = "<span style=\"color:#ef4444\">Backend API unreachable.</span>";

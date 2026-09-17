@@ -322,9 +322,40 @@
       }).then(function (r) { return r.json(); }).then(function (d) {
         b.disabled = false; b.textContent = "⚠ ANALYZE SMS";
         var col = d.risk_score >= 45 ? "#ef4444" : (d.risk_score >= 20 ? "#eab308" : "#10b981");
+
+  /* ==== QR history + block payee ==== */
+  var qrHistory = [];
+  try { qrHistory = JSON.parse(localStorage.getItem("qr_history") || "[]"); } catch (e) {}
+  var blocked = [];
+  try { blocked = JSON.parse(localStorage.getItem("blocked_payees") || "[]"); } catch (e) {}
+  function renderHist() {
+    var h = document.getElementById("qrHistoryBox"); if (!h) return;
+    if (!qrHistory.length) { h.innerHTML = "<span class='lbl'>No scans yet this device.</span>"; return; }
+    h.innerHTML = qrHistory.slice(0, 8).map(function (x) {
+      var col = x.score >= 45 ? "#ef4444" : (x.score >= 20 ? "#eab308" : "#10b981");
+      return "<div style='display:flex;gap:6px;align-items:center;margin:3px 0;'>" +
+        "<span style='color:" + col + ";font-weight:bold;min-width:110px;'>" + x.verdict.replace(/_/g, " ") + " · " + x.score + "</span>" +
+        "<span style='flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>" + x.vpa + "</span>" +
+        "<button class='cbtn' style='padding:1px 6px;font-size:8px;' onclick='document.getElementById(\'qrUri\').value=" +
+        JSON.stringify(x.uri).replace(/"/g, "&quot;") + ";if(typeof runQRAnalysis===\'function\')runQRAnalysis();'>RE-RUN</button></div>";
+    }).join("");
+  }
+  window.__qrBlockPayee = function (vpa) {
+    if (blocked.indexOf(vpa) < 0) blocked.unshift(vpa);
+    try { localStorage.setItem("blocked_payees", JSON.stringify(blocked.slice(0, 50))); } catch (e) {}
+    var b = document.getElementById("blockPayeeBtn");
+    if (b) { b.textContent = "BLOCKED \u2714"; b.disabled = true; }
+    alert("Payee " + vpa + " added to local blocklist.\nFuture scans of this VPA will surface it as BLOCKED.");
+  };
+
         out.innerHTML = "<span style='color:" + col + ";font-weight:bold;'>" + d.verdict +
           " · risk " + d.risk_score + "</span>" +
           (d.matched && d.matched.length ? " — rules: " + d.matched.join(", ") : " — no rule hits");
+      var hist = [];
+      try { hist = JSON.parse(localStorage.getItem("qr_history") || "[]"); } catch (e2) {}
+      hist.unshift({ verdict: d.verdict, score: d.risk_score, vpa: d.vpa, uri: d.uri || "" });
+      try { localStorage.setItem("qr_history", JSON.stringify(hist.slice(0, 20))); } catch (e3) {}
+      renderHist();
       }).catch(function (e) {
         b.disabled = false; b.textContent = "⚠ ANALYZE SMS";
         out.textContent = "backend unreachable: " + e.message;
