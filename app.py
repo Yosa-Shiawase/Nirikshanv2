@@ -52,11 +52,13 @@ def record_complaint(c):
         while RECENT and now - RECENT[0][0] > 3600: RECENT.pop(0)
         c30 = sum(1 for t,term,_ in RECENT if t > now-30 and term==c["target_terminal_id"])
     st = ANOM.setdefault(c["target_terminal_id"], {"ewma":1.0,"last":0})
-    st["ewma"] = 0.8*st["ewma"] + 0.2*min(c30,20)
-    if c30 >= 5 and c30 > st["ewma"]*2.2 and now - st["last"] > 60:
+    baseline = st["ewma"]                    # PRE-update baseline
+    fired = (c30 >= 5 and c30 > baseline*2.2 and now - st["last"] > 60)
+    st["ewma"] = 0.8*baseline + 0.2*min(c30,20)   # update AFTER the test
+    if fired:
         st["last"] = now
         broadcast({"type":"anomaly","terminal_id":c["target_terminal_id"],
-                   "count_30s":c30,"baseline":round(st["ewma"],1),
+                   "count_30s":c30,"baseline":round(baseline,1),
                    "note":"EWMA burst detector (threshold 2.2x baseline)"})
 
 def emit(term=None, source="SIM"):
