@@ -1,0 +1,12 @@
+import { chromium } from "playwright-core";
+const browser = await chromium.launch({ channel: "chrome", headless: true });
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+const page = await ctx.newPage();
+await page.goto("http://localhost:5173/", { waitUntil: "domcontentloaded" });
+await page.waitForSelector('[data-nir-boot="done"]', { timeout: 25000 }).catch(() => {});
+await page.locator('nav[aria-label="Primary"] button', { hasText: "ENTITIES" }).first().click();
+await page.waitForTimeout(2500);
+await page.screenshot({ path: "shots/t5-entities-fix.png" });
+const box = await page.locator("svg[aria-label='Suspect cluster graph']").first().boundingBox();
+console.log(JSON.stringify({ svgBox: box }));
+await browser.close();

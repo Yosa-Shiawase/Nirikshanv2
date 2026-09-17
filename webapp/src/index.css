@@ -272,6 +272,45 @@
   margin-top: 8px;
 }
 
+/* ---------------- T5 polish ---------------- */
+.hud-panel {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hud-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 18px;
+  text-align: center;
+  color: var(--text-dim);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  font-size: 12px;
+}
+.hud-empty__icon {
+  font-size: 20px;
+  color: var(--accent-cyan);
+  opacity: 0.7;
+}
+
+/* long ids / VPAs must never blow out a table cell */
+table td,
+table th {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 420px) {
+  .m-hide {
+    display: none !important;
+  }
+  .tm-legend {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

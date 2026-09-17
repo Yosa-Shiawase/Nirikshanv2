@@ -19,7 +19,7 @@ import { exportElementToPdf } from "../lib/exportPdf";
 function Pane({ title, subtitle, children, right }) {
   return (
     <section className="fade-in flex flex-col gap-3 h-full">
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg md:text-xl font-semibold glow-text" style={{ color: "var(--accent-cyan)" }}>
             {title}
@@ -232,7 +232,7 @@ function EntitiesView() {
     >
       <div className="grid gap-3 lg:grid-cols-[1.4fr_1fr]">
         <Card title="Suspect Cluster (live)" right={<Provenance source="LIVE" />}>
-          <ClusterGraph nodes={filtered.slice(0, 9)} center={selectedNode} onPick={(vpa) => toggleWatch(vpa)} />
+          <ClusterGraph nodes={filtered.slice(0, 9)} center={selectedNode} onPick={(vpa) => toggleWatch(vpa)} isWatched={isWatched} />
         </Card>
 
         <Card title="Peripherals">
@@ -272,36 +272,134 @@ function EntitiesView() {
           </div>
         </Card>
       </div>
-      <Coming feature="F5+ (graph layout)" eta="T5" note="Force-directed layout + hop-aware edge weighting lands in polish." />
     </Pane>
   );
 }
 
-function ClusterGraph({ nodes, center, onPick }) {
-  const W = 640, H = 320;
-  const cx = W / 2, cy = H / 2, R = 110;
+// Force-directed cluster: repulsion between suspects + spring to the hub.
+// Labels get a dark halo (paint-order stroke) so they stay legible over lines.
+function ClusterGraph({ nodes, center, onPick, isWatched }) {
+  const W = 560;
+  const H = 380;
+  const pts = useMemo(() => {
+    const cx = W / 2;
+    const cy = H / 2;
+    const list = nodes.map((n, i) => {
+      const a = (i / Math.max(1, nodes.length)) * Math.PI * 2;
+      return { n, x: cx + Math.cos(a) * 120, y: cy + Math.sin(a) * 120 };
+    });
+    // Fruchterman-Reingold: repulsion between all pairs + spring to the hub,
+    // displacement limited by a cooling temperature.
+    const k = Math.sqrt((W * H) / Math.max(1, list.length));
+    let temp = W / 8;
+    for (let it = 0; it < 320; it++) {
+      const disp = list.map(() => ({ x: 0, y: 0 }));
+      for (let i = 0; i < list.length; i++) {
+        for (let j = i + 1; j < list.length; j++) {
+          const dx = list[i].x - list[j].x;
+          const dy = list[i].y - list[j].y;
+          const d = Math.max(0.1, Math.hypot(dx, dy));
+          const f = (k * k) / d;
+          const ux = dx / d;
+          const uy = dy / d;
+          disp[i].x += ux * f;
+          disp[i].y += uy * f;
+          disp[j].x -= ux * f;
+          disp[j].y -= uy * f;
+        }
+      }
+      for (let i = 0; i < list.length; i++) {
+        const dx = list[i].x - cx;
+        const dy = list[i].y - cy;
+        const d = Math.max(0.1, Math.hypot(dx, dy));
+        const f = (d * d) / k;
+        disp[i].x -= (dx / d) * f;
+        disp[i].y -= (dy / d) * f;
+        const dl = Math.max(0.01, Math.hypot(disp[i].x, disp[i].y));
+        const lim = Math.min(dl, temp);
+        list[i].x = Math.max(58, Math.min(W - 58, list[i].x + (disp[i].x / dl) * lim));
+        list[i].y = Math.max(30, Math.min(H - 30, list[i].y + (disp[i].y / dl) * lim));
+      }
+      temp *= 0.96;
+    }
+    // normalise to a fixed ring so labels always fit inside the viewBox
+    const R = 112;
+    let maxD = 1;
+    for (const p of list) maxD = Math.max(maxD, Math.hypot(p.x - cx, p.y - cy));
+    const scale = Math.min(1, R / maxD);
+    for (const p of list) {
+      p.x = cx + (p.x - cx) * scale;
+      p.y = cy + (p.y - cy) * scale;
+    }
+    return list;
+  }, [nodes]);
+
   if (nodes.length === 0) {
-    return <p style={{ fontSize: 12, color: "var(--text-dim)" }}>no entity cluster yet — waiting for stream…</p>;
+    return (
+      <div className="hud-empty" style={{ minHeight: 220 }}>
+        <div className="hud-empty__icon">⬡</div>
+        <p>No entity cluster yet — waiting for the stream.</p>
+      </div>
+    );
   }
+
+  const cx = W / 2;
+  const cy = H / 2;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" style={{ maxHeight: 300 }} role="img" aria-label="Suspect cluster graph">
-      {nodes.map((n, i) => {
-        const a = (i / nodes.length) * Math.PI * 2 - Math.PI / 2;
-        const x = cx + R * Math.cos(a);
-        const y = cy + R * Math.sin(a);
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ height: "auto", maxHeight: 380 }} role="img" aria-label="Suspect cluster graph">
+      {pts.map((p) => (
+        <line key={`l-${p.n.vpa}`} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="var(--border)" strokeWidth="1" />
+      ))}
+      {pts.map((p) => {
+        const watched = isWatched && isWatched(p.n.vpa);
         return (
-          <g key={n.vpa}>
-            <line x1={cx} y1={cy} x2={x} y2={y} stroke="var(--border)" strokeWidth="1.5" />
-            <circle cx={x} cy={y} r={8 + Math.min(10, n.n)} fill="color-mix(in srgb, var(--danger) 55%, var(--bg-card))" stroke="var(--danger)" />
-            <text x={x} y={y - 18} fill="var(--text-muted)" fontSize="10" textAnchor="middle">{n.vpa.length > 16 ? n.vpa.slice(0, 15) + "…" : n.vpa}</text>
-            <circle cx={x} cy={y} r={16} fill="transparent" style={{ cursor: "pointer" }} onClick={() => onPick(n.vpa)}>
-              <title>{n.vpa} · {n.n} events</title>
-            </circle>
+          <g key={p.n.vpa} onClick={() => onPick(p.n.vpa)} style={{ cursor: "pointer" }}>
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r={7 + Math.min(9, p.n.n)}
+              fill="color-mix(in srgb, var(--danger) 55%, var(--bg-card))"
+              stroke={watched ? "#fbbf24" : "var(--danger)"}
+              strokeWidth={watched ? 2.5 : 1.8}
+            />
+            {watched && (
+              <text x={p.x} y={p.y - 14} fontSize="11" textAnchor="middle" fill="#fbbf24">★</text>
+            )}
+            {(() => {
+              const dist = Math.max(1, Math.hypot(p.x - cx, p.y - cy));
+              const label = p.n.vpa.length > 24 ? p.n.vpa.slice(0, 23) + "…" : p.n.vpa;
+              const est = label.length * 8.2;
+              let anchor = p.x >= cx ? "start" : "end";
+              let lx = p.x + ((p.x - cx) / dist) * 18;
+              if (anchor === "start" && lx + est > W - 4) {
+                anchor = "end";
+                lx = p.x - 14;
+              } else if (anchor === "end" && lx - est < 4) {
+                anchor = "start";
+                lx = p.x + 14;
+              }
+              const ly = p.y + ((p.y - cy) / dist) * 18 + 5;
+              return (
+                <text
+                  x={lx}
+                  y={ly}
+                  fontSize="16"
+                  textAnchor={anchor}
+                  fill="var(--text-main)"
+                  style={{ paintOrder: "stroke", stroke: "#02060d", strokeWidth: 4 }}
+                >
+                  {label}
+                </text>
+              );
+            })()}
+            <title>{`${p.n.vpa} · ${p.n.n} events`}</title>
           </g>
         );
       })}
-      <circle cx={cx} cy={cy} r={16} fill="color-mix(in srgb, var(--accent-cyan) 40%, var(--bg-card))" stroke="var(--accent-cyan)" />
-      <text x={cx} y={cy + 34} fill="var(--accent-cyan)" fontSize="12" textAnchor="middle">{center}</text>
+      <circle cx={cx} cy={cy} r={16} fill="color-mix(in srgb, var(--accent-cyan) 40%, var(--bg-card))" stroke="var(--accent-cyan)" strokeWidth="2" />
+      <text x={cx} y={cy + 38} fontSize="15" textAnchor="middle" fill="var(--accent-cyan)" style={{ paintOrder: "stroke", stroke: "#02060d", strokeWidth: 3 }}>
+        {center}
+      </text>
     </svg>
   );
 }
@@ -352,15 +450,31 @@ function TransactionsView() {
               <Stat label="Live events (30m)" value={data.total_live_events ?? 0} tone="var(--ok)" />
             </div>
 
-            <div className="overflow-x-auto">
-              <div className="flex items-stretch gap-2 min-w-[640px]">
-                {(data.layers || []).map((L) => (
-                  <div key={L.hop} className="flex-1 rounded-lg p-2" style={{ background: "var(--bg-z2)", border: "1px solid var(--border)" }}>
+            <div className="grid gap-2 lg:grid-cols-4">
+                {(data.layers || []).map((L, li, arr) => (
+                  <div key={L.hop} className="relative rounded-lg p-2 flex flex-col" style={{ background: "var(--bg-z2)", border: "1px solid var(--border)", minHeight: 200 }}>
+                    {li < arr.length - 1 && (
+                      <span
+                        aria-hidden="true"
+                        className="hidden lg:block"
+                        style={{
+                          position: "absolute",
+                          right: -14,
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          color: "var(--accent-cyan)",
+                          fontSize: 16,
+                          zIndex: 2,
+                        }}
+                      >
+                        →
+                      </span>
+                    )}
                     <div className="hud-label">hop {L.hop} · {L.label}</div>
                     <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6 }}>
                       {fmtCompactINR(L.amount)} · decay {hopDecay(L.hop).toFixed(3)}
                     </div>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1" style={{ flex: 1 }}>
                       {(L.vpas || []).map((v) => {
                         const live = (L.live || []).find((x) => x.id === v);
                         const isLive = !!live;
@@ -389,7 +503,6 @@ function TransactionsView() {
                     </div>
                   </div>
                 ))}
-              </div>
             </div>
           </>
         )}

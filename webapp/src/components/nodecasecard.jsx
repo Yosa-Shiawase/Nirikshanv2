@@ -52,7 +52,7 @@ export default function NodeCaseCard() {
         {stats.last && <Provenance source={stats.last.source} />}
       </div>
 
-      <div className="flex items-baseline justify-between">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div>
           <div className="text-lg font-semibold glow-text" style={{ color: "var(--accent-cyan)" }}>
             {selectedNode}
