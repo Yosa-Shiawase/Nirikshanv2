@@ -1,10 +1,8 @@
 import { useLiveFeed } from "../live/useLiveFeed";
-
-function fmtINR(n) {
-  const v = Number(n);
-  if (!isFinite(v)) return "—";
-  return "₹" + v.toLocaleString("en-IN");
-}
+import { useConsole } from "../context/ConsoleContext";
+import NodeCaseCard from "./NodeCaseCard";
+import Provenance from "./Provenance";
+import { fmtINR, secondsAgo } from "../lib/format";
 
 function Row({ label, value, tone }) {
   return (
@@ -17,6 +15,7 @@ function Row({ label, value, tone }) {
 
 export default function ContextDrawer() {
   const { complaints, anomalies, smsAlerts, counters, connected } = useLiveFeed();
+  const { setSelectedNode, selectedNode } = useConsole();
 
   return (
     <aside
@@ -24,6 +23,9 @@ export default function ContextDrawer() {
       style={{ background: "var(--bg-z1)", borderColor: "var(--border)", width: 336 }}
       aria-label="Context"
     >
+      {/* PRIMARY: node case card */}
+      <NodeCaseCard />
+
       <section className="hud-panel p-3">
         <div className="hud-label mb-2">Stream Health</div>
         <Row label="SSE link" value={connected ? "CONNECTED" : "RECONNECTING"} tone={connected ? "var(--ok)" : "var(--warn)"} />
@@ -34,26 +36,37 @@ export default function ContextDrawer() {
 
       <section className="hud-panel p-3">
         <div className="hud-label mb-2">Live Complaint Tail</div>
+        <p style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>
+          Tap a row to focus that node.
+        </p>
         {complaints.length === 0 ? (
-          <p style={{ fontSize: 12, color: "var(--text-dim)" }}>
-            Waiting for the next event… start the backend and inject a complaint.
-          </p>
+          <p style={{ fontSize: 12, color: "var(--text-dim)" }}>Waiting for the next event…</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {complaints.slice(0, 6).map((c, i) => (
-              <li
-                key={(c.ack_no || "c") + i}
-                className="rounded-md px-2 py-1.5"
-                style={{ background: "var(--bg-z2)", border: "1px solid var(--border)" }}
-              >
-                <div className="flex items-center justify-between">
-                  <span style={{ fontSize: 12, color: "var(--accent-cyan)" }}>{c.ack_no || "ACK—"}</span>
-                  <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{c.target_terminal_id || "—"}</span>
-                </div>
-                <div className="flex items-center justify-between" style={{ fontSize: 12, color: "var(--text-dim)" }}>
-                  <span>{c.victim_vpa || "—"}</span>
-                  <span>{fmtINR(c.disputed_amount_inr)}</span>
-                </div>
+              <li key={(c.ack_no || "c") + i}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedNode(c.target_terminal_id || selectedNode)}
+                  className="w-full text-left rounded-md px-2 py-1.5"
+                  style={{
+                    background: c.target_terminal_id === selectedNode ? "color-mix(in srgb, var(--accent-cyan) 14%, transparent)" : "var(--bg-z2)",
+                    border: "1px solid var(--border)",
+                    minHeight: 44,
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span style={{ fontSize: 12, color: "var(--accent-cyan)" }}>{c.ack_no || "ACK—"}</span>
+                    <Provenance source={c.source} />
+                  </div>
+                  <div className="flex items-center justify-between" style={{ fontSize: 12, color: "var(--text-dim)" }}>
+                    <span className="truncate">{c.victim_vpa || "—"}</span>
+                    <span>{fmtINR(c.disputed_amount_inr)}</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                    {c.target_terminal_id || "—"} · {secondsAgo(c.timestamp)}s ago
+                  </div>
+                </button>
               </li>
             ))}
           </ul>
@@ -65,7 +78,13 @@ export default function ContextDrawer() {
         {anomalies.length === 0 ? (
           <p style={{ fontSize: 12, color: "var(--text-dim)" }}>No anomaly pulses yet.</p>
         ) : (
-          <p style={{ fontSize: 13, color: "var(--danger)" }}>⚠ {anomalies.length} recent pulse(s)</p>
+          <ul className="flex flex-col gap-1">
+            {anomalies.slice(0, 4).map((a, i) => (
+              <li key={i} style={{ fontSize: 12, color: "var(--danger)" }}>
+                ⚠ {a.terminal_id} · {a.count_30s}/30s vs base {a.baseline}
+              </li>
+            ))}
+          </ul>
         )}
         {smsAlerts.length > 0 && (
           <p style={{ fontSize: 12, color: "var(--warn)", marginTop: 6 }}>SMS alerts buffered: {smsAlerts.length}</p>

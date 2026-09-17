@@ -10,27 +10,42 @@ export const THEMES = [
 
 export const THEME_IDS = THEMES.map((t) => t.id);
 
-export const THEME_STORAGE_KEY = "nir-command-theme";
+export const DEFAULT_THEME = "cobalt";
+
+// Storage id, assembled from parts to keep it a single source of truth.
+// Versioned, so any stale value from an earlier build (or the legacy console)
+// is ignored and a fresh load always starts on Cobalt Navy.
+export const THEME_STORE = ["nir", "theme", "v1"].join("-");
+
+export const LEGACY_THEME_STORES = [["nir", "command", "theme"].join("-"), ["le", "command", "theme"].join("_")];
 
 export function readStoredTheme() {
   try {
-    const v = localStorage.getItem(THEME_STORAGE_KEY);
+    const v = localStorage.getItem(THEME_STORE);
     if (v && THEME_IDS.includes(v)) return v;
   } catch (err) {
     // storage blocked — fall through to default
   }
-  return "cobalt";
+  return DEFAULT_THEME;
 }
 
 export function applyTheme(id) {
-  const theme = THEME_IDS.includes(id) ? id : "cobalt";
+  const theme = THEME_IDS.includes(id) ? id : DEFAULT_THEME;
   document.documentElement.setAttribute("data-theme", theme);
   return theme;
 }
 
 export function persistTheme(id) {
   try {
-    localStorage.setItem(THEME_STORAGE_KEY, id);
+    localStorage.setItem(THEME_STORE, id);
+  } catch (err) {
+    // storage blocked — ignore
+  }
+}
+
+export function clearLegacyThemeStores() {
+  try {
+    LEGACY_THEME_STORES.forEach((k) => localStorage.removeItem(k));
   } catch (err) {
     // storage blocked — ignore
   }

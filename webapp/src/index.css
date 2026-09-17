@@ -230,6 +230,11 @@
   50% { opacity: 0.45; transform: scale(0.82); }
 }
 
+/* html2pdf injects a progress overlay; never let it swallow clicks. */
+.html2pdf__overlay {
+  pointer-events: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

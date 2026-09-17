@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLiveFeed } from "../live/useLiveFeed";
 import { useTheme } from "../context/ThemeContext";
 import { THEMES } from "../lib/theme";
+import { AlertsToggle } from "./AlertBanner";
 
 export function Clock({ className = "" }) {
   const [now, setNow] = useState(() => new Date());
@@ -33,7 +34,7 @@ export function LiveDot({ connected }) {
   );
 }
 
-export default function TopBar({ onOpenBriefing, onOpenSystem, alertsArmed, onToggleAlerts }) {
+export default function TopBar({ onOpenBriefing, onOpenSystem }) {
   const { connected, counters, lastEventAt } = useLiveFeed();
   const { theme, cycleTheme } = useTheme();
   const [ago, setAgo] = useState(0);
@@ -96,19 +97,9 @@ export default function TopBar({ onOpenBriefing, onOpenSystem, alertsArmed, onTo
         AI BRIEFING
       </button>
 
-      <button
-        type="button"
-        className="hud-btn hidden md:inline-flex"
-        onClick={onToggleAlerts}
-        title="Arm/disarm the SMS siren"
-        style={
-          alertsArmed
-            ? { borderColor: "var(--danger)", color: "var(--danger)", boxShadow: "0 0 16px var(--danger)" }
-            : undefined
-        }
-      >
-        {alertsArmed ? "ALERTS ARMED" : "ENABLE ALERTS"}
-      </button>
+      <span className="hidden md:inline-flex">
+        <AlertsToggle />
+      </span>
 
       <button type="button" className="hud-btn" onClick={cycleTheme} title={`Theme: ${themeLabel}`}>
         ◐ <span className="hidden xl:inline">{themeLabel}</span>

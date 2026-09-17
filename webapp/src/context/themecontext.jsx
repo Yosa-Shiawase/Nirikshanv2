@@ -1,23 +1,42 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { THEME_IDS, applyTheme, persistTheme, readStoredTheme } from "../lib/theme";
+import {
+  THEME_IDS,
+  applyTheme,
+  clearLegacyThemeStores,
+  persistTheme,
+  readStoredTheme,
+} from "../lib/theme";
 
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
+  // Initial theme: stored explicit choice, else Cobalt Navy.
   const [theme, setThemeState] = useState(() => readStoredTheme());
 
   // Keep <html data-theme> in sync with state.
   useEffect(() => {
     applyTheme(theme);
-    persistTheme(theme);
   }, [theme]);
 
-  const setTheme = useCallback((id) => setThemeState(id), []);
+  // Drop any stale keys from earlier builds / the legacy console.
+  useEffect(() => {
+    clearLegacyThemeStores();
+  }, []);
+
+  // Persist only on an explicit user action (not on first paint), so a fresh
+  // load always starts on the default.
+  const setTheme = useCallback((id) => {
+    const next = THEME_IDS.includes(id) ? id : "cobalt";
+    setThemeState(next);
+    persistTheme(next);
+  }, []);
 
   const cycleTheme = useCallback(() => {
     setThemeState((cur) => {
       const idx = THEME_IDS.indexOf(cur);
-      return THEME_IDS[(idx + 1) % THEME_IDS.length];
+      const next = THEME_IDS[(idx + 1) % THEME_IDS.length];
+      persistTheme(next);
+      return next;
     });
   }, []);
 

@@ -2,13 +2,14 @@ import { useState } from "react";
 import BottomNav from "../components/BottomNav";
 import Sheet from "../components/Sheet";
 import { Clock, LiveDot } from "../components/TopBar";
+import { AlertsToggle } from "../components/AlertBanner";
 import { ViewPane } from "../views";
 import { MOBILE_PRIMARY, VIEWS } from "../nav";
 import { useTheme } from "../context/ThemeContext";
 
 // Mobile <1024px: genuine app-style layout — full-screen view, bottom nav,
 // swipeable sheets, stacked cards, no hover-dependent info, 44px+ targets.
-export default function MobileShell({ view, setView, onOpenBriefing, alertsArmed, onToggleAlerts }) {
+export default function MobileShell({ view, setView, onOpenBriefing }) {
   const [moreOpen, setMoreOpen] = useState(false);
   const { cycleTheme } = useTheme();
   const moreActive = !MOBILE_PRIMARY.includes(view);
@@ -97,19 +98,9 @@ export default function MobileShell({ view, setView, onOpenBriefing, alertsArmed
           >
             AI BRIEFING
           </button>
-          <button
-            type="button"
-            className="hud-btn flex-1"
-            style={{
-              minHeight: 48,
-              ...(alertsArmed
-                ? { borderColor: "var(--danger)", color: "var(--danger)", boxShadow: "0 0 16px var(--danger)" }
-                : {}),
-            }}
-            onClick={onToggleAlerts}
-          >
-            {alertsArmed ? "ALERTS ARMED" : "ENABLE ALERTS"}
-          </button>
+          <span className="flex-1" style={{ display: "grid" }}>
+            <AlertsToggle />
+          </span>
         </div>
       </Sheet>
     </div>
