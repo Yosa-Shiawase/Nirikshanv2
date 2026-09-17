@@ -4,7 +4,7 @@
     ["risk-map", "◎", "MAP"], ["qr", "⚲", "QR"],
     ["alerts", "▲", "ALERTS"], ["entities", "☷", "NET"],
     ["transactions", "⇄", "TRAIL"], ["dashboard", "⊞", "FEED"],
-    ["reports", "▤", "RPTS"], ["system", "⚙", "SYS"]
+    ["reports", "▤", "RPTS"], ["engine", "⚙", "ENGINE"], ["system", "⚙", "SYS"]
   ];
   function build() {
     var nav = document.createElement("nav");
@@ -13,7 +13,7 @@
       var b = document.createElement("button");
       b.innerHTML = "<span class='i'>" + t[1] + "</span><span class='t'>" + t[2] + "</span>";
       b.onclick = function () {
-        if (typeof switchTab === "function") switchTab(t[0]);
+        if (t[0] === "engine" && window.__openEngine) { window.__openEngine(); } else if (typeof switchTab === "function") switchTab(t[0]);
         Array.prototype.forEach.call(nav.children, function (c) { c.classList.remove("active"); });
         b.classList.add("active");
       };
