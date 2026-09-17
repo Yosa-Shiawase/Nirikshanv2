@@ -24,7 +24,7 @@
       "<div class='hud-title'>\uD83D\uDCC8 SPIKE WATCH (current vs baseline)</div>" +
       "<div id='erEwma' class='font-mono' style='font-size:10px;'>…</div></div>" +
       "<div style='background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:10px;'>" +
-      "<div class='hud-title'>\uD83E\uDDFE DECISION LOG</div>" +
+      "<div class='hud-title'>\uD83E\uDDFE DECISION LOG <span id='erLogCount' style='color:var(--text-dim);'>(0)</span></div>" +
       "<div id='erLog' class='font-mono' style='font-size:9.5px;max-height:180px;overflow:auto;'></div></div></div></div>";
     body.appendChild(p);
   }
@@ -34,7 +34,12 @@
       (col || "#bae6fd") + ";'>[" + new Date().toLocaleTimeString() + "] " + msg + "</div>");
     if (logs.length > 40) logs.pop();
     var l = document.getElementById("erLog");
-    if (l) l.innerHTML = logs.join("");
+    if (l) {
+      l.innerHTML = logs.join("");
+      l.scrollTop = 0;              /* newest on top - already visible */
+      var head = document.getElementById("erLogCount");
+      if (head) head.textContent = "(" + logs.length + " entries)";
+    }
   }
   function hav(a, b) {
     var R = 6371, dLa = (b.lat - a.lat) * Math.PI / 180, dLo = (b.lon - a.lon) * Math.PI / 180;
