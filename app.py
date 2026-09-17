@@ -393,17 +393,6 @@ class H(BaseHTTPRequestHandler):
                            float(q.get("lon",[79.5])[0]), int(q.get("r",[6000])[0]))
             res["source"] = "OpenStreetMap/Overpass (LIVE)"
             self._json(res)
-        elif p.path == "/engine/state":
-            now = time.time()
-            with RECENT_LOCK:
-                rows = [(t, term, amt) for (t, term, amt) in RECENT if now - t < 3600]
-            counts = {}
-            for t, term, amt in rows:
-                counts[term] = counts.get(term, 0) + 1
-            ewma = {k: round(v.get("ewma", 0), 2) for k, v in ANOM.items()}
-            self._json({"nodes": [], "counts": counts, "ewma": ewma,
-                        "log": ENGINE_LOG[-40:], "window_min": 60,
-                        "total": len(rows)})
         elif p.path == "/case/trace":
             now = time.time()
             with RECENT_LOCK:
