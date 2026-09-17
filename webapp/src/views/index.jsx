@@ -5,6 +5,7 @@ import { useTheme } from "../context/ThemeContext";
 import { THEMES } from "../lib/theme";
 import api from "../lib/api";
 import Provenance from "../components/Provenance";
+import TerminalMap from "../components/TerminalMap";
 import { AlertsToggle } from "../components/AlertBanner";
 import { TERMINALS, TERMINAL_META, hopDecay, rankTerminals, zoneRisk } from "../lib/hawkes";
 import { fmtINR, fmtCompactINR, riskTone, secondsAgo } from "../lib/format";
@@ -57,37 +58,16 @@ function Card({ title, right, children, style }) {
 /* ---- F1/F2 (T3 placeholder) ---------------------------------------------- */
 
 function MapView() {
-  const { complaints, anomalies, connected } = useLiveFeed();
-  const last = complaints[0];
+  const { connected } = useLiveFeed();
   return (
     <Pane
       title="RISK MAP · LIVE CHASE"
       subtitle="Hawkes-scored terminals · time-horizon slider · animated theft trace"
       right={<span className="hud-chip">{connected ? "SSE LIVE" : "SSE LINK…"}</span>}
     >
-      <div className="hud-panel relative flex-1 flex items-center justify-center overflow-hidden" style={{ minHeight: 240 }}>
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage:
-              "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
-            backgroundSize: "38px 38px",
-          }}
-        />
-        <div className="relative text-center px-4">
-          <div className="hud-label mb-1">Leaflet map surface</div>
-          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>F1 map + F2 animated chase mount here (Leaflet in a ref).</p>
-          <p style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 6 }}>
-            live pulses so far: {complaints.length} · anomalies: {anomalies.length}
-          </p>
-          {last && (
-            <p style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 4 }}>
-              last: {last.ack_no || "—"} @ {last.target_terminal_id || "—"} · {fmtINR(last.disputed_amount_inr)}
-            </p>
-          )}
-        </div>
+      <div style={{ flex: 1, minHeight: 420, display: "flex" }}>
+        <TerminalMap />
       </div>
-      <Coming feature="F1 + F2" eta="T3" note="11 Indian terminals, basemap/label/terrain toggles, ATM layer, money arcs with 0.42^n hop-decay labels, INTERCEPT toasts, chase log." />
     </Pane>
   );
 }

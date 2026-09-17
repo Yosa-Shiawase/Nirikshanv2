@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { useConsole } from "../context/ConsoleContext";
 import { useLiveFeed } from "../live/useLiveFeed";
-import { TERMINAL_META, hawkesIntensity, hopDecay, rankTerminals } from "../lib/hawkes";
-import { fmtINR, fmtCompactINR, secondsAgo } from "../lib/format";
+import { TERMINAL_META, evaluateTerminal, hawkesIntensity, hopDecay, rankTerminals } from "../lib/hawkes";
+import { NODE_BY_ID } from "../lib/terminals";
+import { fmtINR, fmtCompactINR, riskTone, secondsAgo } from "../lib/format";
 import Provenance from "./Provenance";
 
 function Row({ label, value, tone }) {
@@ -35,7 +36,9 @@ export default function NodeCaseCard() {
     const topVictim = Object.entries(victimCounts).sort((a, b) => b[1] - a[1])[0];
     const last = rows[0] || null;
     const avg = rows.length ? Math.round(total / rows.length) : 0;
-    return { rows, total, lama, rank, ranked, topVictim, hopCounts, last, avg };
+    const node = NODE_BY_ID[selectedNode];
+    const forecast = node ? evaluateTerminal(node, horizonHours, hawkes) : null;
+    return { rows, total, lama, rank, ranked, topVictim, hopCounts, last, avg, forecast };
   }, [complaints, selectedNode, hawkes, horizonHours]);
 
   const meta = TERMINAL_META[selectedNode] || { city: "—", zone: "—" };
@@ -68,6 +71,8 @@ export default function NodeCaseCard() {
       </div>
 
       <div className="mt-2">
+        <Row label="Map score (/100)" value={stats.forecast ? stats.forecast.score : "—"} tone={stats.forecast ? riskTone(stats.forecast.score) : undefined} />
+        <Row label="Projected flow" value={stats.forecast ? fmtCompactINR(stats.forecast.projectedFlow) : "—"} />
         <Row label="Complaints (buffered)" value={stats.rows.length} />
         <Row label="Disputed total" value={fmtINR(stats.total)} tone="var(--danger)" />
         <Row label="Avg ticket" value={fmtINR(stats.avg)} />

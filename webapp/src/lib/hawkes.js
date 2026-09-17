@@ -1,30 +1,22 @@
-// Hawkes self-exciting point-process math, shared by the map, dashboard and
-// engine room so every surface scores from the SAME numbers (F9 tunables).
+// Hawkes scoring, shared by the map, dashboard, engine room and case card.
 //
-// Intensity for a terminal at a horizon H:
-//   λ(T,H) = Σ_events  α^hop · exp(−β·Δt/σ)  · (1 + H·β/24)
-// where Δt is the event age in seconds. β, σ, α are live-tunable.
+// Two complementary views:
+//  1. evaluateTerminal()  — the legacy console's forecast engine (base metrics
+//     + spatial/temporal kernel across hot terminals). Drives the MAP score,
+//     the risk colours and the horizon slider. This is the "same math as the
+//     ENGINE ROOM ranking".
+//  2. hawkesIntensity()   — a live-excitation intensity over the SSE stream,
+//     used for the dashboard's live λ.
+import { NODES } from "./terminals";
 
 export const DEFAULT_HAWKES = { beta: 1.38, sigma: 350, alpha: 0.42 };
 
-export const TERMINALS = [
-  "DL-01", "MUM-01", "BLR-01", "HYD-01", "LKO-01", "JAI-01",
-  "SGR-01", "AMD-01", "IND-01", "CCU-01", "MAA-01",
-];
+export const TERMINALS = NODES.map((n) => n.id);
 
-export const TERMINAL_META = {
-  "DL-01": { city: "Delhi", zone: "North" },
-  "MUM-01": { city: "Mumbai", zone: "West" },
-  "BLR-01": { city: "Bengaluru", zone: "South" },
-  "HYD-01": { city: "Hyderabad", zone: "South" },
-  "LKO-01": { city: "Lucknow", zone: "North" },
-  "JAI-01": { city: "Jaipur", zone: "North" },
-  "SGR-01": { city: "Srinagar", zone: "North" },
-  "AMD-01": { city: "Ahmedabad", zone: "West" },
-  "IND-01": { city: "Indore", zone: "Central" },
-  "CCU-01": { city: "Kolkata", zone: "East" },
-  "MAA-01": { city: "Chennai", zone: "South" },
-};
+export const TERMINAL_META = NODES.reduce((acc, n) => {
+  acc[n.id] = { city: n.city, zone: n.zone };
+  return acc;
+}, {});
 
 export const HORIZONS = [
   { label: "NOW", hours: 0 },
@@ -38,6 +30,66 @@ export function hopDecay(hop, alpha = DEFAULT_HAWKES.alpha) {
   return Math.pow(alpha, Math.max(0, Number(hop) || 0));
 }
 
+/** Great-circle distance in km. */
+export function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/** Legacy forecast engine — verbatim formula (public/app.js evaluateNodeIntensity). */
+export function evaluateTerminal(node, forecastHorizon = 0, params = DEFAULT_HAWKES) {
+  const beta = Number(params.beta) || 1.38;
+  const sigmaKm = Number(params.sigma) || 350;
+  const alphaDecay = Number(params.alpha) || 0.42;
+
+  const hopFactor = Math.pow(alphaDecay, node.baseHops || 2);
+  let lambda = (node.baseScore / 100.0) * hopFactor * 0.45;
+
+  NODES.filter((n) => n.id !== node.id && n.baseScore >= 70).forEach((other) => {
+    const deltaT = forecastHorizon + 0.5;
+    const temporalKernel = Math.exp(-beta * deltaT);
+    const dist = haversineKm(node.lat, node.lon, other.lat, other.lon);
+    const spatialKernel = Math.exp(-(dist * dist) / (2 * sigmaKm * sigmaKm));
+    const markWeight = Math.log1p((other.baseFlow || 100000) / 10000.0);
+    lambda += markWeight * temporalKernel * spatialKernel;
+  });
+
+  const prob = 1.0 - Math.exp(-lambda * Math.max(1.0, forecastHorizon * 0.5));
+  const dynamicScore = Math.min(99, Math.max(12, Math.round(prob * 100)));
+  const projectedFlow = Math.round(node.baseFlow * (prob / (node.baseScore / 100.0)));
+
+  return {
+    intensity: lambda.toFixed(3),
+    probability: prob.toFixed(3),
+    score: dynamicScore,
+    projectedFlow,
+  };
+}
+
+/** Risk colour ramp (matches the brief's thresholds). */
+export function riskColor(score) {
+  const s = Number(score) || 0;
+  if (s >= 80) return "#ef4444";
+  if (s >= 65) return "#f97316";
+  if (s >= 40) return "#eab308";
+  if (s >= 25) return "#06b6d4";
+  return "#10b981";
+}
+
+/** Scored terminals for a horizon, ranked by score desc. */
+export function scoreAll(horizonHours = 0, params = DEFAULT_HAWKES) {
+  return NODES.map((n) => ({ node: n, ...evaluateTerminal(n, horizonHours, params) })).sort(
+    (a, b) => b.score - a.score
+  );
+}
+
+/* ---------- live-excitation view (dashboard) ---------- */
+
 function ageSeconds(ts, now) {
   if (typeof ts === "number") return Math.max(0, (now - ts) / 1000);
   const m = /^(\d{2}):(\d{2}):(\d{2})$/.exec(String(ts || ""));
@@ -47,7 +99,6 @@ function ageSeconds(ts, now) {
   return Math.max(0, (now - d.getTime()) / 1000);
 }
 
-/** λ for one terminal. */
 export function hawkesIntensity(complaints, terminalId, params = DEFAULT_HAWKES, horizonHours = 0, now = Date.now()) {
   const beta = Number(params.beta) || DEFAULT_HAWKES.beta;
   const sigma = Number(params.sigma) || DEFAULT_HAWKES.sigma;
@@ -63,7 +114,6 @@ export function hawkesIntensity(complaints, terminalId, params = DEFAULT_HAWKES,
   return lam * horizonFactor;
 }
 
-/** Ranked [{terminal, lambda, share}] for the current window + horizon. */
 export function rankTerminals(complaints, params = DEFAULT_HAWKES, horizonHours = 0, now = Date.now()) {
   const rows = TERMINALS.map((t) => {
     const lambda = hawkesIntensity(complaints, t, params, horizonHours, now);
@@ -73,11 +123,9 @@ export function rankTerminals(complaints, params = DEFAULT_HAWKES, horizonHours 
   return rows.map((r) => ({ ...r, share: r.lambda / max }));
 }
 
-/** Per-zone aggregate risk (for the dashboard's regional bars). */
 export function zoneRisk(complaints, params = DEFAULT_HAWKES, horizonHours = 0, now = Date.now()) {
   const byZone = {};
-  const ranked = rankTerminals(complaints, params, horizonHours, now);
-  for (const r of ranked) {
+  for (const r of rankTerminals(complaints, params, horizonHours, now)) {
     const z = r.zone || "Other";
     byZone[z] = (byZone[z] || 0) + r.lambda;
   }

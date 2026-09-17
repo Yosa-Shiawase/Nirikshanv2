@@ -60,7 +60,7 @@ export const api = {
     if (lat != null) q.set("lat", String(lat));
     if (lon != null) q.set("lon", String(lon));
     if (r != null) q.set("r", String(r));
-    return jget(`/atms?${q.toString()}`, { timeout: 25000 });
+    return jget(`/atms?${q.toString()}`, { timeout: 90000 });
   },
 
   /** inject a test complaint. */

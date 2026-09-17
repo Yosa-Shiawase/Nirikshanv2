@@ -1,0 +1,192 @@
+/* Terminal map (F1) + LIVE CHASE (F2). Leaflet lives in a ref; all layers,
+   timers and animation state are managed imperatively and cleaned up on
+   unmount so nothing can lock the UI. */
+.term-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-z1);
+}
+.term-map__canvas {
+  position: absolute;
+  inset: 0;
+}
+.leaflet-container {
+  background: var(--bg-core);
+  font-family: inherit;
+}
+
+/* controls overlays */
+.tm-controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  max-width: calc(100% - 20px);
+}
+.tm-controls--right {
+  left: auto;
+  right: 10px;
+}
+.tm-btn {
+  background: rgba(6, 14, 30, 0.92);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  min-height: 34px;
+  backdrop-filter: blur(2px);
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+}
+.tm-btn:hover { border-color: var(--accent-cyan); box-shadow: 0 0 14px var(--glow); }
+.tm-btn[aria-pressed="true"] {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 14px var(--glow);
+}
+.tm-btn--chase { border-color: var(--danger); color: #fff; background: rgba(60, 8, 14, 0.9); font-weight: 600; }
+.tm-btn--chase[aria-pressed="true"] { background: rgba(120, 12, 20, 0.95); }
+
+.tm-horizon {
+  display: flex;
+  gap: 3px;
+  background: rgba(6, 14, 30, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+.tm-horizon button {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 12px;
+  cursor: pointer;
+  min-height: 30px;
+}
+.tm-horizon button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--accent-cyan) 22%, transparent);
+  color: #fff;
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.tm-note {
+  position: absolute;
+  top: 54px;
+  left: 10px;
+  z-index: 1000;
+  max-width: 320px;
+  background: color-mix(in srgb, var(--warn) 20%, var(--bg-core));
+  border: 1px solid var(--warn);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.tm-log {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 1000;
+  width: min(300px, 64vw);
+  max-height: 40%;
+  overflow: auto;
+  background: rgba(6, 14, 30, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 11px;
+  color: #bae6fd;
+}
+.tm-log__title { color: #53c7f0; font-weight: 700; display: block; margin-bottom: 4px; }
+.tm-log__line { margin: 3px 0; }
+
+.tm-toasts {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  pointer-events: none;
+  width: max-content;
+  max-width: 92%;
+}
+.tm-toast {
+  background: #0c2238;
+  border: 1px solid var(--accent-cyan);
+  color: #fff;
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+  animation: tmToastIn 0.2s ease both;
+}
+.tm-toast--bad { background: #2a0709; border-color: var(--danger); box-shadow: 0 0 30px rgba(239, 68, 68, 0.5); }
+@keyframes tmToastIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* pulsing outer ring for score >= 80 */
+.risk-pulse { background: transparent; border: none; }
+.risk-pulse span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 999px;
+  border: 2px solid #ef4444;
+  animation: riskPulse 1.8s ease-out infinite;
+}
+@keyframes riskPulse {
+  0% { transform: scale(0.34); opacity: 0.85; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.leaflet-tooltip.nir-tip {
+  background: rgba(6, 14, 30, 0.95);
+  border: 1px solid var(--accent-cyan);
+  color: var(--text-main);
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+}
+
+.tm-legend {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: rgba(6, 14, 30, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.tm-legend i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  margin-right: 3px;
+}
+.tm-legend span {
+  display: inline-flex;
+  align-items: center;
+}
