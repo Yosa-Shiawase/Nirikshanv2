@@ -395,23 +395,15 @@ class H(BaseHTTPRequestHandler):
             self._json(res)
         elif p.path == "/engine/state":
             now = time.time()
-            nodes = []
-            for n in NODES:
-                m = evaluateNodeIntensity(n, currentHorizon if 'currentHorizon' in globals() else 2)
-                nodes.append({"id": n["id"], "name": n["name"], "lat": n["lat"],
-                              "lon": n["lon"], "base": n.get("baseScore", 40),
-                              "lambda": float(m["intensity"]), "p": float(m["probability"]),
-                              "score": m["score"]})
-            nodes.sort(key=lambda x: -x["p"])
             with RECENT_LOCK:
                 rows = [(t, term, amt) for (t, term, amt) in RECENT if now - t < 3600]
             counts = {}
             for t, term, amt in rows:
                 counts[term] = counts.get(term, 0) + 1
             ewma = {k: round(v.get("ewma", 0), 2) for k, v in ANOM.items()}
-            log = ENGINE_LOG[-40:]
-            self._json({"nodes": nodes, "counts": counts, "ewma": ewma,
-                        "log": log, "window_min": 60, "total": len(rows)})
+            self._json({"nodes": [], "counts": counts, "ewma": ewma,
+                        "log": ENGINE_LOG[-40:], "window_min": 60,
+                        "total": len(rows)})
         elif p.path == "/case/trace":
             now = time.time()
             with RECENT_LOCK:
