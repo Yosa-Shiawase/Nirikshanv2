@@ -1,15 +1,15 @@
-// Single source of truth for the console's panes (F1–F10 live in these).
-// `mobile` marks the four that also appear in the mobile bottom bar.
+// Single source of truth for the console's panes.
+// Labels are judge-facing (plain language); ids stay technical internally.
 export const VIEWS = [
-  { id: "map", label: "MAP", icon: "◉", desc: "Risk Map · Live Chase", mobile: true },
-  { id: "alerts", label: "ALERTS", icon: "⚠", desc: "SMS Threat Sensor", mobile: true },
-  { id: "qr", label: "QR", icon: "▣", desc: "UPI Forensics", mobile: true },
-  { id: "entities", label: "ENTITIES", icon: "⬡", desc: "Suspect Clusters" },
-  { id: "transactions", label: "TXNS", icon: "⇄", desc: "Money Trail DAG" },
-  { id: "dashboard", label: "DASHBOARD", icon: "▤", desc: "Command Overview" },
-  { id: "reports", label: "REPORTS", icon: "▧", desc: "Case Dossiers" },
-  { id: "engine", label: "ENGINE ROOM", icon: "◎", desc: "Prediction Machinery" },
-  { id: "system", label: "SYSTEM", icon: "⚙", desc: "Themes · Hawkes", mobile: false },
+  { id: "map", label: "MAP", icon: "◉", desc: "Live crime map", mobile: true },
+  { id: "alerts", label: "ALERTS", icon: "⚠", desc: "SMS scam detector", mobile: true },
+  { id: "qr", label: "QR", icon: "▣", desc: "QR scam check", mobile: true },
+  { id: "entities", label: "SUSPECTS", icon: "⬡", desc: "Who moves the money" },
+  { id: "transactions", label: "TRAIL", icon: "⇄", desc: "How the money moves" },
+  { id: "dashboard", label: "DASHBOARD", icon: "▤", desc: "Live complaint feed" },
+  { id: "reports", label: "REPORTS", icon: "▧", desc: "Case files" },
+  { id: "engine", label: "ENGINE ROOM", icon: "◎", desc: "How predictions are made" },
+  { id: "system", label: "SYSTEM", icon: "⚙", desc: "Themes · tuning", mobile: false },
 ];
 
 export const MOBILE_VIEW_IDS = VIEWS.filter((v) => v.mobile).map((v) => v.id);

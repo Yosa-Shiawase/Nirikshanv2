@@ -64,8 +64,8 @@ function MapView() {
   const { connected } = useLiveFeed();
   return (
     <Pane
-      title="RISK MAP · LIVE CHASE"
-      subtitle="Hawkes-scored terminals · time-horizon slider · animated theft trace"
+      title="LIVE CRIME MAP"
+      subtitle="Where money is likely to surface next"
       right={<span className="hud-chip">{connected ? "SSE LIVE" : "SSE LINK…"}</span>}
     >
       <div style={{ flex: 1, minHeight: 420, display: "flex" }}>
@@ -107,12 +107,12 @@ function AlertsView() {
 
   return (
     <Pane
-      title="ALERTS · SMS THREAT SENSOR"
-      subtitle="Paste an SMS → POST /sms-plain → verdict + matched rules"
+      title="SMS SCAM DETECTOR"
+      subtitle="Paste a message → we score it against known scam patterns"
       right={<AlertsToggle />}
     >
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card title="Threat Sensor" right={<Provenance source="LIVE" />}>
+        <Card title="Paste a suspicious SMS" right={<Provenance source="LIVE" />}>
           <input
             className="hud-btn w-full mb-2"
             style={{ cursor: "text", textAlign: "left" }}
@@ -226,8 +226,8 @@ function EntitiesView() {
 
   return (
     <Pane
-      title="ENTITIES"
-      subtitle="Suspect cluster · watchlist · search"
+      title="SUSPECT NETWORK — WHO MOVES THE MONEY"
+      subtitle="Cluster of VPAs seen moving funds · watchlist · search"
       right={<span className="hud-chip">{total} VPAs · {watchlist.length} watched</span>}
     >
       <div className="grid gap-3 lg:grid-cols-[1.4fr_1fr]">
@@ -425,8 +425,8 @@ function TransactionsView() {
 
   return (
     <Pane
-      title="TRANSACTIONS"
-      subtitle="Active case trace · money-trail DAG · Section-102 lien"
+      title="MONEY TRAIL — HOW STOLEN FUNDS MOVE"
+      subtitle="Follow each hop from victim to cash-out"
       right={
         <button type="button" className="hud-btn" onClick={refreshCaseTrace} disabled={caseTrace.loading}>
           {caseTrace.loading ? "REFRESHING…" : "REFRESH"}
@@ -436,7 +436,7 @@ function TransactionsView() {
       {caseTrace.error && <p style={{ fontSize: 12, color: "var(--danger)" }}>trace error: {caseTrace.error}</p>}
 
       <Card
-        title="Active Case Trace"
+        title="HOW THE MONEY SPLITS (each hop loses evidence)"
         right={<Provenance source="LIVE" />}
       >
         {!data ? (
@@ -508,7 +508,7 @@ function TransactionsView() {
         )}
       </Card>
 
-      <Card title="Node Detail">
+      <Card title="ACCOUNT DETAILS">
         {!selected ? (
           <p style={{ fontSize: 12, color: "var(--text-dim)" }}>Select a node in the DAG to see lien detail.</p>
         ) : (
@@ -578,7 +578,7 @@ function DashboardView() {
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card title="Regional Risk (zone λ)" right={<span className="hud-chip">horizon {horizonHours === 0 ? "NOW" : `+${horizonHours}h`}</span>}>
+        <Card title="WHICH REGIONS ARE HEATING UP" right={<span className="hud-chip">horizon {horizonHours === 0 ? "NOW" : `+${horizonHours}h`}</span>}>
           {zones.length === 0 && <p style={{ fontSize: 12, color: "var(--text-dim)" }}>no data yet</p>}
           <div className="flex flex-col gap-2">
             {zones.map((z) => (
@@ -610,7 +610,7 @@ function DashboardView() {
         </Card>
       </div>
 
-      <Card title="Live Stream" right={<Provenance source={topSource || "LIVE"} />}>
+      <Card title="LIVE COMPLAINT FEED" right={<Provenance source={topSource || "LIVE"} />}>
         <div className="overflow-x-auto">
           <table className="w-full" style={{ fontSize: 12 }}>
             <thead>
@@ -681,7 +681,7 @@ function ReportsView() {
       }
     >
       <div className="grid gap-3 lg:grid-cols-[260px_1fr]">
-        <Card title="Archive">
+        <Card title="CASE FILES">
           <div className="flex flex-col gap-1 overflow-y-auto" style={{ maxHeight: 360 }}>
             {TERMINALS.map((t) => (
               <button
@@ -793,7 +793,10 @@ function SystemView() {
           </div>
         </Card>
 
-        <Card title="Hawkes tunables (live re-scoring)" right={<span className="hud-chip">node {selectedNode}</span>}>
+        <Card title="TUNE THE PREDICTION" right={<span className="hud-chip">node {selectedNode}</span>}>
+          <p style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 8 }}>
+            Higher β = decay is faster; α sets how much each hop attenuates.
+          </p>
           {[
             { k: "beta", label: "β (decay)", min: 0.1, max: 4, step: 0.01 },
             { k: "sigma", label: "σ (scale s)", min: 50, max: 1200, step: 10 },
@@ -825,7 +828,7 @@ function SystemView() {
           </div>
         </Card>
 
-        <Card title="BNSS strict mode">
+        <Card title="STRICT LIEN MODE (Section 102)">
           <button
             type="button"
             className="hud-btn"
@@ -936,7 +939,7 @@ function EngineRoomView() {
         data-er-burst={spikes.filter((s) => s.hot).length}
       />
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card title="🔥 Complaint intake (60 min)" right={<span className="hud-chip">{total} total</span>}>
+        <Card title="COMPLAINTS PER TERMINAL (60 min)" right={<span className="hud-chip">{total} total</span>}>
           {intake.length === 0 ? (
             <p style={{ fontSize: 12, color: "var(--text-dim)" }}>waiting for stream…</p>
           ) : (
@@ -952,7 +955,7 @@ function EngineRoomView() {
           )}
         </Card>
 
-        <Card title="🌐 Hawkes ranking — cash-out probability" right={<span className="hud-chip">P({horizonLabel})</span>}>
+        <Card title="WHERE CASH-OUT IS LIKELY (Hawkes)" right={<span className="hud-chip">P({horizonLabel})</span>}>
           {ranked.map((n, ix) => {
             const col = riskTone(n.score);
             return (
@@ -969,7 +972,7 @@ function EngineRoomView() {
         </Card>
       </div>
 
-      <Card title="⛓ Chain anatomy — complaint to cash-out">
+      <Card title="MONEY CHAIN — COMPLAINT TO CASH-OUT">
         <div className="flex flex-wrap items-center gap-2">
           {chain.map((x, j) => (
             <span key={x} className="inline-flex items-center gap-2">
@@ -983,7 +986,7 @@ function EngineRoomView() {
       </Card>
 
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card title="📈 Spike watch (current vs baseline)">
+        <Card title="SUDDEN SPIKES">
           {spikes.length === 0 ? (
             <p style={{ fontSize: 12, color: "var(--text-dim)" }}>baselines forming…</p>
           ) : (
@@ -1001,7 +1004,7 @@ function EngineRoomView() {
           )}
         </Card>
 
-        <Card title="🧾 Decision log" right={<span className="hud-chip">{log.length} entries</span>}>
+        <Card title="WHAT THE SYSTEM JUST DID" right={<span className="hud-chip">{log.length} entries</span>}>
           <div style={{ maxHeight: 200, overflow: "auto" }}>
             {log.length === 0 ? (
               <p style={{ fontSize: 12, color: "var(--text-dim)" }}>waiting for stream…</p>
@@ -1080,12 +1083,12 @@ function QrView() {
 
   return (
     <Pane
-      title="QR FORENSICS"
-      subtitle="BarcodeDetector + ZXing fallback · paste-URI analysis · payee block"
+      title="QR SCANNER"
+      subtitle="Scan or paste a payment link, get a risk verdict"
       right={<span className="hud-chip">POST /qr/verify</span>}
     >
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card title="Sensor" right={<Provenance source="LIVE" />}>
+        <Card title="Camera" right={<Provenance source="LIVE" />}>
           <QrCamera
             onDetected={(t) => {
               setUri(t);
@@ -1094,7 +1097,7 @@ function QrView() {
           />
         </Card>
 
-        <Card title="Analyse URI">
+        <Card title="QR SCAM CHECK">
           <textarea
             className="w-full rounded-lg p-2"
             rows={3}

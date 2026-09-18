@@ -79,10 +79,10 @@ export default function TopBar({ onOpenBriefing, onOpenSystem }) {
           INGEST <b style={{ color: "var(--text-main)" }}>{counters.total}</b>
         </span>
         <span className="hud-chip" title="complaint events">
-          CRIME <b style={{ color: "var(--text-main)" }}>{counters.complaints}</b>
+          COMPLAINTS <b style={{ color: "var(--text-main)" }}>{counters.complaints}</b>
         </span>
-        <span className="hud-chip" title="anomaly events">
-          ANOM <b style={{ color: "var(--text-main)" }}>{counters.anomalies}</b>
+        <span className="hud-chip" title="anomaly bursts">
+          BURSTS <b style={{ color: "var(--text-main)" }}>{counters.anomalies}</b>
         </span>
       </div>
 

@@ -48,7 +48,7 @@ export default function NodeCaseCard() {
   return (
     <section className="hud-panel p-3" aria-label="Node case card">
       <div className="flex items-center justify-between mb-2">
-        <div className="hud-label">Node Case Card</div>
+        <div className="hud-label">CASE CARD</div>
         {stats.last && <Provenance source={stats.last.source} />}
       </div>
 
@@ -99,7 +99,7 @@ export default function NodeCaseCard() {
       )}
 
       <div className="mt-3">
-        <div className="hud-label mb-1">Chain anatomy (α^hop · α={hawkes.alpha})</div>
+        <div className="hud-label mb-1">MONEY CHAIN (each hop × {hawkes.alpha})</div>
         <div className="flex flex-wrap gap-1">
           {Object.entries(stats.hopCounts).length === 0 && (
             <span style={{ fontSize: 12, color: "var(--text-dim)" }}>no hops buffered</span>

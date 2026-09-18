@@ -24,7 +24,7 @@ export default function ContextPanel() {
       <NodeCaseCard />
 
       <section className="hud-panel p-3">
-        <div className="hud-label mb-2">Stream Health</div>
+        <div className="hud-label mb-2">FEED STATUS</div>
         <Row label="SSE link" value={connected ? "CONNECTED" : "RECONNECTING"} tone={connected ? "var(--ok)" : "var(--warn)"} />
         <Row label="Complaints" value={counters.complaints} />
         <Row label="Anomalies" value={counters.anomalies} tone="var(--danger)" />
@@ -32,7 +32,7 @@ export default function ContextPanel() {
       </section>
 
       <section className="hud-panel p-3">
-        <div className="hud-label mb-2">Live Complaint Tail</div>
+        <div className="hud-label mb-2">LATEST COMPLAINTS</div>
         <p style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>Tap a row to focus that node.</p>
         {complaints.length === 0 ? (
           <p style={{ fontSize: 12, color: "var(--text-dim)" }}>Waiting for the next event…</p>
@@ -72,7 +72,7 @@ export default function ContextPanel() {
       </section>
 
       <section className="hud-panel p-3">
-        <div className="hud-label mb-2">Anomaly Watch</div>
+        <div className="hud-label mb-2">BURST ALERTS</div>
         {anomalies.length === 0 ? (
           <p style={{ fontSize: 12, color: "var(--text-dim)" }}>No anomaly pulses yet.</p>
         ) : (
