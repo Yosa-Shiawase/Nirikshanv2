@@ -5,6 +5,7 @@ import { useTheme } from "../context/ThemeContext";
 import { THEMES } from "../lib/theme";
 import api from "../lib/api";
 import Provenance from "../components/Provenance";
+import DossierDoc from "../components/DossierDoc";
 import TerminalMap from "../components/TerminalMap";
 import QrCamera from "../components/QrCamera";
 import { AlertsToggle } from "../components/AlertBanner";
@@ -16,9 +17,9 @@ import { exportElementToPdf } from "../lib/exportPdf";
 
 /* ---- shared bits ---------------------------------------------------------- */
 
-function Pane({ title, subtitle, children, right }) {
+function Pane({ title, subtitle, children, right, paneClass }) {
   return (
-    <section className="fade-in flex flex-col gap-3 h-full">
+    <section className={`fade-in flex flex-col gap-3 h-full ${paneClass || ""}`}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg md:text-xl font-semibold glow-text" style={{ color: "var(--accent-cyan)" }}>
@@ -239,6 +240,7 @@ function EntitiesView() {
     <Pane
       title="SUSPECT NETWORK — WHO MOVES THE MONEY"
       subtitle="Cluster of VPAs seen moving funds · watchlist · search"
+      paneClass="pane-suspects"
       right={<span className="hud-chip">{total} VPAs · {watchlist.length} watched</span>}
     >
       <div className="grid gap-3 lg:grid-cols-[1.4fr_1fr]">
@@ -375,11 +377,11 @@ function ClusterGraph({ nodes, center, onPick, isWatched }) {
               cy={p.y}
               r={7 + Math.min(9, p.n.n)}
               fill="color-mix(in srgb, var(--danger) 55%, var(--bg-card))"
-              stroke={watched ? "#fbbf24" : "var(--danger)"}
+              stroke={watched ? "var(--warn)" : "var(--danger)"}
               strokeWidth={watched ? 2.5 : 1.8}
             />
             {watched && (
-              <text x={p.x} y={p.y - 14} fontSize="11" textAnchor="middle" fill="#fbbf24">★</text>
+              <text x={p.x} y={p.y - 14} fontSize="11" textAnchor="middle" fill="var(--warn)">★</text>
             )}
             {(() => {
               const dist = Math.max(1, Math.hypot(p.x - cx, p.y - cy));
@@ -402,7 +404,7 @@ function ClusterGraph({ nodes, center, onPick, isWatched }) {
                   fontSize="16"
                   textAnchor={anchor}
                   fill="var(--text-main)"
-                  style={{ paintOrder: "stroke", stroke: "#02060d", strokeWidth: 4 }}
+                  style={{ paintOrder: "stroke", stroke: "var(--bg-card)", strokeWidth: 4 }}
                 >
                   {label}
                 </text>
@@ -413,7 +415,7 @@ function ClusterGraph({ nodes, center, onPick, isWatched }) {
         );
       })}
       <circle cx={cx} cy={cy} r={16} fill="color-mix(in srgb, var(--accent-cyan) 40%, var(--bg-card))" stroke="var(--accent-cyan)" strokeWidth="2" />
-      <text x={cx} y={cy + 38} fontSize="15" textAnchor="middle" fill="var(--accent-cyan)" style={{ paintOrder: "stroke", stroke: "#02060d", strokeWidth: 3 }}>
+      <text x={cx} y={cy + 38} fontSize="15" textAnchor="middle" fill="var(--accent-cyan)" style={{ paintOrder: "stroke", stroke: "var(--bg-card)", strokeWidth: 3 }}>
         {center}
       </text>
     </svg>
@@ -457,6 +459,7 @@ function TransactionsView() {
     <Pane
       title="MONEY TRAIL — HOW STOLEN FUNDS MOVE"
       subtitle="Follow each hop from victim to cash-out"
+      paneClass="pane-trail"
       right={
         <button type="button" className="hud-btn" onClick={refreshCaseTrace} disabled={caseTrace.loading}>
           {caseTrace.loading ? "REFRESHING…" : "REFRESH"}
@@ -744,104 +747,15 @@ function ReportsView() {
 
         <div>
           {exportMsg && <p style={{ fontSize: 12, color: "var(--ok)", marginBottom: 6 }}>{exportMsg}</p>}
-          <div
-            ref={dossierRef}
-            style={{
-              background: "var(--bg-core)",
-              color: "var(--text-main)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              padding: 16,
-            }}
-          >
-            <div style={{ borderBottom: "2px solid var(--accent-cyan)", paddingBottom: 8, marginBottom: 10, display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between", alignItems: "flex-end" }}>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--accent-cyan)" }}>
-                  INDIAN CYBER CRIME COORDINATION CENTRE (I4C)
-                </div>
-                <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                  CIS DIVISION · NATIONAL PREDICTIVE MITIGATION UNIT
-                </div>
-              </div>
-              <div style={{ fontSize: 12, color: "var(--text-muted)", textAlign: "right" }}>
-                REF: <b style={{ color: "var(--text-main)" }}>{reportRef}</b>
-                <br />
-                DATE: {today}
-              </div>
-            </div>
-            <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>NIRAKSHAN — CASE DOSSIER</div>
-            <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 10 }}>
-              Section 102 BNSS · lien restricted to disputed value only · Node {selectedNode} ({TERMINAL_META[selectedNode]?.city})
-            </div>
-            <table className="w-full" style={{ fontSize: 12 }}>
-              <thead>
-                <tr style={{ color: "var(--text-muted)", textAlign: "left" }}>
-                  <th style={{ padding: "4px 0" }}>ACK</th><th>Victim VPA</th><th>Amount (disputed)</th><th>Hop</th><th>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length === 0 ? (
-                  <tr><td colSpan={5} style={{ color: "var(--text-dim)", paddingTop: 8 }}>No buffered complaints for this node.</td></tr>
-                ) : (
-                  rows.slice(0, 25).map((c, i) => (
-                    <tr key={i} style={{ borderTop: "1px solid var(--border)" }}>
-                      <td style={{ padding: "4px 0" }}>{c.ack_no}</td>
-                      <td>{c.victim_vpa}</td>
-                      <td>{fmtINR(c.disputed_amount_inr)}</td>
-                      <td>{c.hop_count}</td>
-                      <td>{c.timestamp}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-              <tfoot>
-                <tr style={{ borderTop: "2px solid var(--accent-cyan)" }}>
-                  <td colSpan={2} style={{ paddingTop: 6 }}><b>Total (disputed only)</b></td>
-                  <td style={{ paddingTop: 6 }}><b>{fmtINR(disputedTotal)}</b></td>
-                  <td colSpan={2} />
-                </tr>
-              </tfoot>
-            </table>
-            <div className="hud-label" style={{ marginTop: 12, marginBottom: 4 }}>
-              1. EVIDENTIARY LINEAGE &amp; CONTRIBUTING NCRP CHAINS
-            </div>
-            <ul style={{ margin: "0 0 12px 16px", fontSize: 12, color: "var(--text-muted)" }}>
-              {rows.length === 0 ? (
-                <li>No buffered complaints for this node.</li>
-              ) : (
-                rows.slice(0, 3).map((c, i) => (
-                  <li key={i} style={{ marginBottom: 3 }}>
-                    <b style={{ color: "var(--text-main)" }}>{c.ack_no}</b> · disputed {fmtINR(c.disputed_amount_inr)} · hops {c.hop_count} (α^{c.hop_count} = {hopDecay(c.hop_count).toFixed(3)})
-                    <div style={{ fontSize: 11, color: "var(--text-dim)" }}>
-                      Lineage: {c.victim_vpa} &rarr; mule_tier1 &rarr; mule_tier2 &rarr; {c.target_terminal_id}
-                    </div>
-                  </li>
-                ))
-              )}
-            </ul>
-
-            <div style={{ border: "1px solid var(--warn)", background: "rgba(245, 158, 11, 0.14)", padding: 10, borderRadius: 4, marginBottom: 12 }}>
-              <div className="hud-label" style={{ color: "var(--warn)", marginBottom: 4 }}>
-                2. STATUTORY MANDATE &amp; PROPORTIONALITY LIMITS
-              </div>
-              <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.4 }}>
-                Any proactive account or terminal lien is restricted exclusively to the disputed amount, capped at{" "}
-                <b style={{ color: "var(--text-main)" }}>{fmtINR(disputedTotal)}</b>. Blanket freezes or full account
-                suspensions at intermediate mule tiers are prohibited.
-              </p>
-            </div>
-
-            <div style={{ borderTop: "1px dashed var(--border)", paddingTop: 8, display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between", fontSize: 11, color: "var(--text-dim)" }}>
-              <span>DISPATCHED TO: JURISDICTIONAL POLICE CELL / BANK NODAL WATCH</span>
-              <span>SECURITY CLEARANCE: LEA RESTRICTED · NON-PUBLIC</span>
-            </div>
-
-            <p style={{ fontSize: 12, color: bnssStrict ? "var(--ok)" : "var(--warn)", marginTop: 10 }}>
-              BNSS strict mode: {bnssStrict ? "ON — cap enforced at disputed value." : "OFF — enable in SYSTEM before issuing lien."}
-            </p>
-            <p style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 6 }}>
-              Generated by NIRAKSHAN console · provenance: {rows[0]?.source || "LIVE"}.
-            </p>
+          <div ref={dossierRef}>
+            <DossierDoc
+              nodeId={selectedNode}
+              rows={rows}
+              reportRef={reportRef}
+              today={today}
+              bnssStrict={bnssStrict}
+              provenance={rows[0] && rows[0].source}
+            />
           </div>
         </div>
       </div>

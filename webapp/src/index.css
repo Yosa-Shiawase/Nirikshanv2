@@ -165,18 +165,41 @@
   box-shadow: 0 0 0 1px rgba(13, 27, 46, 0.18);
 }
 
+/* light: bold-on-white reads heavy on the graph panes — soften them */
+[data-theme="light"] .pane-suspects b,
+[data-theme="light"] .pane-trail b {
+  font-weight: 600;
+}
+[data-theme="light"] .pane-suspects .hud-label,
+[data-theme="light"] .pane-trail .hud-label {
+  letter-spacing: .24em;
+  color: var(--text-muted);
+}
+[data-theme="light"] .pane-suspects .hud-panel,
+[data-theme="light"] .pane-trail .hud-panel {
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+[data-theme="light"] .pane-suspects .hud-chip,
+[data-theme="light"] .pane-trail .hud-chip {
+  font-weight: 500;
+  letter-spacing: .08em;
+  background: rgba(13, 27, 46, 0.04);
+  color: var(--text-muted);
+}
+
 /* "RGB Pulse" — compositor-only animated gradient, white ink never animated. */
 [data-theme="rgb"] {
   --bg-core: rgba(6, 8, 20, 0.6);
-  --bg-z1: rgba(8, 12, 26, 0.78);
-  --bg-z2: rgba(10, 15, 32, 0.84);
-  --bg-z3: rgba(8, 12, 26, 0.78);
-  --bg-card: rgba(12, 18, 38, 0.86);
+  --bg-z1: rgba(8, 12, 26, 0.68);
+  --bg-z2: rgba(10, 15, 32, 0.74);
+  --bg-z3: rgba(8, 12, 26, 0.68);
+  --bg-card: rgba(12, 18, 38, 0.66);
   --accent-cyan: #7dd3fc;
   --accent-blue: #a78bfa;
   --text-main: #ffffff;
-  --text-muted: #a8b6d4;
-  --text-dim: #6b7aa0;
+  --text-muted: #e6ecf8;
+  --text-dim: #e6ecf8;
   --border: rgba(125, 211, 252, 0.22);
   --glow: rgba(167, 139, 250, 0.4);
   --danger: #fb7185;
@@ -191,7 +214,7 @@ html[data-theme="rgb"]::before {
   position: fixed;
   inset: -20%;
   z-index: -1;
-  background: linear-gradient(120deg, #1b0033, #00204d, #00331f, #3d0020, #1b0033);
+  background: linear-gradient(120deg, #6d28d9, #1d63d6, #109060, #a21caf, #6d28d9);
   background-size: 400% 400%;
   animation: rgbShift 26s linear infinite;
   will-change: background-position;
@@ -199,6 +222,28 @@ html[data-theme="rgb"]::before {
 }
 body[data-theme="rgb"] {
   background: transparent;
+}
+
+/* RGB only: let the cycle glow through the panel surfaces (text stays solid). */
+[data-theme="rgb"] .hud-panel {
+  background: rgba(12, 18, 38, 0.66);
+}
+[data-theme="rgb"] .hud-empty {
+  background: rgba(12, 18, 38, 0.62);
+}
+
+/* borders pick up a slow hue-cycling tint, in step with the gradient */
+@keyframes rgbBorder {
+  0% { border-color: rgba(125, 211, 252, 0.30); }
+  33% { border-color: rgba(167, 139, 250, 0.30); }
+  66% { border-color: rgba(52, 211, 153, 0.28); }
+  100% { border-color: rgba(125, 211, 252, 0.30); }
+}
+[data-theme="rgb"] .hud-panel,
+[data-theme="rgb"] .hud-btn,
+[data-theme="rgb"] .hud-chip,
+[data-theme="rgb"] .hud-empty {
+  animation: rgbBorder 26s linear infinite;
 }
 @keyframes rgbShift {
   0% { background-position: 0% 50%; }
@@ -209,6 +254,13 @@ body[data-theme="rgb"] {
   html[data-theme="rgb"]::before {
     animation: none;
     background-position: 50% 50%;
+  }
+  [data-theme="rgb"] .hud-panel,
+  [data-theme="rgb"] .hud-btn,
+  [data-theme="rgb"] .hud-chip,
+  [data-theme="rgb"] .hud-empty {
+    animation: none;
+    border-color: rgba(125, 211, 252, 0.30);
   }
 }
 
