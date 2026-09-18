@@ -4,8 +4,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = int(os.environ.get("PORT", 8080))
 PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
-# React app's own public dir (source of truth for 404.html / sw.js).
+# React app's own public dir (404.html / sw.js) and built dist.
 WEBAPP_PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webapp", "public")
+DIST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webapp", "dist")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
@@ -363,24 +364,41 @@ class H(BaseHTTPRequestHandler):
         self.wfile.write(b)
     def _static(self,path):
         if path in ("/",""): path="/index.html"
-        fp=os.path.normpath(os.path.join(PUBLIC,path.lstrip("/")))
-        if not fp.startswith(PUBLIC) or not os.path.isfile(fp):
-            # Unknown path WITH a file extension -> branded 404 page (status 404).
-            # Extension-less navigations are covered by the SPA fallback once the
-            # React build is served.
-            if os.path.splitext(path)[1]:
-                nf=os.path.normpath(os.path.join(WEBAPP_PUBLIC,"404.html"))
-                if nf.startswith(WEBAPP_PUBLIC) and os.path.isfile(nf):
-                    body=open(nf,"rb").read()
-                    self.send_response(404)
-                    self.send_header("Content-Type","text/html; charset=utf-8")
-                    self.send_header("Content-Length",str(len(body)))
-                    self.send_header("Cache-Control","no-cache"); self.end_headers()
-                    self.wfile.write(body)
-                    return
+
+        # 1) legacy console stays reachable for side-by-side comparison
+        if path == "/legacy" or path.startswith("/legacy/"):
+            sub = path[len("/legacy"):] or "/"
+            return self._send_file(PUBLIC, "/index.html" if sub == "/" else sub, False)
+
+        # 2) React build takes the root when present
+        if os.path.isdir(DIST):
+            return self._send_file(DIST, path, True)
+
+        # 3) otherwise the legacy static site, exactly as before
+        return self._send_file(PUBLIC, path, False)
+
+    def _send_file(self, root, path, spa):
+        fp = os.path.normpath(os.path.join(root, path.lstrip("/")))
+        if not fp.startswith(root) or not os.path.isfile(fp):
+            ext = os.path.splitext(path)[1]
+            # SPA: unknown *navigation* (no extension) -> index.html
+            if spa and not ext:
+                idx = os.path.join(root, "index.html")
+                if os.path.isfile(idx):
+                    return self._raw(idx, 200)
+            # unknown path WITH an extension -> branded 404 page
+            if ext:
+                nf = os.path.join(WEBAPP_PUBLIC, "404.html")   # source of truth
+                if not os.path.isfile(nf):
+                    nf = os.path.join(root, "404.html")        # built copy
+                if os.path.isfile(nf):
+                    return self._raw(nf, 404)
             return self._json({"error":"nf"},404)
-        body=open(fp,"rb").read()
-        self.send_response(200)
+        return self._raw(fp, 200)
+
+    def _raw(self, fp, code):
+        body = open(fp,"rb").read()
+        self.send_response(code)
         self.send_header("Content-Type",MIME.get(os.path.splitext(fp)[1].lower(),"application/octet-stream"))
         self.send_header("Content-Length",str(len(body)))
         self.send_header("Cache-Control","no-cache"); self.end_headers()

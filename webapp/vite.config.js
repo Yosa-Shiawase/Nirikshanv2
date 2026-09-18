@@ -34,7 +34,10 @@ for (const route of API_ROUTES) {
 
 export default defineConfig({
   plugins: [react()],
-  base: "./", // relative asset paths so app.py can serve dist/ from /
+  // Absolute base: the app is served at the site root by app.py (dist is
+  // committed for Render), so every asset URL resolves identically from the
+  // document AND from stylesheets (CSS custom properties holding url()).
+  base: "/",
   server: {
     host: true,
     port: 5173,

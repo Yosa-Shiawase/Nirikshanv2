@@ -1,9 +1,7 @@
-﻿node_modules
-dist
+node_modules
 dist-ssr
 *.local
 .vite
 npm-debug.log*
-
 shots/
 *.log
