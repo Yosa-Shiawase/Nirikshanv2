@@ -43,7 +43,7 @@
             padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
         }
 
-        /* ---------- backdrop: live signal sweep + static textures ---------- */
+        /* ---------- backdrop: live sonar sweep + static textures ---------- */
         #sweep {
             position: fixed;
             inset: 0;
@@ -75,8 +75,16 @@
             mix-blend-mode: overlay
         }
 
+        /* subtle depth only — text protection lives in the #sweep mask */
         .tex.vig {
-            background: radial-gradient(ellipse at 50% 50%, rgba(4, 8, 19, .55) 0%, rgba(4, 8, 19, .82) 44%, rgba(0, 0, 0, .9) 100%)
+            background: radial-gradient(ellipse at 50% 50%, rgba(4, 8, 19, .10) 0%, rgba(4, 8, 19, .22) 55%, rgba(0, 0, 0, .42) 100%)
+        }
+
+        /* Criterion 3: dim the sweep ONLY across the central text column so the
+           headline keeps its contrast, while the edges stay at full intensity. */
+        #sweep {
+            -webkit-mask-image: linear-gradient(90deg, #000 0 18%, rgba(0, 0, 0, .34) 32%, rgba(0, 0, 0, .34) 68%, #000 82% 100%);
+            mask-image: linear-gradient(90deg, #000 0 18%, rgba(0, 0, 0, .34) 32%, rgba(0, 0, 0, .34) 68%, #000 82% 100%)
         }
 
         /* ---------- content ---------- */
@@ -105,19 +113,34 @@
             height: 34px;
             flex: none;
             display: grid;
-            place-items: center
+            place-items: center;
+            position: relative
         }
 
         .mark img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(83, 199, 240, .35))
+            filter: drop-shadow(0 0 10px rgba(83, 199, 240, .35));
+            animation: blink 4.2s ease-in-out infinite
         }
 
         .mark svg {
             width: 100%;
             height: 100%
+        }
+
+        @keyframes blink {
+
+            0%,
+            92%,
+            100% {
+                opacity: 1
+            }
+
+            95% {
+                opacity: .55
+            }
         }
 
         .word {
@@ -221,8 +244,11 @@
         }
 
         @media (prefers-reduced-motion:reduce) {
-            .cta {
-                transition: none
+
+            .cta,
+            .mark img {
+                transition: none;
+                animation: none
             }
 
             .tex.grid {
@@ -270,8 +296,7 @@
         (function () {
             "use strict";
 
-            /* logo: fall back to the inline mark if the raster asset is unavailable
-               (e.g. served offline by the service worker). */
+            /* ---------- logo fallback for the offline (SW) case ---------- */
             var logo = document.getElementById("logo");
             var fb = document.getElementById("logoFallback");
             if (logo) {
@@ -285,11 +310,35 @@
                 }
             }
 
-            /* ---- signal sweep: one canvas, rAF, GPU-cheap, pausable ---- */
+            /* ---------- sonar sweep ----------
+               rings + ticks + rotating beam wedge; 6 contacts that flare as the
+               beam passes; occasionally one contact goes red (anomaly). One
+               canvas, ~30fps cap, paused when the tab is hidden. */
             var cv = document.getElementById("sweep");
             var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
             var ctx = cv.getContext("2d");
-            var W = 0, H = 0, dpr = 1, raf = null, last = 0, angle = 0;
+            var W = 0, H = 0, dpr = 1, raf = null, last = 0, angle = 0, t0 = 0;
+
+            var RINGS = 4;
+            var TICKS = 26;
+            var contacts = [];
+            var nextAnomalyAt = 9000;
+            var anomalyOffAt = 0;
+
+            function rand(a, b) { return a + Math.random() * (b - a); }
+
+            function seedContacts() {
+                contacts = [];
+                var n = 6;                                  // 4–7 contacts: 6 here
+                for (var i = 0; i < n; i++) {
+                    contacts.push({
+                        ang: (i / n) * Math.PI * 2 + rand(-0.28, 0.28),
+                        rad: rand(0.30, 0.94),              // fraction of max radius
+                        flare: 0,
+                        red: false
+                    });
+                }
+            }
 
             function size() {
                 dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -300,24 +349,38 @@
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
 
-            function paint(rotate) {
+            function paint(rotate, elapsed) {
                 ctx.clearRect(0, 0, W, H);
+
                 var cx = W / 2, cy = H / 2;
                 var R = Math.hypot(W, H) / 2;
+                var band = R / 4.4;
 
-                // faint rings
-                ctx.strokeStyle = "rgba(83,199,240,0.10)";
-                ctx.lineWidth = 1;
-                for (var i = 1; i <= 4; i++) {
+                /* rings + ring ticks */
+                for (var r = 1; r <= RINGS; r++) {
+                    var rr = band * r;
                     ctx.beginPath();
-                    ctx.arc(cx, cy, (R * i) / 4.4, 0, Math.PI * 2);
+                    ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+                    ctx.strokeStyle = "rgba(83,199,240,0.26)";
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    for (var t = 0; t < TICKS; t++) {
+                        var a = (t / TICKS) * Math.PI * 2;
+                        var ca = Math.cos(a), sa = Math.sin(a);
+                        ctx.moveTo(cx + ca * (rr - 5), cy + sa * (rr - 5));
+                        ctx.lineTo(cx + ca * (rr + 5), cy + sa * (rr + 5));
+                    }
+                    ctx.strokeStyle = "rgba(83,199,240,0.34)";
+                    ctx.lineWidth = 1.2;
                     ctx.stroke();
                 }
 
-                // rotating beam
+                /* beam wedge */
                 var grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
-                grd.addColorStop(0, "rgba(83,199,240,0.20)");
-                grd.addColorStop(0.55, "rgba(83,199,240,0.07)");
+                grd.addColorStop(0, "rgba(83,199,240,0.42)");
+                grd.addColorStop(0.55, "rgba(83,199,240,0.16)");
                 grd.addColorStop(1, "rgba(83,199,240,0)");
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
@@ -326,21 +389,87 @@
                 ctx.fillStyle = grd;
                 ctx.fill();
 
-                // leading edge
+                /* leading edge with a soft glow */
+                var ex = cx + Math.cos(rotate) * R, ey = cy + Math.sin(rotate) * R;
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
-                ctx.lineTo(cx + Math.cos(rotate) * R, cy + Math.sin(rotate) * R);
-                ctx.strokeStyle = "rgba(83,199,240,0.5)";
-                ctx.lineWidth = 1.4;
+                ctx.lineTo(ex, ey);
+                ctx.strokeStyle = "rgba(83,199,240,0.26)";
+                ctx.lineWidth = 9;
                 ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(ex, ey);
+                ctx.strokeStyle = "rgba(200,245,255,0.95)";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                /* guarantee the page reads as sonar: keep one contact lit */
+                var anyLit = false;
+                for (var q = 0; q < contacts.length; q++) {
+                    if (contacts[q].flare > 0.55) { anyLit = true; break; }
+                }
+                if (!anyLit) {
+                    var best = null, bestD = 99;
+                    for (var w = 0; w < contacts.length; w++) {
+                        var dd = (contacts[w].ang - rotate + Math.PI * 3) % (Math.PI * 2);
+                        if (dd < bestD) { bestD = dd; best = contacts[w]; }
+                    }
+                    if (best) best.flare = 0.85;
+                }
+
+                /* contacts */
+                for (var i = 0; i < contacts.length; i++) {
+                    var c = contacts[i];
+                    var d = Math.abs(((c.ang - rotate + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+                    if (d < 0.20) c.flare = 1;
+                    else c.flare *= 0.955;
+
+                    if (c.red) c.flare = Math.max(c.flare, 0.55);
+
+                    var px = cx + Math.cos(c.ang) * band * c.rad * (RINGS / 1);
+                    var py = cy + Math.sin(c.ang) * band * c.rad * (RINGS / 1);
+                    var col = c.red ? "255,90,90" : "150,231,255";
+
+                    // halo
+                    ctx.beginPath();
+                    ctx.arc(px, py, 11 + c.flare * 20, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(" + col + "," + (0.14 + c.flare * 0.30).toFixed(3) + ")";
+                    ctx.fill();
+
+                    // core
+                    ctx.beginPath();
+                    ctx.arc(px, py, 3.2 + c.flare * 3.6, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(" + col + "," + (0.60 + c.flare * 0.40).toFixed(3) + ")";
+                    ctx.fill();
+                }
             }
 
-            function loop(t) {
+            function anomalies(elapsed) {
+                // rare red contact: one contact goes red for ~5s every 9–15s
+                if (elapsed > nextAnomalyAt && !contacts.some(function (c) { return c.red; })) {
+                    var pick = contacts[Math.floor(Math.random() * contacts.length)];
+                    if (pick) {
+                        pick.red = true;
+                        anomalyOffAt = elapsed + 5000;
+                    }
+                    nextAnomalyAt = elapsed + rand(9000, 15000);
+                }
+                if (anomalyOffAt && elapsed > anomalyOffAt) {
+                    contacts.forEach(function (c) { c.red = false; });
+                    anomalyOffAt = 0;
+                }
+            }
+
+            function loop(ts) {
                 raf = requestAnimationFrame(loop);
-                if (t - last < 33) return;          // ~30fps cap: cheap on battery
-                last = t;
-                angle += 0.012;
-                paint(angle);
+                if (!t0) t0 = ts;
+                if (ts - last < 33) return;               // ~30fps: cheap on battery
+                last = ts;
+                var elapsed = ts - t0;
+                angle += 0.030;
+                anomalies(elapsed);
+                paint(angle, elapsed);
             }
 
             function start() {
@@ -354,16 +483,24 @@
                 raf = null;
             }
 
+            seedContacts();
             size();
-            if (reduced) paint(-Math.PI / 3);
-            else start();
+            if (reduced) {
+                // static frame: beam parked, two contacts lit, one red
+                contacts[0].flare = 1;
+                contacts[3].flare = 0.8;
+                contacts[4].red = true;
+                paint(-Math.PI / 3, 0);
+            } else {
+                start();
+            }
 
             var rt = null;
             window.addEventListener("resize", function () {
                 clearTimeout(rt);
                 rt = setTimeout(function () {
                     size();
-                    if (reduced) paint(-Math.PI / 3);
+                    if (reduced) paint(-Math.PI / 3, 0);
                 }, 120);
             });
             document.addEventListener("visibilitychange", function () {
