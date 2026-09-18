@@ -17,3 +17,14 @@ createRoot(document.getElementById("root")).render(
     </ConsoleProvider>
   </ThemeProvider>
 );
+
+// Offline fallback: register the (deliberately tiny) service worker in
+// production only. It caches just /404.html and only answers failed
+// navigations, so it can never serve a stale console.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      /* registration is best-effort */
+    });
+  });
+}
