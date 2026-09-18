@@ -14,8 +14,8 @@ export function Clock({ className = "" }) {
   const mm = String(now.getMinutes()).padStart(2, "0");
   const ss = String(now.getSeconds()).padStart(2, "0");
   return (
-    <span className={className} title={now.toISOString()}>
-      {hh}:{mm}:{ss}
+    <span className={className} title={`${now.toISOString()} (IST)`}>
+      {hh}:{mm}:{ss} IST
     </span>
   );
 }
@@ -75,8 +75,15 @@ export default function TopBar({ onOpenBriefing, onOpenSystem }) {
       </button>
 
       <div className="hidden lg:flex items-center gap-2 ml-3">
-        <span className="hud-chip" title="complaints ingested this session">
-          INGEST <b style={{ color: "var(--text-main)" }}>{counters.total}</b>
+        {/* WS4(g): the legacy badge showed the feed state alongside the count */}
+        <span
+          className="hud-chip"
+          title="complaints ingested this session"
+          style={connected ? undefined : { borderColor: "var(--danger)", color: "var(--danger)" }}
+        >
+          INGEST:{" "}
+          <b style={{ color: connected ? "var(--ok)" : "var(--danger)" }}>{counters.total}</b>{" "}
+          <b style={{ color: connected ? "var(--ok)" : "var(--danger)" }}>{connected ? "LIVE" : "OFFLINE"}</b>
         </span>
         <span className="hud-chip" title="complaint events">
           COMPLAINTS <b style={{ color: "var(--text-main)" }}>{counters.complaints}</b>

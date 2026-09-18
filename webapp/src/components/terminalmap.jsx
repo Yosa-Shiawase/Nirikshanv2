@@ -47,6 +47,9 @@ export default function TerminalMap() {
 
   const [basemap, setBasemap] = useState("dark");
   const pickedBasemap = useRef(false);
+  const [playing, setPlaying] = useState(false);
+  const [showRisk, setShowRisk] = useState(true);
+  const playTimer = useRef(null);
   const [labelsOn, setLabelsOn] = useState(false);
   const [terrainOn, setTerrainOn] = useState(false);
   const [chaseRunning, setChaseRunning] = useState(false);
@@ -215,6 +218,40 @@ export default function TerminalMap() {
     if (pickedBasemap.current) return;
     setBasemap(theme === "light" ? "streets" : "dark");
   }, [theme]);
+
+  /* WS4(a): horizon playback (auto-advance) + confidence readout */
+  useEffect(() => {
+    if (!playing) {
+      if (playTimer.current) clearInterval(playTimer.current);
+      playTimer.current = null;
+      return undefined;
+    }
+    const seq = [0, 2, 6, 24];
+    playTimer.current = setInterval(() => {
+      setHorizonHours((h) => seq[(seq.indexOf(h) + 1) % seq.length]);
+    }, 1500);
+    return () => {
+      if (playTimer.current) clearInterval(playTimer.current);
+      playTimer.current = null;
+    };
+  }, [playing, setHorizonHours]);
+
+  /* WS4(a): risk-layer toggle (markers + live pulses) */
+  useEffect(() => {
+    const map = mapRef.current;
+    const g = groups.current.markers;
+    const p = groups.current.pulses;
+    if (!map || !g) return;
+    if (showRisk) {
+      if (!map.hasLayer(g)) g.addTo(map);
+      if (p && !map.hasLayer(p)) p.addTo(map);
+    } else {
+      if (map.hasLayer(g)) map.removeLayer(g);
+      if (p && map.hasLayer(p)) map.removeLayer(p);
+    }
+  }, [showRisk]);
+
+  const confidence = Math.max(54, 86 - Math.round(horizonHours * 1.35));
 
   /* ---------------- basemap / labels / terrain ---------------- */
   useEffect(() => {
@@ -420,6 +457,19 @@ export default function TerminalMap() {
         <button type="button" className="tm-btn" onClick={loadAtms} disabled={atmState.loading}>
           {atmState.loading ? "ATM…" : `ATM LAYER${atmState.count ? ` (${atmState.count})` : ""}`}
         </button>
+
+        <button type="button" className="tm-btn" onClick={() => mapRef.current && mapRef.current.flyTo(INDIA_CENTER, INDIA_ZOOM, { duration: 0.8 })}>
+          RECENTER
+        </button>
+        <button type="button" className="tm-btn" aria-pressed={playing} onClick={() => setPlaying((v) => !v)}>
+          {playing ? "PAUSE" : "PLAY"}
+        </button>
+        <button type="button" className="tm-btn" aria-pressed={showRisk} onClick={() => setShowRisk((v) => !v)}>
+          RISK LAYER
+        </button>
+        <span className="tm-btn" style={{ cursor: "default" }} title="Forecast confidence at this horizon">
+          CONF {confidence}%
+        </span>
 
         <span className="tm-legend" title="Terminal risk score">
           {[

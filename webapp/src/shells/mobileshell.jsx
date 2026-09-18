@@ -62,7 +62,14 @@ export default function MobileShell({ view, setView, onOpenBriefing }) {
         <ViewPane id={view} />
       </main>
 
-      <BottomNav active={view} onSelect={setView} onMore={() => setMoreOpen(true)} moreActive={moreActive} />
+      <BottomNav
+        active={view}
+        onSelect={setView}
+        onMore={() => setMoreOpen(true)}
+        moreActive={moreActive}
+        onCase={() => setCtxOpen(true)}
+        caseActive={ctxOpen}
+      />
 
       <Sheet open={moreOpen} onClose={() => setMoreOpen(false)} title="MORE PANES">
         <div className="grid grid-cols-2 gap-3">

@@ -7,13 +7,21 @@ import { DEFAULT_HAWKES } from "../lib/hawkes";
 const ConsoleContext = createContext(null);
 
 const TRACE_REFRESH_MS = 15000;
+// session-surviving arming of the SMS siren
+const ALERTS_STORE = ["nir", "alerts", "armed"].join("-");
 
 export function ConsoleProvider({ children }) {
   const [selectedNode, setSelectedNode] = useState("DL-01");
   const [hawkes, setHawkesState] = useState(() => ({ ...DEFAULT_HAWKES }));
   const [horizonHours, setHorizonHours] = useState(0);
   const [bnssStrict, setBnssStrict] = useState(false);
-  const [alertsArmed, setAlertsArmed] = useState(false);
+  const [alertsArmed, setAlertsArmed] = useState(() => {
+    try {
+      return localStorage.getItem(ALERTS_STORE) === "1";
+    } catch (err) {
+      return false;
+    }
+  });
   const [watchlist, setWatchlist] = useState([]);
 
   const [caseTrace, setCaseTrace] = useState({ data: null, loading: false, error: "", lastAt: 0 });
@@ -23,7 +31,21 @@ export function ConsoleProvider({ children }) {
     setHawkesState((h) => ({ ...h, ...patch }));
   }, []);
 
-  const armAlerts = useCallback((on) => setAlertsArmed(!!on), []);
+  const armAlerts = useCallback((on) => {
+    setAlertsArmed(!!on);
+    try {
+      localStorage.setItem(ALERTS_STORE, on ? "1" : "0");
+    } catch (err) {
+      /* storage blocked */
+    }
+  }, []);
+
+  /** Restore the prediction engine + lien policy to operational defaults. */
+  const resetDefaults = useCallback(() => {
+    setHawkesState({ ...DEFAULT_HAWKES });
+    setBnssStrict(true);
+    setHorizonHours(0);
+  }, []);
 
   const toggleWatch = useCallback((vpa) => {
     if (!vpa) return;
@@ -61,6 +83,7 @@ export function ConsoleProvider({ children }) {
       alertsArmed,
       setAlertsArmed,
       armAlerts,
+      resetDefaults,
       watchlist,
       toggleWatch,
       isWatched,
@@ -75,6 +98,7 @@ export function ConsoleProvider({ children }) {
       bnssStrict,
       alertsArmed,
       armAlerts,
+      resetDefaults,
       watchlist,
       toggleWatch,
       isWatched,

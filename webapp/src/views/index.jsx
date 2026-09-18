@@ -11,7 +11,7 @@ import { AlertsToggle } from "../components/AlertBanner";
 import { NODES } from "../lib/terminals";
 import { TERMINALS, TERMINAL_META, evaluateTerminal, hopDecay, rankTerminals, zoneRisk } from "../lib/hawkes";
 import { fmtINR, fmtCompactINR, clockNow, parseClock, riskTone, secondsAgo } from "../lib/format";
-import { DEMO_URIS, makeQrDataUrl, payeeFromUri, readBlocked, writeBlocked } from "../lib/qr";
+import { DEMO_URIS, makeQrDataUrl, payeeFromUri, readBlocked, readHistory, writeBlocked, writeHistory } from "../lib/qr";
 import { exportElementToPdf } from "../lib/exportPdf";
 
 /* ---- shared bits ---------------------------------------------------------- */
@@ -203,6 +203,17 @@ function AlertsView() {
 
 /* ---- F5 ENTITIES ---------------------------------------------------------- */
 
+// WS4(h): plain-language flags for a suspect VPA, shown as chips.
+function entityFactors({ n, inr, terms }, watched) {
+  const f = [];
+  if (n >= 2) f.push("repeat");
+  if (Object.keys(terms || {}).length > 1) f.push("multi-terminal");
+  if (inr >= 200000) f.push("high value");
+  if (watched) f.push("watchlisted");
+  if (f.length === 0) f.push("single sighting");
+  return f;
+}
+
 function EntitiesView() {
   const { complaints } = useLiveFeed();
   const { selectedNode, setSelectedNode, watchlist, toggleWatch, isWatched } = useConsole();
@@ -251,6 +262,11 @@ function EntitiesView() {
                 <button type="button" className="flex-1 text-left min-w-0" onClick={() => toggleWatch(n.vpa)} style={{ background: "none", border: "none", color: "var(--text-main)", cursor: "pointer" }}>
                   <div className="truncate" style={{ fontSize: 13 }}>{n.vpa}</div>
                   <div style={{ fontSize: 12, color: "var(--text-dim)" }}>{n.n} event{n.n === 1 ? "" : "s"} · {fmtCompactINR(n.inr)}</div>
+                  <div className="flex flex-wrap gap-1" style={{ marginTop: 3 }}>
+                    {entityFactors(n, isWatched(n.vpa)).map((f) => (
+                      <span key={f} className="hud-chip" style={{ fontSize: 10 }}>{f}</span>
+                    ))}
+                  </div>
                 </button>
                 <button
                   type="button"
@@ -423,6 +439,20 @@ function TransactionsView() {
     }
   }, [data, selected]);
 
+  // WS4(d): heuristic suspicion for the selected node (hop depth + live activity)
+  const suspicion = selected
+    ? Math.min(
+        0.99,
+        Math.max(
+          0.12,
+          0.42 +
+            0.12 * selected.layer.hop +
+            (selected.live ? 0.18 : 0) +
+            Math.min(0.2, (selected.live && selected.live.events ? selected.live.events : 0) * 0.01)
+        )
+      )
+    : 0;
+
   return (
     <Pane
       title="MONEY TRAIL — HOW STOLEN FUNDS MOVE"
@@ -516,6 +546,13 @@ function TransactionsView() {
             <div><b style={{ color: "var(--accent-cyan)" }}>{selected.vpa}</b> — hop {selected.layer.hop} ({selected.layer.label})</div>
             <div style={{ color: "var(--text-muted)", marginTop: 4 }}>
               Layer exposure: {fmtINR(selected.layer.amount)} · decay factor {hopDecay(selected.layer.hop).toFixed(4)}
+            </div>
+            <div style={{ marginTop: 4 }}>
+              Suspicion:{" "}
+              <b style={{ color: riskTone(Math.round(suspicion * 100)) }}>{(suspicion * 100).toFixed(0)}%</b>{" "}
+              <span style={{ color: "var(--text-dim)" }}>
+                {Math.round(suspicion * 100) >= 80 ? "tier 1 (P0)" : Math.round(suspicion * 100) >= 65 ? "tier 2 (P1)" : "tier 3"}
+              </span>
             </div>
             {selected.live && (
               <div style={{ color: "var(--ok)", marginTop: 4 }}>
@@ -656,6 +693,9 @@ function ReportsView() {
     [complaints, selectedNode]
   );
   const disputedTotal = rows.reduce((a, c) => a + (Number(c.disputed_amount_inr) || 0), 0);
+  // WS4(e): stable dossier reference + issue date
+  const reportRef = useMemo(() => "AIR-I4C-" + String(Date.now()).slice(-6), []);
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   async function doExport() {
     setExporting(true);
@@ -714,11 +754,24 @@ function ReportsView() {
               padding: 16,
             }}
           >
-            <div style={{ borderBottom: "2px solid var(--accent-cyan)", paddingBottom: 8, marginBottom: 10 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "var(--accent-cyan)" }}>NIRAKSHAN — CASE DOSSIER</div>
-              <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                Section 102 BNSS · lien restricted to disputed value only · Node {selectedNode} ({TERMINAL_META[selectedNode]?.city})
+            <div style={{ borderBottom: "2px solid var(--accent-cyan)", paddingBottom: 8, marginBottom: 10, display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between", alignItems: "flex-end" }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--accent-cyan)" }}>
+                  INDIAN CYBER CRIME COORDINATION CENTRE (I4C)
+                </div>
+                <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                  CIS DIVISION · NATIONAL PREDICTIVE MITIGATION UNIT
+                </div>
               </div>
+              <div style={{ fontSize: 12, color: "var(--text-muted)", textAlign: "right" }}>
+                REF: <b style={{ color: "var(--text-main)" }}>{reportRef}</b>
+                <br />
+                DATE: {today}
+              </div>
+            </div>
+            <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>NIRAKSHAN — CASE DOSSIER</div>
+            <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 10 }}>
+              Section 102 BNSS · lien restricted to disputed value only · Node {selectedNode} ({TERMINAL_META[selectedNode]?.city})
             </div>
             <table className="w-full" style={{ fontSize: 12 }}>
               <thead>
@@ -749,6 +802,40 @@ function ReportsView() {
                 </tr>
               </tfoot>
             </table>
+            <div className="hud-label" style={{ marginTop: 12, marginBottom: 4 }}>
+              1. EVIDENTIARY LINEAGE &amp; CONTRIBUTING NCRP CHAINS
+            </div>
+            <ul style={{ margin: "0 0 12px 16px", fontSize: 12, color: "var(--text-muted)" }}>
+              {rows.length === 0 ? (
+                <li>No buffered complaints for this node.</li>
+              ) : (
+                rows.slice(0, 3).map((c, i) => (
+                  <li key={i} style={{ marginBottom: 3 }}>
+                    <b style={{ color: "var(--text-main)" }}>{c.ack_no}</b> · disputed {fmtINR(c.disputed_amount_inr)} · hops {c.hop_count} (α^{c.hop_count} = {hopDecay(c.hop_count).toFixed(3)})
+                    <div style={{ fontSize: 11, color: "var(--text-dim)" }}>
+                      Lineage: {c.victim_vpa} &rarr; mule_tier1 &rarr; mule_tier2 &rarr; {c.target_terminal_id}
+                    </div>
+                  </li>
+                ))
+              )}
+            </ul>
+
+            <div style={{ border: "1px solid var(--warn)", background: "rgba(245, 158, 11, 0.14)", padding: 10, borderRadius: 4, marginBottom: 12 }}>
+              <div className="hud-label" style={{ color: "var(--warn)", marginBottom: 4 }}>
+                2. STATUTORY MANDATE &amp; PROPORTIONALITY LIMITS
+              </div>
+              <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.4 }}>
+                Any proactive account or terminal lien is restricted exclusively to the disputed amount, capped at{" "}
+                <b style={{ color: "var(--text-main)" }}>{fmtINR(disputedTotal)}</b>. Blanket freezes or full account
+                suspensions at intermediate mule tiers are prohibited.
+              </p>
+            </div>
+
+            <div style={{ borderTop: "1px dashed var(--border)", paddingTop: 8, display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between", fontSize: 11, color: "var(--text-dim)" }}>
+              <span>DISPATCHED TO: JURISDICTIONAL POLICE CELL / BANK NODAL WATCH</span>
+              <span>SECURITY CLEARANCE: LEA RESTRICTED · NON-PUBLIC</span>
+            </div>
+
             <p style={{ fontSize: 12, color: bnssStrict ? "var(--ok)" : "var(--warn)", marginTop: 10 }}>
               BNSS strict mode: {bnssStrict ? "ON — cap enforced at disputed value." : "OFF — enable in SYSTEM before issuing lien."}
             </p>
@@ -766,7 +853,7 @@ function ReportsView() {
 
 function SystemView() {
   const { theme, setTheme, cycleTheme } = useTheme();
-  const { hawkes, setHawkes, bnssStrict, setBnssStrict, selectedNode } = useConsole();
+  const { hawkes, setHawkes, bnssStrict, setBnssStrict, selectedNode, resetDefaults } = useConsole();
   const { complaints } = useLiveFeed();
   const ranked = useMemo(() => rankTerminals(complaints, hawkes, 0).slice(0, 5), [complaints, hawkes]);
 
@@ -826,6 +913,12 @@ function SystemView() {
               </div>
             ))}
           </div>
+          <button type="button" className="hud-btn mt-2" onClick={resetDefaults} style={{ minHeight: 40 }}>
+            RESET TO DEFAULTS
+          </button>
+          <p style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 6 }}>
+            Restores β=1.38 · σ=350 · α=0.42, horizon NOW, and strict lien ON.
+          </p>
         </Card>
 
         <Card title="STRICT LIEN MODE (Section 102)">
@@ -1029,7 +1122,7 @@ function QrView() {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(() => readHistory());
   const [blocked, setBlocked] = useState(() => readBlocked());
   const [qrs, setQrs] = useState({});
 
@@ -1060,7 +1153,14 @@ function QrView() {
       try {
         const r = await api.qrVerify(v);
         setResult(r);
-        setHistory((h) => [{ uri: v, verdict: r.verdict, score: r.risk_score, ts: new Date().toLocaleTimeString() }, ...h].slice(0, 12));
+        setHistory((h) => {
+          const next = [
+            { uri: v, verdict: r.verdict, score: r.risk_score, ts: clockNow() },
+            ...h,
+          ].slice(0, 20);
+          writeHistory(next);
+          return next;
+        });
       } catch (err) {
         setError(String(err.message || err));
       } finally {

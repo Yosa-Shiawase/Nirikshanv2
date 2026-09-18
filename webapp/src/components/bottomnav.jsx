@@ -1,12 +1,13 @@
 import { MOBILE_PRIMARY, viewById } from "../nav";
 
-// Mobile bottom bar: MAP / ALERTS / QR / MORE. 44px+ targets, safe-area aware.
-export default function BottomNav({ active, onSelect, onMore, moreActive }) {
+// Mobile bottom bar: MAP / ALERTS / QR / CASE / MORE.
+// 44px+ targets, safe-area aware, active glow.
+export default function BottomNav({ active, onSelect, onMore, moreActive, onCase, caseActive }) {
   const tabs = MOBILE_PRIMARY.map((id) => viewById(id));
 
   return (
     <nav
-      className="grid grid-cols-4 border-t"
+      className="grid grid-cols-5 border-t"
       style={{
         background: "var(--bg-z1)",
         borderColor: "var(--border)",
@@ -38,6 +39,24 @@ export default function BottomNav({ active, onSelect, onMore, moreActive }) {
           </button>
         );
       })}
+      <button
+        type="button"
+        onClick={onCase}
+        aria-current={caseActive ? "page" : undefined}
+        className="flex flex-col items-center justify-center gap-1"
+        style={{
+          minHeight: 60,
+          paddingTop: 8,
+          color: caseActive ? "var(--accent-cyan)" : "var(--text-muted)",
+          background: caseActive ? "color-mix(in srgb, var(--accent-cyan) 10%, transparent)" : "transparent",
+          boxShadow: caseActive ? "inset 0 2px 0 var(--accent-cyan), 0 0 22px var(--glow)" : "none",
+        }}
+      >
+        <span className="text-lg leading-none">▤</span>
+        <span className="hud-label" style={{ fontSize: 12, letterSpacing: "0.14em" }}>
+          CASE
+        </span>
+      </button>
       <button
         type="button"
         onClick={onMore}

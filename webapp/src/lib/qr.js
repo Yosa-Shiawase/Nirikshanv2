@@ -37,6 +37,7 @@ export function payeeFromUri(uri) {
 /* ---------------- BLOCK PAYEE (localStorage, labeled) ---------------- */
 
 export const BLOCKED_STORE = ["nir", "blocked", "payees"].join("-");
+export const HISTORY_STORE = ["nir", "qr", "history"].join("-");
 
 export function readBlocked() {
   try {
@@ -51,6 +52,26 @@ export function readBlocked() {
 export function writeBlocked(list) {
   try {
     localStorage.setItem(BLOCKED_STORE, JSON.stringify(list || []));
+  } catch (err) {
+    /* storage blocked */
+  }
+}
+
+/* ---------------- SCAN HISTORY (persisted, capped) ---------------- */
+
+export function readHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_STORE);
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list.slice(0, 20) : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+export function writeHistory(list) {
+  try {
+    localStorage.setItem(HISTORY_STORE, JSON.stringify((list || []).slice(0, 20)));
   } catch (err) {
     /* storage blocked */
   }
