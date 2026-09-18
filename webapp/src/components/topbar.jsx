@@ -102,7 +102,7 @@ export default function TopBar({ onOpenBriefing, onOpenSystem }) {
       </span>
 
       <button type="button" className="hud-btn" onClick={cycleTheme} title={`Theme: ${themeLabel}`}>
-        ◐ <span className="hidden xl:inline">{themeLabel}</span>
+        THEME <span className="hidden xl:inline">{themeLabel}</span>
       </button>
 
       <Clock className="hud-label tabular-nums" />

@@ -6,6 +6,8 @@ export const THEMES = [
   { id: "amber", label: "Amber CRT" },
   { id: "crimson", label: "Bloodhound Crimson" },
   { id: "monolith", label: "Stealth Monolith" },
+  { id: "light", label: "Daylight Briefing" },
+  { id: "rgb", label: "RGB Pulse" },
 ];
 
 export const THEME_IDS = THEMES.map((t) => t.id);

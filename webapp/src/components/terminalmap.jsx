@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "./TerminalMap.css";
 import { useLiveFeed } from "../live/useLiveFeed";
 import { useConsole } from "../context/ConsoleContext";
+import { useTheme } from "../context/ThemeContext";
 import api from "../lib/api";
 import {
   BASEMAPS,
@@ -31,6 +32,7 @@ function fmtL(inr) {
 export default function TerminalMap() {
   const { complaints, anomalies } = useLiveFeed();
   const { selectedNode, setSelectedNode, horizonHours, setHorizonHours } = useConsole();
+  const { theme } = useTheme();
 
   const mapEl = useRef(null);
   const mapRef = useRef(null);
@@ -44,6 +46,7 @@ export default function TerminalMap() {
   const toastSeq = useRef(0);
 
   const [basemap, setBasemap] = useState("dark");
+  const pickedBasemap = useRef(false);
   const [labelsOn, setLabelsOn] = useState(false);
   const [terrainOn, setTerrainOn] = useState(false);
   const [chaseRunning, setChaseRunning] = useState(false);
@@ -205,6 +208,13 @@ export default function TerminalMap() {
     if (!latest) return;
     spawnPulse(latest.terminal_id, "#ef4444");
   }, [anomalies, spawnPulse]);
+
+  /* the light palette is unreadable over the dark tiles: default to streets
+     until the operator picks a basemap explicitly. */
+  useEffect(() => {
+    if (pickedBasemap.current) return;
+    setBasemap(theme === "light" ? "streets" : "dark");
+  }, [theme]);
 
   /* ---------------- basemap / labels / terrain ---------------- */
   useEffect(() => {
@@ -392,13 +402,13 @@ export default function TerminalMap() {
           ))}
         </div>
 
-        <button type="button" className="tm-btn" aria-pressed={basemap === "dark"} onClick={() => setBasemap("dark")}>
+        <button type="button" className="tm-btn" aria-pressed={basemap === "dark"} onClick={() => { pickedBasemap.current = true; setBasemap("dark"); }}>
           Dark Ops
         </button>
-        <button type="button" className="tm-btn" aria-pressed={basemap === "satellite"} onClick={() => setBasemap("satellite")}>
+        <button type="button" className="tm-btn" aria-pressed={basemap === "satellite"} onClick={() => { pickedBasemap.current = true; setBasemap("satellite"); }}>
           Satellite
         </button>
-        <button type="button" className="tm-btn" aria-pressed={basemap === "streets"} onClick={() => setBasemap("streets")}>
+        <button type="button" className="tm-btn" aria-pressed={basemap === "streets"} onClick={() => { pickedBasemap.current = true; setBasemap("streets"); }}>
           Streets
         </button>
         <button type="button" className="tm-btn" aria-pressed={labelsOn} onClick={() => setLabelsOn((v) => !v)}>

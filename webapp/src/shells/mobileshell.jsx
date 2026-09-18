@@ -53,7 +53,7 @@ export default function MobileShell({ view, setView, onOpenBriefing }) {
           ▤ {selectedNode}
         </button>
         <button type="button" className="hud-btn" onClick={cycleTheme} style={{ minHeight: 40 }} aria-label="Cycle theme">
-          ◐
+          TH
         </button>
         <Clock className="hud-label tabular-nums m-hide" />
       </header>

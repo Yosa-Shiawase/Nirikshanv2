@@ -98,6 +98,120 @@
   --ok: #4ade80;
 }
 
+/* "Daylight Briefing" — paper light for projector rooms. */
+[data-theme="light"] {
+  --bg-core: #f4f7fb;
+  --bg-z1: #eef3f9;
+  --bg-z2: #e6edf6;
+  --bg-z3: #eef3f9;
+  --bg-card: #ffffff;
+  --accent-cyan: #0e7490;
+  --accent-blue: #1d4ed8;
+  --text-main: #0d1b2e;
+  --text-muted: #4a5b72;
+  --text-dim: #7b8a9e;
+  --border: rgba(13, 27, 46, 0.14);
+  --glow: rgba(13, 27, 46, 0.16);
+  --danger: #b91c1c;
+  --warn: #b45309;
+  --ok: #15803d;
+}
+
+/* light: glows become hairline shadows so nothing blooms on paper */
+[data-theme="light"] .hud-panel {
+  box-shadow: 0 1px 2px rgba(13, 27, 46, 0.07);
+}
+[data-theme="light"] .glow-text {
+  text-shadow: none;
+}
+[data-theme="light"] .hud-btn {
+  background: #ffffff;
+}
+[data-theme="light"] .hud-btn:hover {
+  box-shadow: 0 2px 10px rgba(13, 27, 46, 0.14);
+}
+[data-theme="light"] .hud-btn:focus-visible,
+[data-theme="light"] a:focus-visible {
+  outline-color: #0e7490;
+}
+[data-theme="light"] .tm-btn,
+[data-theme="light"] .tm-horizon,
+[data-theme="light"] .tm-log,
+[data-theme="light"] .tm-legend {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-main);
+}
+[data-theme="light"] .tm-btn--chase {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #fff;
+}
+[data-theme="light"] .leaflet-container {
+  background: #dfe7f0;
+}
+/* selected states must stay legible on paper */
+[data-theme="light"] .tm-horizon button[aria-pressed="true"] {
+  background: var(--accent-cyan);
+  color: #ffffff;
+  box-shadow: none;
+}
+[data-theme="light"] .tm-btn[aria-pressed="true"] {
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  color: #ffffff;
+  box-shadow: none;
+}
+[data-theme="light"] .tm-legend i {
+  box-shadow: 0 0 0 1px rgba(13, 27, 46, 0.18);
+}
+
+/* "RGB Pulse" — compositor-only animated gradient, white ink never animated. */
+[data-theme="rgb"] {
+  --bg-core: rgba(6, 8, 20, 0.6);
+  --bg-z1: rgba(8, 12, 26, 0.78);
+  --bg-z2: rgba(10, 15, 32, 0.84);
+  --bg-z3: rgba(8, 12, 26, 0.78);
+  --bg-card: rgba(12, 18, 38, 0.86);
+  --accent-cyan: #7dd3fc;
+  --accent-blue: #a78bfa;
+  --text-main: #ffffff;
+  --text-muted: #a8b6d4;
+  --text-dim: #6b7aa0;
+  --border: rgba(125, 211, 252, 0.22);
+  --glow: rgba(167, 139, 250, 0.4);
+  --danger: #fb7185;
+  --warn: #fbbf24;
+  --ok: #34d399;
+}
+html[data-theme="rgb"] {
+  background: transparent;
+}
+html[data-theme="rgb"]::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  background: linear-gradient(120deg, #1b0033, #00204d, #00331f, #3d0020, #1b0033);
+  background-size: 400% 400%;
+  animation: rgbShift 26s linear infinite;
+  will-change: background-position;
+  pointer-events: none;
+}
+body[data-theme="rgb"] {
+  background: transparent;
+}
+@keyframes rgbShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="rgb"]::before {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
 /* ---------------- BASE ---------------- */
 @layer base {
   * {
