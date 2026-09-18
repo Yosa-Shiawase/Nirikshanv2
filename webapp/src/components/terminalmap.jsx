@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./TerminalMap.css";
@@ -18,6 +18,7 @@ import {
 } from "../lib/terminals";
 import { evaluateTerminal, riskColor } from "../lib/hawkes";
 import { clockNow } from "../lib/format";
+
 const HORIZONS = [
   { label: "NOW", hours: 0 },
   { label: "+2h", hours: 2 },
@@ -27,6 +28,14 @@ const HORIZONS = [
 
 function fmtL(inr) {
   return "₹" + (Number(inr) / 100000).toFixed(2) + "L";
+}
+
+// Stable pseudo-random offset so incident dots near a terminal don't stack.
+function jitter(seed, span) {
+  let h = 0;
+  const s = String(seed || "");
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000;
+  return ((h % 1000) / 1000 - 0.5) * span;
 }
 
 export default function TerminalMap() {
@@ -44,18 +53,25 @@ export default function TerminalMap() {
   const chaseTimers = useRef([]);
   const seenComplaints = useRef(new Set());
   const toastSeq = useRef(0);
+  const toolsBtnRef = useRef(null);
+  const toolsPanelRef = useRef(null);
+  const pickedBasemap = useRef(false);
+  const playTimer = useRef(null);
 
   const [basemap, setBasemap] = useState("dark");
-  const pickedBasemap = useRef(false);
-  const [playing, setPlaying] = useState(false);
-  const [showRisk, setShowRisk] = useState(true);
-  const playTimer = useRef(null);
   const [labelsOn, setLabelsOn] = useState(false);
   const [terrainOn, setTerrainOn] = useState(false);
+  const [riskOn, setRiskOn] = useState(true);
+  const [upiOn, setUpiOn] = useState(false);
+  const [incidentsOn, setIncidentsOn] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const [chaseRunning, setChaseRunning] = useState(false);
   const [chaseLog, setChaseLog] = useState([]);
   const [toasts, setToasts] = useState([]);
   const [atmState, setAtmState] = useState({ loading: false, count: 0, note: "" });
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [dropUp, setDropUp] = useState(true);
+  const [sections, setSections] = useState({ basemaps: true, layers: true, data: true, view: true });
 
   const addToast = useCallback((msg, bad) => {
     const id = ++toastSeq.current;
@@ -71,21 +87,32 @@ export default function TerminalMap() {
   /* ---------------- map init ---------------- */
   useEffect(() => {
     if (!mapEl.current || mapRef.current) return undefined;
-    const map = L.map(mapEl.current, { zoomControl: true, attributionControl: true }).setView(
+    const map = L.map(mapEl.current, { zoomControl: false, attributionControl: true }).setView(
       INDIA_CENTER,
       INDIA_ZOOM
     );
     mapRef.current = map;
+    // Leaflet zoom parked top-right so it never collides with LIVE CHASE
+    L.control.zoom({ position: "topright" }).addTo(map);
 
     baseRef.current = L.tileLayer(BASEMAPS.dark.url, { maxZoom: BASEMAPS.dark.maxZoom, attribution: "ESRI" }).addTo(map);
 
     groups.current.markers = L.layerGroup().addTo(map);
+    groups.current.upi = L.layerGroup().addTo(map);
+    groups.current.incidents = L.layerGroup().addTo(map);
     groups.current.selection = L.layerGroup().addTo(map);
     groups.current.pulses = L.layerGroup().addTo(map);
     groups.current.atms = L.layerGroup().addTo(map);
     groups.current.chase = L.layerGroup().addTo(map);
 
     L.control.scale({ imperial: false, position: "bottomright" }).addTo(map);
+
+    const recordCentre = () => {
+      const c = map.getCenter();
+      if (mapEl.current) mapEl.current.dataset.center = `${c.lat.toFixed(2)},${c.lng.toFixed(2)}`;
+    };
+    map.on("moveend", recordCentre);
+    recordCentre();
 
     const ro = new ResizeObserver(() => map.invalidateSize());
     ro.observe(mapEl.current);
@@ -136,7 +163,6 @@ export default function TerminalMap() {
       glyph.on("click", () => setSelectedNode(n.id));
     });
 
-    // test hook: lets the smoke test read marker count + per-node scores
     if (mapEl.current) {
       mapEl.current.dataset.markerCount = String(NODES.length);
       mapEl.current.dataset.horizon = String(horizonHours);
@@ -149,6 +175,98 @@ export default function TerminalMap() {
   useEffect(() => {
     renderMarkers();
   }, [renderMarkers]);
+
+  /* ---------------- UPI volume layer ---------------- */
+  const renderUpi = useCallback(() => {
+    const g = groups.current.upi;
+    if (!g) return;
+    g.clearLayers();
+    NODES.forEach((n) => {
+      const m = evaluateTerminal(n, horizonHours);
+      // radius from projected flow, kept inside a readable band
+      const r = 8 + Math.min(26, Math.sqrt(Math.max(0, m.projectedFlow) / 9000));
+      L.circleMarker([n.lat, n.lon], {
+        radius: r,
+        color: "#7dd3fc",
+        weight: 1,
+        opacity: 0.7,
+        fillColor: "#38bdf8",
+        fillOpacity: 0.16,
+      })
+        .bindTooltip(`${n.id} · UPI volume ₹${Number(m.projectedFlow).toLocaleString("en-IN")}`, { className: "nir-tip" })
+        .addTo(g);
+    });
+    if (mapEl.current) mapEl.current.dataset.upi = String(g.getLayers().length);
+  }, [horizonHours]);
+
+  /* ---------------- fraud incidents layer ---------------- */
+  const renderIncidents = useCallback(() => {
+    const g = groups.current.incidents;
+    if (!g) return;
+    g.clearLayers();
+    const recent = complaints.slice(0, 60);
+    recent.forEach((c) => {
+      const n = NODE_BY_ID[c.target_terminal_id];
+      if (!n) return;
+      const lat = n.lat + jitter(c.ack_no, 1.6);
+      const lon = n.lon + jitter(c.ack_no + "x", 1.6);
+      L.circleMarker([lat, lon], {
+        radius: 3,
+        color: "#fbbf24",
+        weight: 1,
+        opacity: 0.9,
+        fillColor: "#fbbf24",
+        fillOpacity: 0.9,
+      })
+        .bindTooltip(`${c.ack_no || "incident"} · ${c.target_terminal_id}`, { className: "nir-tip" })
+        .addTo(g);
+    });
+    if (mapEl.current) mapEl.current.dataset.incidents = String(g.getLayers().length);
+  }, [complaints]);
+
+  useEffect(() => {
+    renderUpi();
+  }, [renderUpi]);
+  useEffect(() => {
+    renderIncidents();
+  }, [renderIncidents]);
+
+  /* layer visibility */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const g = groups.current.markers;
+    const p = groups.current.pulses;
+    if (!g) return;
+    if (riskOn) {
+      if (!map.hasLayer(g)) g.addTo(map);
+      if (p && !map.hasLayer(p)) p.addTo(map);
+    } else {
+      if (map.hasLayer(g)) map.removeLayer(g);
+      if (p && map.hasLayer(p)) map.removeLayer(p);
+    }
+  }, [riskOn]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const g = groups.current.upi;
+    if (!map || !g) return;
+    if (upiOn && !map.hasLayer(g)) g.addTo(map);
+    if (!upiOn && map.hasLayer(g)) map.removeLayer(g);
+  }, [upiOn]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const g = groups.current.incidents;
+    if (!map || !g) return;
+    if (incidentsOn && !map.hasLayer(g)) g.addTo(map);
+    if (!incidentsOn && map.hasLayer(g)) map.removeLayer(g);
+  }, [incidentsOn]);
+
+  if (mapEl.current) {
+    // test hook: layer state snapshot
+    mapEl.current.dataset.layers = JSON.stringify({ risk: riskOn, upi: upiOn, incidents: incidentsOn });
+  }
 
   /* selection highlight */
   useEffect(() => {
@@ -212,14 +330,7 @@ export default function TerminalMap() {
     spawnPulse(latest.terminal_id, "#ef4444");
   }, [anomalies, spawnPulse]);
 
-  /* the light palette is unreadable over the dark tiles: default to streets
-     until the operator picks a basemap explicitly. */
-  useEffect(() => {
-    if (pickedBasemap.current) return;
-    setBasemap(theme === "light" ? "streets" : "dark");
-  }, [theme]);
-
-  /* WS4(a): horizon playback (auto-advance) + confidence readout */
+  /* ---------------- horizon playback ---------------- */
   useEffect(() => {
     if (!playing) {
       if (playTimer.current) clearInterval(playTimer.current);
@@ -236,21 +347,6 @@ export default function TerminalMap() {
     };
   }, [playing, setHorizonHours]);
 
-  /* WS4(a): risk-layer toggle (markers + live pulses) */
-  useEffect(() => {
-    const map = mapRef.current;
-    const g = groups.current.markers;
-    const p = groups.current.pulses;
-    if (!map || !g) return;
-    if (showRisk) {
-      if (!map.hasLayer(g)) g.addTo(map);
-      if (p && !map.hasLayer(p)) p.addTo(map);
-    } else {
-      if (map.hasLayer(g)) map.removeLayer(g);
-      if (p && map.hasLayer(p)) map.removeLayer(p);
-    }
-  }, [showRisk]);
-
   const confidence = Math.max(54, 86 - Math.round(horizonHours * 1.35));
 
   /* ---------------- basemap / labels / terrain ---------------- */
@@ -262,6 +358,11 @@ export default function TerminalMap() {
     baseRef.current = L.tileLayer(b.url, { maxZoom: b.maxZoom, attribution: "ESRI / OSM" }).addTo(map);
     baseRef.current.bringToBack();
   }, [basemap]);
+
+  useEffect(() => {
+    if (pickedBasemap.current) return;
+    setBasemap(theme === "light" ? "streets" : "dark");
+  }, [theme]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -308,9 +409,16 @@ export default function TerminalMap() {
       });
       setAtmState({ loading: false, count: list.length, note: data.degraded || "" });
     } catch (err) {
-      setAtmState({ loading: false, count: 0, note: "ATM source unreachable — showing none." });
+      setAtmState({ loading: false, count: 0, note: "source unreachable" });
     }
   }, [selectedNode]);
+  const atmText = atmState.loading
+    ? "fetching…"
+    : atmState.note
+    ? `degraded · ${atmState.note}`
+    : atmState.count
+    ? `${atmState.count} ATMs loaded`
+    : "idle";
 
   /* ---------------- chase ---------------- */
   const clearChase = useCallback(() => {
@@ -412,65 +520,86 @@ export default function TerminalMap() {
 
   const onChaseToggle = () => (chaseRunning ? stopChase() : startChase());
 
+  const recenter = useCallback(() => {
+    const map = mapRef.current;
+    if (map) map.flyTo(INDIA_CENTER, INDIA_ZOOM, { duration: 0.8 });
+  }, []);
+
+  const refreshAll = useCallback(() => {
+    renderMarkers();
+    renderUpi();
+    renderIncidents();
+    loadAtms();
+    addToast("Map layers refreshed", false);
+  }, [renderMarkers, renderUpi, renderIncidents, loadAtms, addToast]);
+
+  /* ---------------- MAP TOOLS panel: open/close, flip, Esc ---------------- */
+  const openTools = useCallback(() => {
+    const btn = toolsBtnRef.current;
+    if (btn) {
+      const r = btn.getBoundingClientRect();
+      const panelH = 430; // conservative estimate for the flip decision
+      setDropUp(r.top > panelH + 12);
+    }
+    setToolsOpen(true);
+  }, []);
+
+  useEffect(() => {
+    if (!toolsOpen) return undefined;
+    const onDown = (e) => {
+      const p = toolsPanelRef.current;
+      const b = toolsBtnRef.current;
+      if (p && p.contains(e.target)) return;
+      if (b && b.contains(e.target)) return;
+      setToolsOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        setToolsOpen(false);
+        if (toolsBtnRef.current) toolsBtnRef.current.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [toolsOpen]);
+
+  const isMobile = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width: 1023px)").matches;
+  const toggleSection = (k) => setSections((s) => ({ ...s, [k]: !s[k] }));
+
+  const Section = ({ id, title, children }) => {
+    const open = sections[id];
+    return (
+      <div className="tm-sec">
+        <button
+          type="button"
+          className="tm-sec__head"
+          aria-expanded={open}
+          onClick={() => toggleSection(id)}
+        >
+          <span>{title}</span>
+          <span aria-hidden="true">{open ? "▴" : "▾"}</span>
+        </button>
+        {open && <div className="tm-sec__body">{children}</div>}
+      </div>
+    );
+  };
+
   return (
     <div className="term-map">
       <div className="term-map__canvas" ref={mapEl} />
 
-      <div className="tm-controls">
-        <button
-          type="button"
-          className="tm-btn tm-btn--chase"
-          aria-pressed={chaseRunning}
-          onClick={onChaseToggle}
-        >
+      {/* showpiece: stays on the map, never inside MAP TOOLS */}
+      <div className="tm-top-left">
+        <button type="button" className="tm-btn tm-btn--chase" aria-pressed={chaseRunning} onClick={onChaseToggle}>
           {chaseRunning ? "■ STOP CHASE" : "▶ LIVE CHASE"}
         </button>
+      </div>
 
-        <div className="tm-horizon" role="group" aria-label="Forecast horizon">
-          {HORIZONS.map((h) => (
-            <button
-              key={h.label}
-              type="button"
-              aria-pressed={horizonHours === h.hours}
-              onClick={() => setHorizonHours(h.hours)}
-            >
-              {h.label}
-            </button>
-          ))}
-        </div>
-
-        <button type="button" className="tm-btn" aria-pressed={basemap === "dark"} onClick={() => { pickedBasemap.current = true; setBasemap("dark"); }}>
-          Dark Ops
-        </button>
-        <button type="button" className="tm-btn" aria-pressed={basemap === "satellite"} onClick={() => { pickedBasemap.current = true; setBasemap("satellite"); }}>
-          Satellite
-        </button>
-        <button type="button" className="tm-btn" aria-pressed={basemap === "streets"} onClick={() => { pickedBasemap.current = true; setBasemap("streets"); }}>
-          Streets
-        </button>
-        <button type="button" className="tm-btn" aria-pressed={labelsOn} onClick={() => setLabelsOn((v) => !v)}>
-          Labels
-        </button>
-        <button type="button" className="tm-btn" aria-pressed={terrainOn} onClick={() => setTerrainOn((v) => !v)}>
-          ⛰ Terrain
-        </button>
-        <button type="button" className="tm-btn" onClick={loadAtms} disabled={atmState.loading}>
-          {atmState.loading ? "ATM…" : `ATM LAYER${atmState.count ? ` (${atmState.count})` : ""}`}
-        </button>
-
-        <button type="button" className="tm-btn" onClick={() => mapRef.current && mapRef.current.flyTo(INDIA_CENTER, INDIA_ZOOM, { duration: 0.8 })}>
-          RECENTER
-        </button>
-        <button type="button" className="tm-btn" aria-pressed={playing} onClick={() => setPlaying((v) => !v)}>
-          {playing ? "PAUSE" : "PLAY"}
-        </button>
-        <button type="button" className="tm-btn" aria-pressed={showRisk} onClick={() => setShowRisk((v) => !v)}>
-          RISK LAYER
-        </button>
-        <span className="tm-btn" style={{ cursor: "default" }} title="Forecast confidence at this horizon">
-          CONF {confidence}%
-        </span>
-
+      <div className="tm-top-right">
         <span className="tm-legend" title="Terminal risk score">
           {[
             ["≥80", "#ef4444"],
@@ -487,7 +616,119 @@ export default function TerminalMap() {
         </span>
       </div>
 
-      {atmState.note && <div className="tm-note">ATM source: {atmState.note}</div>}
+      {/* consolidated tools */}
+      <div className="tm-tools">
+        {toolsOpen && (
+          <div className={`tm-panel ${dropUp ? "tm-panel--up" : "tm-panel--down"}`} ref={toolsPanelRef} role="dialog" aria-label="Map tools">
+            <div className="tm-panel__head">
+              <span className="hud-label">MAP TOOLS</span>
+              <button type="button" className="tm-btn tm-btn--icon" onClick={() => setToolsOpen(false)} aria-label="Close map tools">
+                ✕
+              </button>
+            </div>
+
+            <Section id="basemaps" title="BASEMAPS">
+              <div role="radiogroup" aria-label="Basemap" className="tm-rows">
+                {[
+                  ["dark", "Dark Ops (ESRI)"],
+                  ["satellite", "Satellite (ESRI)"],
+                  ["streets", "Streets (OSM)"],
+                ].map(([id, label]) => (
+                  <label key={id} className="tm-row">
+                    <input
+                      type="radio"
+                      name="bm"
+                      checked={basemap === id}
+                      onChange={() => {
+                        pickedBasemap.current = true;
+                        setBasemap(id);
+                      }}
+                    />
+                    <span>{label}</span>
+                  </label>
+                ))}
+                <label className="tm-row">
+                  <input type="checkbox" checked={labelsOn} onChange={() => setLabelsOn((v) => !v)} />
+                  <span>Place labels</span>
+                </label>
+                <label className="tm-row">
+                  <input type="checkbox" checked={terrainOn} onChange={() => setTerrainOn((v) => !v)} />
+                  <span>Terrain hillshade</span>
+                </label>
+              </div>
+            </Section>
+
+            <Section id="layers" title="LAYERS">
+              <div className="tm-rows">
+                <label className="tm-row">
+                  <input type="checkbox" checked={riskOn} onChange={() => setRiskOn((v) => !v)} />
+                  <span>Risk heat (Hawkes)</span>
+                </label>
+                <label className="tm-row">
+                  <input type="checkbox" checked={upiOn} onChange={() => setUpiOn((v) => !v)} />
+                  <span>UPI volume</span>
+                </label>
+                <label className="tm-row">
+                  <input type="checkbox" checked={incidentsOn} onChange={() => setIncidentsOn((v) => !v)} />
+                  <span>Fraud incidents</span>
+                </label>
+                <button type="button" className="tm-btn tm-row-btn" onClick={refreshAll}>
+                  REFRESH
+                </button>
+              </div>
+            </Section>
+
+            <Section id="data" title="DATA">
+              <div className="tm-rows">
+                <button type="button" className="tm-btn tm-row-btn" onClick={loadAtms} disabled={atmState.loading}>
+                  {atmState.loading ? "ATM LAYER (LIVE OSM) — fetching…" : "ATM LAYER (LIVE OSM)"}
+                </button>
+                <span className="tm-state" data-atm-state={atmText}>
+                  {atmText}
+                </span>
+              </div>
+            </Section>
+
+            <Section id="view" title="VIEW">
+              <div className="tm-rows">
+                <div className="tm-hz" role="radiogroup" aria-label="Forecast horizon">
+                  {HORIZONS.map((h) => (
+                    <label key={h.label} className="tm-hz__item">
+                      <input
+                        type="radio"
+                        name="hz"
+                        checked={horizonHours === h.hours}
+                        onChange={() => setHorizonHours(h.hours)}
+                      />
+                      <span>{h.label}</span>
+                    </label>
+                  ))}
+                </div>
+                <button type="button" className="tm-btn tm-row-btn" onClick={recenter}>
+                  RECENTER (all-India)
+                </button>
+                <button type="button" className="tm-btn tm-row-btn" aria-pressed={playing} onClick={() => setPlaying((v) => !v)}>
+                  {playing ? "PAUSE HORIZON PLAYBACK" : "PLAY HORIZON"}
+                </button>
+                <div className="tm-row tm-row--static">
+                  <span>Confidence</span>
+                  <b data-conf={confidence} style={{ color: "var(--accent-cyan)" }}>{confidence}%</b>
+                </div>
+              </div>
+            </Section>
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="tm-btn tm-tools__btn"
+          ref={toolsBtnRef}
+          aria-expanded={toolsOpen}
+          onClick={() => (toolsOpen ? setToolsOpen(false) : openTools())}
+        >
+          MAP TOOLS {toolsOpen ? "▴" : "▾"}
+        </button>
+      </div>
 
       {chaseLog.length > 0 && (
         <div className="tm-log" aria-live="polite">
