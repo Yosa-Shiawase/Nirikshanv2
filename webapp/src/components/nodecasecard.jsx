@@ -1,10 +1,13 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useConsole } from "../context/ConsoleContext";
 import { useLiveFeed } from "../live/useLiveFeed";
 import { TERMINAL_META, evaluateTerminal, hawkesIntensity, hopDecay, rankTerminals } from "../lib/hawkes";
 import { NODE_BY_ID } from "../lib/terminals";
 import { fmtINR, fmtCompactINR, riskTone, secondsAgo } from "../lib/format";
+import { exportElementToPdf } from "../lib/exportPdf";
 import Provenance from "./Provenance";
+import DossierDoc from "./DossierDoc";
 
 function Row({ label, value, tone }) {
   return (
@@ -15,10 +18,20 @@ function Row({ label, value, tone }) {
   );
 }
 
-// PRIMARY context-drawer content (T2 term): the focused node's case card.
+// PRIMARY context content: the focused node's case card.
+// Also owns the per-node EXPORT REPORT (shared by the desktop drawer and the
+// mobile case sheet, since both render this component).
 export default function NodeCaseCard() {
   const { complaints } = useLiveFeed();
   const { selectedNode, hawkes, horizonHours, bnssStrict, isWatched, toggleWatch } = useConsole();
+
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportMsg, setExportMsg] = useState("");
+  const dossierRef = useRef(null);
+
+  const reportRef = useMemo(() => "AIR-I4C-" + String(Date.now()).slice(-6), [exportOpen]);
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const stats = useMemo(() => {
     const rows = complaints.filter((c) => c && c.target_terminal_id === selectedNode);
@@ -44,6 +57,28 @@ export default function NodeCaseCard() {
   const meta = TERMINAL_META[selectedNode] || { city: "—", zone: "—" };
   // Section-102 lien is capped at the DISPUTED value only.
   const lien = bnssStrict ? Math.min(stats.avg, 50000) : stats.total;
+
+  // Render the dossier on screen (html2canvas needs a laid-out node), then export.
+  useEffect(() => {
+    if (!exportOpen) return undefined;
+    let cancelled = false;
+    setExporting(true);
+    setExportMsg("");
+    const t = setTimeout(async () => {
+      try {
+        await exportElementToPdf(dossierRef.current, `NIRAKSHAN-dossier-${selectedNode}.pdf`);
+        if (!cancelled) setExportMsg("PDF downloaded.");
+      } catch (err) {
+        if (!cancelled) setExportMsg("Export failed: " + String(err.message || err));
+      } finally {
+        if (!cancelled) setExporting(false);
+      }
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [exportOpen, selectedNode]);
 
   return (
     <section className="hud-panel p-3" aria-label="Node case card">
@@ -71,32 +106,40 @@ export default function NodeCaseCard() {
       </div>
 
       <div className="mt-2">
-        <Row label="Map score (/100)" value={stats.forecast ? stats.forecast.score : "—"} tone={stats.forecast ? riskTone(stats.forecast.score) : undefined} />
+        <Row
+          label="Map score (/100)"
+          value={stats.forecast ? stats.forecast.score : "—"}
+          tone={stats.forecast ? riskTone(stats.forecast.score) : undefined}
+        />
         <Row label="Projected flow" value={stats.forecast ? fmtCompactINR(stats.forecast.projectedFlow) : "—"} />
         <Row label="Complaints (buffered)" value={stats.rows.length} />
         <Row label="Disputed total" value={fmtINR(stats.total)} tone="var(--danger)" />
         <Row label="Avg ticket" value={fmtINR(stats.avg)} />
-        <Row
-          label="Last event"
-          value={stats.last ? `${secondsAgo(stats.last.timestamp)}s ago` : "—"}
-        />
-        <Row
-          label="Top victim VPA"
-          value={stats.topVictim ? stats.topVictim[0] : "—"}
-        />
+        <Row label="Last event" value={stats.last ? `${secondsAgo(stats.last.timestamp)}s ago` : "—"} />
+        <Row label="Top victim VPA" value={stats.topVictim ? stats.topVictim[0] : "—"} />
         <Row label="Sec-102 lien cap" value={fmtCompactINR(lien)} tone={bnssStrict ? "var(--warn)" : "var(--text-main)"} />
       </div>
 
-      {stats.topVictim && (
+      <div className="grid gap-2 mt-3" style={{ gridTemplateColumns: stats.topVictim ? "1fr 1fr" : "1fr" }}>
         <button
           type="button"
-          className="hud-btn w-full mt-3"
-          onClick={() => toggleWatch(stats.topVictim[0])}
-          style={{ minHeight: 44 }}
+          className="hud-btn"
+          onClick={() => setExportOpen(true)}
+          style={{ minHeight: 44, borderColor: "var(--accent-cyan)", color: "var(--accent-cyan)" }}
         >
-          {isWatched(stats.topVictim[0]) ? "★ ON WATCHLIST" : "☆ ADD VPA TO WATCHLIST"}
+          EXPORT REPORT
         </button>
-      )}
+        {stats.topVictim && (
+          <button
+            type="button"
+            className="hud-btn"
+            onClick={() => toggleWatch(stats.topVictim[0])}
+            style={{ minHeight: 44 }}
+          >
+            {isWatched(stats.topVictim[0]) ? "★ ON WATCHLIST" : "☆ ADD VPA TO WATCHLIST"}
+          </button>
+        )}
+      </div>
 
       <div className="mt-3">
         <div className="hud-label mb-1">MONEY CHAIN (each hop × {hawkes.alpha})</div>
@@ -113,6 +156,46 @@ export default function NodeCaseCard() {
             ))}
         </div>
       </div>
+
+      {exportOpen &&
+        createPortal(
+          <div className="fixed inset-0 z-[1300] flex items-start justify-center p-3" role="dialog" aria-modal="true" aria-label={`Dossier for ${selectedNode}`}>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setExportOpen(false)}
+              className="absolute inset-0"
+              style={{ background: "rgba(1,5,7,0.74)" }}
+            />
+            <div
+              className="hud-panel relative fade-in"
+              style={{ width: "min(860px, 100%)", maxHeight: "88dvh", overflow: "auto", padding: 12 }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2" style={{ marginBottom: 8 }}>
+                <div className="hud-label">EXPORT REPORT · {selectedNode}</div>
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: 12, color: exporting ? "var(--text-muted)" : "var(--ok)" }}>
+                    {exporting ? "Rendering PDF…" : exportMsg}
+                  </span>
+                  <button type="button" className="hud-btn" onClick={() => setExportOpen(false)} style={{ minHeight: 36 }}>
+                    CLOSE
+                  </button>
+                </div>
+              </div>
+              <div ref={dossierRef} style={{ background: "var(--bg-core)" }}>
+                <DossierDoc
+                  nodeId={selectedNode}
+                  rows={stats.rows}
+                  reportRef={reportRef}
+                  today={today}
+                  bnssStrict={bnssStrict}
+                  provenance={stats.last && stats.last.source}
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 }
