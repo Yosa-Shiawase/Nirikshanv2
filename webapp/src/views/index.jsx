@@ -17,9 +17,9 @@ import { exportElementToPdf } from "../lib/exportPdf";
 
 /* ---- shared bits ---------------------------------------------------------- */
 
-function Pane({ title, subtitle, children, right }) {
+function Pane({ title, subtitle, children, right, paneClass }) {
   return (
-    <section className="fade-in flex flex-col gap-3 h-full">
+    <section className={`fade-in flex flex-col gap-3 h-full ${paneClass || ""}`}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg md:text-xl font-semibold glow-text" style={{ color: "var(--accent-cyan)" }}>
@@ -240,6 +240,7 @@ function EntitiesView() {
     <Pane
       title="SUSPECT NETWORK — WHO MOVES THE MONEY"
       subtitle="Cluster of VPAs seen moving funds · watchlist · search"
+      paneClass="pane-suspects"
       right={<span className="hud-chip">{total} VPAs · {watchlist.length} watched</span>}
     >
       <div className="grid gap-3 lg:grid-cols-[1.4fr_1fr]">
@@ -376,11 +377,11 @@ function ClusterGraph({ nodes, center, onPick, isWatched }) {
               cy={p.y}
               r={7 + Math.min(9, p.n.n)}
               fill="color-mix(in srgb, var(--danger) 55%, var(--bg-card))"
-              stroke={watched ? "#fbbf24" : "var(--danger)"}
+              stroke={watched ? "var(--warn)" : "var(--danger)"}
               strokeWidth={watched ? 2.5 : 1.8}
             />
             {watched && (
-              <text x={p.x} y={p.y - 14} fontSize="11" textAnchor="middle" fill="#fbbf24">★</text>
+              <text x={p.x} y={p.y - 14} fontSize="11" textAnchor="middle" fill="var(--warn)">★</text>
             )}
             {(() => {
               const dist = Math.max(1, Math.hypot(p.x - cx, p.y - cy));
@@ -403,7 +404,7 @@ function ClusterGraph({ nodes, center, onPick, isWatched }) {
                   fontSize="16"
                   textAnchor={anchor}
                   fill="var(--text-main)"
-                  style={{ paintOrder: "stroke", stroke: "#02060d", strokeWidth: 4 }}
+                  style={{ paintOrder: "stroke", stroke: "var(--bg-card)", strokeWidth: 4 }}
                 >
                   {label}
                 </text>
@@ -414,7 +415,7 @@ function ClusterGraph({ nodes, center, onPick, isWatched }) {
         );
       })}
       <circle cx={cx} cy={cy} r={16} fill="color-mix(in srgb, var(--accent-cyan) 40%, var(--bg-card))" stroke="var(--accent-cyan)" strokeWidth="2" />
-      <text x={cx} y={cy + 38} fontSize="15" textAnchor="middle" fill="var(--accent-cyan)" style={{ paintOrder: "stroke", stroke: "#02060d", strokeWidth: 3 }}>
+      <text x={cx} y={cy + 38} fontSize="15" textAnchor="middle" fill="var(--accent-cyan)" style={{ paintOrder: "stroke", stroke: "var(--bg-card)", strokeWidth: 3 }}>
         {center}
       </text>
     </svg>
@@ -458,6 +459,7 @@ function TransactionsView() {
     <Pane
       title="MONEY TRAIL — HOW STOLEN FUNDS MOVE"
       subtitle="Follow each hop from victim to cash-out"
+      paneClass="pane-trail"
       right={
         <button type="button" className="hud-btn" onClick={refreshCaseTrace} disabled={caseTrace.loading}>
           {caseTrace.loading ? "REFRESHING…" : "REFRESH"}
