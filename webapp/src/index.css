@@ -135,10 +135,11 @@
   outline-color: #0e7490;
 }
 [data-theme="light"] .tm-btn,
-[data-theme="light"] .tm-horizon,
+[data-theme="light"] .tm-panel,
 [data-theme="light"] .tm-log,
-[data-theme="light"] .tm-legend {
-  background: rgba(255, 255, 255, 0.95);
+[data-theme="light"] .tm-legend,
+[data-theme="light"] .tm-hz__item {
+  background: rgba(255, 255, 255, 0.96);
   color: var(--text-main);
 }
 [data-theme="light"] .tm-btn--chase {
@@ -150,10 +151,10 @@
   background: #dfe7f0;
 }
 /* selected states must stay legible on paper */
-[data-theme="light"] .tm-horizon button[aria-pressed="true"] {
+[data-theme="light"] .tm-hz__item:has(input:checked) {
   background: var(--accent-cyan);
   color: #ffffff;
-  box-shadow: none;
+  border-color: var(--accent-cyan);
 }
 [data-theme="light"] .tm-btn[aria-pressed="true"] {
   background: var(--accent-cyan);
