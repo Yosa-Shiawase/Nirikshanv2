@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="620" viewBox="0 0 660 620">
+  <title>NIRAKSHAN backdrop - See. Predict. Intercept. (SIH 2026 - Team Cyphora)</title>
+  <defs>
+    <linearGradient id="hexGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5F8FA"/><stop offset="1" stop-color="#E9EFF4"/>
+    </linearGradient>
+    <linearGradient id="sweepGrad" gradientUnits="userSpaceOnUse" x1="920" y1="440" x2="1040" y2="300">
+      <stop offset="0" stop-color="#2E6DA4" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#2E6DA4" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+
+  <!-- (white background rect removed - SVG is now transparent) -->
+
+  <g transform="translate(-600,-85)">
+
+    <!-- SIH HEX MOTIF -->
+    <polygon id="hex-motif" points="920,180 1145.2,310 1145.2,570 920,700 694.8,570 694.8,310"
+             fill="url(#hexGrad)" stroke="#E2E9EF" stroke-width="4"/>
+
+    <!-- SATELLITE (ESRI/OSM imagery feed) -->
+    <g id="satellite" transform="translate(650,140) rotate(-18)" opacity="0.55">
+      <rect x="-42" y="-7" width="26" height="14" rx="2" fill="#2E6DA4"/>
+      <rect x="16" y="-7" width="26" height="14" rx="2" fill="#2E6DA4"/>
+      <rect x="-14" y="-11" width="28" height="22" rx="5" fill="#1F3A5F"/>
+      <circle cy="16" r="5" fill="#D99000"/>
+    </g>
+    <path id="sat-link" d="M650,160 L890,405" stroke="#D99000" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round" fill="none" opacity="0.35"/>
+
+    <!-- RADAR FIELD -->
+    <g id="radar-field">
+      <path d="M700,440 H1140 M920,220 V660" stroke="#CBD5DD" stroke-width="3"/>
+      <circle cx="920" cy="440" r="155" fill="none" stroke="#C9D4DD" stroke-width="3" stroke-dasharray="10 9"/>
+      <circle cx="920" cy="440" r="195" fill="none" stroke="#C9D4DD" stroke-width="3" stroke-dasharray="3 9" opacity="0.8"/>
+      <path d="M920,440 L920,225 A215,215 0 0 1 1043.4,263.9 Z" fill="url(#sweepGrad)"/>
+      <path d="M920,440 L1043.4,263.9" stroke="#2E6DA4" stroke-width="4.5" stroke-linecap="round" opacity="0.8" fill="none"/>
+    </g>
+
+    <!-- ORBIT -->
+    <g id="orbit">
+      <circle cx="920" cy="440" r="245" fill="none" stroke="#AEBDC9" stroke-width="3" stroke-dasharray="0.1 14" stroke-linecap="round"/>
+      <circle cx="697.9" cy="336.5" r="6.5" fill="#2E6DA4" opacity="0.85"/>
+      <circle cx="1042.5" cy="227.8" r="6.5" fill="#0E8A5F" opacity="0.85"/>
+      <circle cx="920" cy="685" r="6.5" fill="#D99000" opacity="0.85"/>
+    </g>
+
+    <!-- HOTSPOT BLIPS -->
+    <g id="hotspots">
+      <g id="blip-1"><circle cx="1075" cy="395" r="16" fill="none" stroke="#D99000" stroke-width="2" opacity="0.3"/><circle cx="1075" cy="395" r="7" fill="#D99000" stroke="#FFFFFF" stroke-width="2.5"/></g>
+      <g id="blip-2"><circle cx="800" cy="548" r="16" fill="none" stroke="#0E8A5F" stroke-width="2" opacity="0.3"/><circle cx="800" cy="548" r="7" fill="#0E8A5F" stroke="#FFFFFF" stroke-width="2.5"/></g>
+      <g id="blip-3"><circle cx="1030" cy="585" r="16" fill="none" stroke="#2E6DA4" stroke-width="2" opacity="0.3"/><circle cx="1030" cy="585" r="7" fill="#2E6DA4" stroke="#FFFFFF" stroke-width="2.5"/></g>
+    </g>
+
+    <!-- RUPEE LOCATION PINS (forecast cash-out points) -->
+    <g id="location-pins">
+      <g id="pin-1">
+        <ellipse cx="760" cy="346" rx="14" ry="4" fill="#1F3A5F" opacity="0.15"/>
+        <circle cx="760" cy="285" r="33" fill="#FFFFFF"/><path d="M736,308 C748,322 754,332 760,344 C766,332 772,322 784,308 Z" fill="#FFFFFF"/>
+        <circle cx="760" cy="285" r="26" fill="#1F3A5F"/><path d="M740,309 C750,321 756,330 760,340 C764,330 770,321 780,309 Z" fill="#1F3A5F"/>
+        <circle cx="760" cy="285" r="17.5" fill="#FFFFFF"/>
+        <path transform="translate(760,287) scale(0.4)" d="M-22,-26 H22 M-18,-26 V28 M-18,-26 H2 A16,16 0 0 1 2,6 H-18 M-18,15 H20 M-18,28 H20" fill="none" stroke="#1F3A5F" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g id="pin-2">
+        <ellipse cx="1075" cy="370" rx="12" ry="3.5" fill="#1F3A5F" opacity="0.15"/>
+        <circle cx="1075" cy="320" r="28" fill="#FFFFFF"/><path d="M1055,339 C1065,350 1070,358 1075,368 C1080,358 1085,350 1095,339 Z" fill="#FFFFFF"/>
+        <circle cx="1075" cy="320" r="22" fill="#1F3A5F"/><path d="M1058,340 C1066,349 1070,356 1075,364 C1080,356 1084,349 1092,340 Z" fill="#1F3A5F"/>
+        <circle cx="1075" cy="320" r="14" fill="#FFFFFF"/>
+        <path transform="translate(1075,322) scale(0.32)" d="M-22,-26 H22 M-18,-26 V28 M-18,-26 H2 A16,16 0 0 1 2,6 H-18 M-18,15 H20 M-18,28 H20" fill="none" stroke="#1F3A5F" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+
+    <!-- PIPELINE: DATA -> DECISION -> ACTION -->
+    <g id="pipeline">
+      <line x1="912" y1="668" x2="988" y2="668" stroke="#1F3A5F" stroke-width="4"/>
+      <polygon points="988,660 1002,668 988,676" fill="#1F3A5F"/>
+      <line x1="1056" y1="668" x2="1140" y2="668" stroke="#1F3A5F" stroke-width="4"/>
+      <polygon points="1140,660 1154,668 1140,676" fill="#1F3A5F"/>
+      <g id="node-data">
+        <circle cx="880" cy="668" r="26" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="3"/>
+        <path d="M862,654 v24 a18,7 0 0 0 36,0 v-24 Z" fill="#1F3A5F"/>
+        <ellipse cx="880" cy="654" rx="18" ry="7" fill="#2E6DA4"/>
+      </g>
+      <g id="node-decision">
+        <circle cx="1030" cy="668" r="26" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="3"/>
+        <rect x="1015" y="653" width="30" height="30" rx="3" fill="#1F3A5F"/>
+        <rect x="1015" y="653" width="30" height="30" rx="3" fill="#1F3A5F" transform="rotate(45 1030 668)"/>
+        <circle cx="1030" cy="668" r="8.5" fill="#FFFFFF"/>
+        <circle cx="1030" cy="668" r="3.5" fill="#D99000"/>
+      </g>
+      <g id="node-action">
+        <circle cx="1180" cy="668" r="26" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="3"/>
+        <polygon points="1186,650 1166,674 1177,674 1173,690 1194,666 1183,666" fill="#D99000"/>
+      </g>
+    </g>
+
+    <!-- BADGE: COMPLAINT INTAKE (Telegram/SMS) -->
+    <g id="badge-intake" transform="translate(920,195)">
+      <circle r="62" fill="#1F3A5F" opacity="0.10"/><circle cy="5" r="54" fill="#1F3A5F" opacity="0.10"/>
+      <circle r="54" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="4"/>
+      <rect x="-26" y="-24" width="52" height="34" rx="10" fill="#1F3A5F"/>
+      <path d="M-8,8 L0,20 L8,8 Z" fill="#1F3A5F"/>
+      <circle cx="-12" cy="-7" r="3.5" fill="#FFFFFF"/><circle cx="0" cy="-7" r="3.5" fill="#FFFFFF"/><circle cx="12" cy="-7" r="3.5" fill="#FFFFFF"/>
+    </g>
+
+    <!-- BADGE: BANK / ATM LAYER -->
+    <g id="badge-bank" transform="translate(675,440)">
+      <circle r="62" fill="#2E6DA4" opacity="0.12"/><circle cy="5" r="54" fill="#1F3A5F" opacity="0.10"/>
+      <circle r="54" fill="#FFFFFF" stroke="#2E6DA4" stroke-width="4"/>
+      <g transform="scale(0.88)">
+        <path d="M-32,-10 L0,-31 L32,-10 Z" fill="#1F3A5F"/>
+        <rect x="-32" y="-8" width="64" height="9" rx="2" fill="#1F3A5F"/>
+        <rect x="-26" y="4" width="9" height="26" rx="2" fill="#2E6DA4"/>
+        <rect x="-4.5" y="4" width="9" height="26" rx="2" fill="#2E6DA4"/>
+        <rect x="17" y="4" width="9" height="26" rx="2" fill="#2E6DA4"/>
+        <rect x="-29" y="33" width="58" height="7" rx="2" fill="#1F3A5F"/>
+        <rect x="-36" y="44" width="72" height="6" rx="3" fill="#90A4AE"/>
+      </g>
+    </g>
+
+    <!-- BADGE: STOPWATCH (minutes not hours / +2h +6h +24h) -->
+    <g id="badge-stopwatch" transform="translate(1165,440)">
+      <circle r="62" fill="#D99000" opacity="0.13"/><circle cy="5" r="54" fill="#1F3A5F" opacity="0.10"/>
+      <circle r="54" fill="#FFFFFF" stroke="#D99000" stroke-width="4"/>
+      <rect x="-5" y="-38" width="10" height="8" rx="2" fill="#D99000"/>
+      <circle r="26" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="4"/>
+      <line x1="0" y1="-18" x2="0" y2="-23" stroke="#D99000" stroke-width="3" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="0" y2="-13" stroke="#1F3A5F" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="9" y2="6" stroke="#1F3A5F" stroke-width="3.5" stroke-linecap="round"/>
+      <circle r="3" fill="#D99000"/>
+    </g>
+
+    <!-- BADGE: QR FRAUD FORENSICS -->
+    <g id="badge-qr" transform="translate(1132.2,562.5)">
+      <circle r="62" fill="#D99000" opacity="0.13"/><circle cy="5" r="54" fill="#1F3A5F" opacity="0.10"/>
+      <circle r="54" fill="#FFFFFF" stroke="#D99000" stroke-width="4"/>
+      <g transform="scale(0.92)">
+        <rect x="-25" y="-25" width="21" height="21" rx="5" fill="none" stroke="#D99000" stroke-width="5"/>
+        <rect x="-18" y="-18" width="7" height="7" rx="1.5" fill="#D99000"/>
+        <rect x="4" y="-25" width="21" height="21" rx="5" fill="none" stroke="#D99000" stroke-width="5"/>
+        <rect x="11" y="-18" width="7" height="7" rx="1.5" fill="#D99000"/>
+        <rect x="-25" y="4" width="21" height="21" rx="5" fill="none" stroke="#D99000" stroke-width="5"/>
+        <rect x="-18" y="11" width="7" height="7" rx="1.5" fill="#D99000"/>
+        <rect x="4" y="4" width="9" height="9" rx="1.5" fill="#D99000"/>
+        <rect x="16" y="8" width="9" height="9" rx="1.5" fill="#D99000"/>
+        <rect x="8" y="17" width="9" height="9" rx="1.5" fill="#D99000"/>
+      </g>
+    </g>
+
+    <!-- BADGE: SEC.102 DOSSIER -->
+    <g id="badge-document" transform="translate(746.7,613.3)">
+      <circle r="62" fill="#0E8A5F" opacity="0.12"/><circle cy="5" r="54" fill="#1F3A5F" opacity="0.10"/>
+      <circle r="54" fill="#FFFFFF" stroke="#0E8A5F" stroke-width="4"/>
+      <path d="M-20,-26 H8 L20,-14 V26 H-20 Z" fill="#FFFFFF" stroke="#0E8A5F" stroke-width="3.5" stroke-linejoin="round"/>
+      <path d="M8,-26 V-14 H20 Z" fill="#0E8A5F" opacity="0.3" stroke="#0E8A5F" stroke-width="2" stroke-linejoin="round"/>
+      <line x1="-12" y1="-6" x2="12" y2="-6" stroke="#0E8A5F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="-12" y1="2" x2="12" y2="2" stroke="#0E8A5F" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+      <line x1="-12" y1="10" x2="2" y2="10" stroke="#0E8A5F" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+      <circle cx="11" cy="14" r="8" fill="#FFFFFF" stroke="#D99000" stroke-width="3"/>
+      <circle cx="11" cy="14" r="2.5" fill="#D99000"/>
+    </g>
+
+    <!-- HERO: NIRAKSHAN EYE IN SHIELD -->
+    <g id="hero-eye">
+      <path d="M920,262 C962,285 1016,297 1080,297 C1080,405 1058,528 920,630 C782,528 760,405 760,297 C824,297 878,285 920,262 Z"
+            fill="#FFFFFF" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round"/>
+      <path d="M920,262 C962,285 1016,297 1080,297 C1080,405 1058,528 920,630 C782,528 760,405 760,297 C824,297 878,285 920,262 Z"
+            fill="#FFFFFF" stroke="#1F3A5F" stroke-width="8" stroke-linejoin="round"/>
+      <path d="M920,262 C962,285 1016,297 1080,297 C1080,405 1058,528 920,630 C782,528 760,405 760,297 C824,297 878,285 920,262 Z"
+            transform="translate(920,440) scale(0.86) translate(-920,-440)"
+            fill="none" stroke="#2E6DA4" stroke-width="3.5" stroke-dasharray="12 7" opacity="0.9"/>
+      <path d="M790,440 Q920,345 1050,440 Q920,535 790,440 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="14" stroke-linejoin="round"/>
+      <path d="M790,440 Q920,345 1050,440 Q920,535 790,440 Z" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="7" stroke-linejoin="round"/>
+      <circle cx="920" cy="440" r="72" fill="#1F3A5F"/>
+      <circle cx="920" cy="440" r="53" fill="none" stroke="#7FA8CC" stroke-width="3" stroke-dasharray="5 7"/>
+      <circle cx="920" cy="440" r="27" fill="#0E8A5F"/>
+      <circle cx="927" cy="433" r="11.5" fill="#1F3A5F"/>
+      <circle cx="934" cy="425" r="5.5" fill="#FFFFFF"/>
+      <g id="iris-ticks" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round">
+        <line x1="980" y1="440" x2="990" y2="440"/>
+        <line x1="962.4" y1="482.4" x2="969.5" y2="489.5"/>
+        <line x1="920" y1="500" x2="920" y2="510"/>
+        <line x1="877.6" y1="482.4" x2="870.5" y2="489.5"/>
+        <line x1="860" y1="440" x2="850" y2="440"/>
+        <line x1="877.6" y1="397.6" x2="870.5" y2="390.5"/>
+        <line x1="920" y1="380" x2="920" y2="370"/>
+        <line x1="962.4" y1="397.6" x2="969.5" y2="390.5"/>
+      </g>
+      <g id="reticle" stroke="#2E6DA4" stroke-width="4" stroke-linecap="round">
+        <line x1="1020" y1="518" x2="1028" y2="526"/>
+        <line x1="820" y1="518" x2="812" y2="526"/>
+        <line x1="820" y1="362" x2="812" y2="354"/>
+        <line x1="1020" y1="362" x2="1028" y2="354"/>
+      </g>
+    </g>
+
+  </g>
+</svg>
