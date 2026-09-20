@@ -11,6 +11,9 @@ GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT = os.environ.get("TELEGRAM_CHAT_ID", "")
+INGEST_KEY = os.environ.get("INGEST_KEY", "")
+RATE_LIMIT = {"writes": (30, 60), "reads": (120, 60)}
+HITS = {}
 
 DB_LOCK = threading.Lock()
 DB = sqlite3.connect("live_data.db", check_same_thread=False)
@@ -346,6 +349,17 @@ def ai_briefing():
       "- Hot terminals: %s.\n- %s\n- Recommended Sec-102 action: cap liens at disputed value on top terminal; alert bank nodal for ATM pre-positioning." % (
         sum(v["n"] for _,v in per.items()), sum(v["inr"] for _,v in per.items()), top, burst)}
 
+def _hit(ip, kind):
+    mx, win = RATE_LIMIT[kind]
+    now = time.time()
+    q = HITS.setdefault(kind, {}).setdefault(ip, [])
+    while q and now - q[0] > win: q.pop(0)
+    q.append(now)
+    return len(q) <= mx
+
+def _ok_origin(o):
+    return (not o) or o.startswith("https://nirikshanv2.onrender.com") or "localhost" in o or "127.0.0.1" in o
+
 MIME = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",
         ".css":"text/css; charset=utf-8",".png":"image/png",".json":"application/json",
         ".svg":"image/svg+xml",".ico":"image/x-icon"}
@@ -353,9 +367,12 @@ MIME = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8
 class H(BaseHTTPRequestHandler):
     def log_message(self,*a): pass
     def _cors(self):
-        self.send_header("Access-Control-Allow-Origin","*")
+        self.send_header("Access-Control-Allow-Origin",(lambda o: o if _ok_origin(o) else "null")(self.headers.get("Origin","")))
         self.send_header("Access-Control-Allow-Headers","Content-Type")
         self.send_header("Access-Control-Allow-Methods","GET,POST,OPTIONS")
+        self.send_header("X-Content-Type-Options","nosniff")
+        self.send_header("X-Frame-Options","DENY")
+        self.send_header("Referrer-Policy","no-referrer")
     def do_OPTIONS(self): self.send_response(204); self._cors(); self.end_headers()
     def _json(self,obj,code=200):
         b=json.dumps(obj).encode(); self.send_response(code)
@@ -422,6 +439,8 @@ class H(BaseHTTPRequestHandler):
             q = urllib.parse.parse_qs(p.query)
             r = sms_process(q.get("from",[""])[0], q.get("text",[""])[0], "sms")
             self._json(r)
+        elif p.path in ("/atms","/ai/briefing","/case/trace") and not _hit(self.client_address[0]+"g","reads"):
+            return self._json({"error":"rate limited"},429)
         elif p.path == "/atms":
             q = urllib.parse.parse_qs(p.query)
             res = get_atms(q.get("node",[""])[0], float(q.get("lat",[22.5])[0]),
@@ -455,9 +474,15 @@ class H(BaseHTTPRequestHandler):
         else:
             self._static(p.path)
     def do_POST(self):
+        ip = self.client_address[0]
+        if not _hit(ip, "writes"):
+            return self._json({"error":"rate limited"},429)
         self.path = self.path.strip().rstrip("/")
-        n = int(self.headers.get("Content-Length",0) or 0)
+        n = min(int(self.headers.get("Content-Length",0) or 0), 8192)
         body = self.rfile.read(n)
+        if self.path in ("/ingest","/ingest-sms") and INGEST_KEY:
+            if self.headers.get("X-Nirakshan-Key") != INGEST_KEY:
+                return self._json({"error":"forbidden"},403)
         if self.path == "/ingest-sms":
             try:
                 d = json.loads(body)
