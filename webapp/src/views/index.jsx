@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLiveFeed } from "../live/useLiveFeed";
-import { useConsole } from "../context/ConsoleContext";
-import { useTheme } from "../context/ThemeContext";
-import { THEMES } from "../lib/theme";
-import api from "../lib/api";
-import Provenance from "../components/Provenance";
-import DossierDoc from "../components/DossierDoc";
-import TerminalMap from "../components/TerminalMap";
-import QrCamera from "../components/QrCamera";
-import { AlertsToggle } from "../components/AlertBanner";
-import { NODES } from "../lib/terminals";
-import { TERMINALS, TERMINAL_META, evaluateTerminal, hopDecay, rankTerminals, zoneRisk } from "../lib/hawkes";
-import { fmtINR, fmtCompactINR, clockNow, parseClock, riskTone, secondsAgo } from "../lib/format";
-import { DEMO_URIS, makeQrDataUrl, payeeFromUri, readBlocked, readHistory, writeBlocked, writeHistory } from "../lib/qr";
-import { exportElementToPdf } from "../lib/exportPdf";
+import { useLiveFeed } from "../live/uselivefeed.jsx";
+import { useConsole } from "../context/consolecontext.jsx";
+import { useTheme } from "../context/themecontext.jsx";
+import { THEMES } from "../lib/theme.js";
+import api from "../lib/api.js";
+import Provenance from "../components/provenance.jsx";
+import DossierDoc from "../components/dossierdoc.jsx";
+import TerminalMap from "../components/terminalmap.jsx";
+import QrCamera from "../components/qrcamera.jsx";
+import { AlertsToggle } from "../components/alertbanner.jsx";
+import { NODES } from "../lib/terminals.js";
+import { TERMINALS, TERMINAL_META, evaluateTerminal, hopDecay, rankTerminals, zoneRisk } from "../lib/hawkes.js";
+import { fmtINR, fmtCompactINR, clockNow, parseClock, riskTone, secondsAgo } from "../lib/format.js";
+import { DEMO_URIS, makeQrDataUrl, payeeFromUri, readBlocked, readHistory, writeBlocked, writeHistory } from "../lib/qr.js";
+import { exportElementToPdf } from "../lib/exportpdf.js";
 
 /* ---- shared bits ---------------------------------------------------------- */
 

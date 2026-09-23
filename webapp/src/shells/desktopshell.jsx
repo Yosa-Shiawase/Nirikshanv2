@@ -1,6 +1,6 @@
-import TopBar from "../components/TopBar";
-import NavRail from "../components/NavRail";
-import ContextDrawer from "../components/ContextDrawer";
+import TopBar from "../components/topbar.jsx";
+import NavRail from "../components/navrail.jsx";
+import ContextDrawer from "../components/contextdrawer.jsx";
 import { ViewPane } from "../views";
 
 // Desktop ≥1024px: full-bleed 3-zone console, edge to edge, projector-readable.

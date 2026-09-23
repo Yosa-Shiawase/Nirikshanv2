@@ -1,4 +1,4 @@
-import ContextPanel from "./ContextPanel";
+import ContextPanel from "./contextpanel.jsx";
 
 export default function ContextDrawer() {
   return (

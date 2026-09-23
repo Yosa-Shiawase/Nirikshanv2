@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import "./Preloader.css";
+import "./preloader.css";
 
 // Cinematic NIRAKSHAN boot — ported from public/preloader.js.
 // Phases: boot -> glitch -> logo -> look -> reveal -> settle (fly home to #brand-logo).

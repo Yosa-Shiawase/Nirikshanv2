@@ -1,8 +1,8 @@
-import { useLiveFeed } from "../live/useLiveFeed";
-import { useConsole } from "../context/ConsoleContext";
-import NodeCaseCard from "./NodeCaseCard";
-import Provenance from "./Provenance";
-import { fmtINR, secondsAgo } from "../lib/format";
+import { useLiveFeed } from "../live/uselivefeed.jsx";
+import { useConsole } from "../context/consolecontext.jsx";
+import NodeCaseCard from "./nodecasecard.jsx";
+import Provenance from "./provenance.jsx";
+import { fmtINR, secondsAgo } from "../lib/format.js";
 
 function Row({ label, value, tone }) {
   return (

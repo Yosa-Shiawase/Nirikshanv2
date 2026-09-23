@@ -1,4 +1,4 @@
-import { MOBILE_PRIMARY, viewById } from "../nav";
+import { MOBILE_PRIMARY, viewById } from "../nav.js";
 
 // Mobile bottom bar: MAP / ALERTS / QR / CASE / MORE.
 // 44px+ targets, safe-area aware, active glow.

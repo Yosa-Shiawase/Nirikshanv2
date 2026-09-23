@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import api from "../lib/api";
-import { DEFAULT_HAWKES } from "../lib/hawkes";
+import api from "../lib/api.js";
+import { DEFAULT_HAWKES } from "../lib/hawkes.js";
 
 // Cross-pane console state: which node is focused, the live Hawkes tunables,
 // the BNSS strict switch, the watchlist, alert arming, and the case trace.

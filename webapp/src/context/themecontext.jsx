@@ -5,7 +5,7 @@ import {
   clearLegacyThemeStores,
   persistTheme,
   readStoredTheme,
-} from "../lib/theme";
+} from "../lib/theme.js";
 
 const ThemeContext = createContext(null);
 

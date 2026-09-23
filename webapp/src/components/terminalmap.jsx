@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./TerminalMap.css";
-import { useLiveFeed } from "../live/useLiveFeed";
-import { useConsole } from "../context/ConsoleContext";
-import { useTheme } from "../context/ThemeContext";
-import api from "../lib/api";
+import "./terminalmap.css";
+import { useLiveFeed } from "../live/uselivefeed.jsx";
+import { useConsole } from "../context/consolecontext.jsx";
+import { useTheme } from "../context/themecontext.jsx";
+import api from "../lib/api.js";
 import {
   BASEMAPS,
   CHASE_SEQ,
@@ -15,9 +15,9 @@ import {
   NODE_BY_ID,
   NODES,
   TERRAIN_URL,
-} from "../lib/terminals";
-import { evaluateTerminal, riskColor } from "../lib/hawkes";
-import { clockNow } from "../lib/format";
+} from "../lib/terminals.js";
+import { evaluateTerminal, riskColor } from "../lib/hawkes.js";
+import { clockNow } from "../lib/format.js";
 
 const HORIZONS = [
   { label: "NOW", hours: 0 },

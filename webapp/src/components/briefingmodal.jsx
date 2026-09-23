@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../lib/api";
+import api from "../lib/api.js";
 
 // F11 AI BRIEFING modal — pulls GET /ai/briefing ({ engine, text }).
 export default function BriefingModal({ open, onClose }) {

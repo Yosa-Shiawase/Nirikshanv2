@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useConsole } from "../context/ConsoleContext";
-import { useLiveFeed } from "../live/useLiveFeed";
-import { TERMINAL_META, evaluateTerminal, hawkesIntensity, hopDecay, rankTerminals } from "../lib/hawkes";
-import { NODE_BY_ID } from "../lib/terminals";
-import { fmtINR, fmtCompactINR, riskTone, secondsAgo } from "../lib/format";
-import { exportElementToPdf } from "../lib/exportPdf";
-import Provenance from "./Provenance";
-import DossierDoc from "./DossierDoc";
+import { useConsole } from "../context/consolecontext.jsx";
+import { useLiveFeed } from "../live/uselivefeed.jsx";
+import { TERMINAL_META, evaluateTerminal, hawkesIntensity, hopDecay, rankTerminals } from "../lib/hawkes.js";
+import { NODE_BY_ID } from "../lib/terminals.js";
+import { fmtINR, fmtCompactINR, riskTone, secondsAgo } from "../lib/format.js";
+import { exportElementToPdf } from "../lib/exportpdf.js";
+import Provenance from "./provenance.jsx";
+import DossierDoc from "./dossierdoc.jsx";
 
 function Row({ label, value, tone }) {
   return (

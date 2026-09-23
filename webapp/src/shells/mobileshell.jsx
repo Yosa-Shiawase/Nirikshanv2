@@ -1,13 +1,13 @@
 import { useState } from "react";
-import BottomNav from "../components/BottomNav";
-import Sheet from "../components/Sheet";
-import { Clock, LiveDot } from "../components/TopBar";
-import { AlertsToggle } from "../components/AlertBanner";
-import ContextPanel from "../components/ContextPanel";
+import BottomNav from "../components/bottomnav.jsx";
+import Sheet from "../components/sheet.jsx";
+import { Clock, LiveDot } from "../components/topbar.jsx";
+import { AlertsToggle } from "../components/alertbanner.jsx";
+import ContextPanel from "../components/contextpanel.jsx";
 import { ViewPane } from "../views";
-import { MOBILE_PRIMARY, VIEWS } from "../nav";
-import { useTheme } from "../context/ThemeContext";
-import { useConsole } from "../context/ConsoleContext";
+import { MOBILE_PRIMARY, VIEWS } from "../nav.js";
+import { useTheme } from "../context/themecontext.jsx";
+import { useConsole } from "../context/consolecontext.jsx";
 
 // Mobile <1024px: genuine app-style layout — full-screen view, bottom nav,
 // swipeable sheets, stacked cards, no hover-dependent info, 44px+ targets.

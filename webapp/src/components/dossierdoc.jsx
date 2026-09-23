@@ -1,5 +1,5 @@
-import { TERMINAL_META, hopDecay } from "../lib/hawkes";
-import { fmtINR } from "../lib/format";
+import { TERMINAL_META, hopDecay } from "../lib/hawkes.js";
+import { fmtINR } from "../lib/format.js";
 
 // Section-102 BNSS dossier body. Shared by the Reports pane and the per-node
 // EXPORT REPORT on the case card, so both surfaces stay identical.

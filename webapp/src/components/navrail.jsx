@@ -1,4 +1,4 @@
-import { VIEWS } from "../nav";
+import { VIEWS } from "../nav.js";
 
 export default function NavRail({ active, onSelect }) {
   return (

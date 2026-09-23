@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { EVENTS_URL } from "../lib/api";
+import { EVENTS_URL } from "../lib/api.js";
 
 // Single EventSource for the whole app. Panes subscribe via useLiveFeed().
 // app.py pushes a mix of shapes on /events:

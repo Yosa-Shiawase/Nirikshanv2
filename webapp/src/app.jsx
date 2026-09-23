@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
-import Preloader from "./components/Preloader";
-import BriefingModal from "./components/BriefingModal";
-import AlertBanner from "./components/AlertBanner";
-import DesktopShell from "./shells/DesktopShell";
-import MobileShell from "./shells/MobileShell";
-import { useMediaQuery, DESKTOP_QUERY } from "./hooks/useMediaQuery";
-import { DEFAULT_VIEW } from "./nav";
+import Preloader from "./components/preloader.jsx";
+import BriefingModal from "./components/briefingmodal.jsx";
+import AlertBanner from "./components/alertbanner.jsx";
+import DesktopShell from "./shells/desktopshell.jsx";
+import MobileShell from "./shells/mobileshell.jsx";
+import { useMediaQuery, DESKTOP_QUERY } from "./hooks/usemediaquery.js";
+import { DEFAULT_VIEW } from "./nav.js";
 
 export default function App() {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);

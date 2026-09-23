@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useLiveFeed } from "../live/useLiveFeed";
-import { useConsole } from "../context/ConsoleContext";
-import { primeAudio, startSiren, stopSiren, vibrate } from "../lib/siren";
-import { riskTone } from "../lib/format";
+import { useLiveFeed } from "../live/uselivefeed.jsx";
+import { useConsole } from "../context/consolecontext.jsx";
+import { primeAudio, startSiren, stopSiren, vibrate } from "../lib/siren.js";
+import { riskTone } from "../lib/format.js";
 
 const SIREN_COOLDOWN_MS = 30000; // F4: 30s siren cooldown
 const BANNER_MS = 9000;

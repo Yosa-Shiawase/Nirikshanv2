@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useLiveFeed } from "../live/useLiveFeed";
-import { useTheme } from "../context/ThemeContext";
-import { THEMES } from "../lib/theme";
-import { AlertsToggle } from "./AlertBanner";
+import { useLiveFeed } from "../live/uselivefeed.jsx";
+import { useTheme } from "../context/themecontext.jsx";
+import { THEMES } from "../lib/theme.js";
+import { AlertsToggle } from "./alertbanner.jsx";
 
 export function Clock({ className = "" }) {
   const [now, setNow] = useState(() => new Date());

@@ -7,7 +7,7 @@
 //     ENGINE ROOM ranking".
 //  2. hawkesIntensity()   — a live-excitation intensity over the SSE stream,
 //     used for the dashboard's live λ.
-import { NODES } from "./terminals";
+import { NODES } from "./terminals.js";
 
 export const DEFAULT_HAWKES = { beta: 1.38, sigma: 350, alpha: 0.42 };
 

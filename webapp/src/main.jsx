@@ -1,9 +1,9 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App";
-import { ThemeProvider } from "./context/ThemeContext";
-import { ConsoleProvider } from "./context/ConsoleContext";
-import { LiveFeedProvider } from "./live/useLiveFeed";
+import App from "./App.jsx";
+import { ThemeProvider } from "./context/themecontext.jsx";
+import { ConsoleProvider } from "./context/consolecontext.jsx";
+import { LiveFeedProvider } from "./live/uselivefeed.jsx";
 
 // NOTE: no <StrictMode> on purpose — the preloader is a one-shot timeline and
 // StrictMode's double-invoked effects would restart it. Providers wrap App so
