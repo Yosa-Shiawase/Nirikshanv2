@@ -140,10 +140,11 @@ export default function TerminalMap() {
 
       if (isP0) {
         const icon = L.divIcon({
-          className: "risk-pulse",
-          html: `<span style="border-color:${c};box-shadow:0 0 12px ${c}"></span>`,
-          iconSize: [0, 0],
-        });
+      className: "atm-glow",
+      html: '<div style="width:30px;height:30px;background:rgba(14,29,56,.92);border:1.5px solid #53c7f0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 10px rgba(83,199,240,.55)">💠</div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15]
+    });
         L.marker([n.lat, n.lon], { icon, interactive: false, keyboard: false }).addTo(g);
       }
 
