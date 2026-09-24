@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1152" height="648" viewBox="0 0 1152 648" role="img" aria-labelledby="title desc">
+  <title id="title">NIRAKSHAN — what we do at a glance</title>
+  <desc id="desc">Complaints flow in, a Hawkes engine predicts ATM cash-out clusters, the money is traced hop-by-hop, and units are pre-positioned at real ATMs; citizens and forensics feed prevention.</desc>
+
+  <!-- paper -->
+  <rect x="0" y="0" width="1152" height="648" fill="#F4F4F4"/>
+
+  <!-- header -->
+  <text x="48" y="40" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" fill="#6E6E6E" letter-spacing="2">ROUND 2 · SIH 2026 · PREDICTIVE CYBERCRIME INTELLIGENCE</text>
+  <text x="48" y="74" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="bold" fill="#141414">NIRAKSHAN — WHAT WE DO AT A GLANCE</text>
+  <rect x="48" y="86" width="180" height="3" fill="#141414"/>
+
+  <!-- PS chip -->
+  <rect x="936" y="34" width="168" height="30" fill="#FFFFFF" stroke="#141414" stroke-width="1.5"/>
+  <text x="1020" y="53" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#141414">SIH26184 · MHA</text>
+
+  <!-- ============ flow band ============ -->
+  <!-- INGEST (flat-left pentagon) -->
+  <polygon points="48,140 266,140 288,176 266,212 48,212" fill="#141414"/>
+  <text x="160" y="181" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" letter-spacing="1">INGEST</text>
+
+  <!-- PREDICT -->
+  <polygon points="312,140 530,140 552,176 530,212 312,212 334,176" fill="#141414"/>
+  <text x="424" y="181" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" letter-spacing="1">PREDICT</text>
+
+  <!-- TRACE -->
+  <polygon points="576,140 794,140 816,176 794,212 576,212 598,176" fill="#141414"/>
+  <text x="688" y="181" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" letter-spacing="1">TRACE</text>
+
+  <!-- INTERCEPT -->
+  <polygon points="840,140 1058,140 1080,176 1058,212 840,212 862,176" fill="#141414"/>
+  <text x="952" y="181" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" letter-spacing="1">INTERCEPT</text>
+
+  <!-- captions -->
+  <text x="168" y="232" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">NCRP complaints · Telegram</text>
+  <text x="168" y="248" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">QR &amp; SMS intake — live</text>
+
+  <text x="432" y="232" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">Hawkes engine scores every</text>
+  <text x="432" y="248" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">ATM cluster · +2h / +6h / +24h</text>
+
+  <text x="696" y="232" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">Money-hop trail with</text>
+  <text x="696" y="248" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">α^hop decay per layer</text>
+
+  <text x="960" y="232" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">Real ATMs to pre-position</text>
+  <text x="960" y="248" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#6E6E6E">units before cash-out</text>
+
+  <!-- feedback loop -->
+  <path d="M 1068 212 L 1068 286 L 432 286 L 432 220" fill="none" stroke="#6E6E6E" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <polygon points="432,212 427,222 437,222" fill="#6E6E6E"/>
+  <text x="750" y="280" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-style="italic" fill="#6E6E6E">outcomes re-score every horizon — the loop never stops</text>
+
+  <!-- ============ supporting cards ============ -->
+  <!-- PREVENT -->
+  <rect x="48" y="340" width="336" height="176" fill="#FFFFFF" stroke="#BDBDBD" stroke-width="1.2"/>
+  <rect x="48" y="340" width="336" height="10" fill="#141414"/>
+  <rect x="76" y="380" width="14" height="14" transform="rotate(45 83 387)" fill="#141414"/>
+  <text x="104" y="392" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#141414" letter-spacing="1">PREVENT</text>
+  <rect x="76" y="412" width="280" height="1" fill="#BDBDBD"/>
+  <text x="76" y="438" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">Citizen Telegram reports scored live;</text>
+  <text x="76" y="456" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">QR / SMS forensics stop fraud</text>
+  <text x="76" y="474" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">at the point of entry.</text>
+
+  <!-- LIVE DATA -->
+  <rect x="408" y="340" width="336" height="176" fill="#FFFFFF" stroke="#BDBDBD" stroke-width="1.2"/>
+  <rect x="408" y="340" width="336" height="10" fill="#141414"/>
+  <rect x="436" y="380" width="14" height="14" transform="rotate(45 443 387)" fill="#141414"/>
+  <text x="464" y="392" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#141414" letter-spacing="1">LIVE DATA</text>
+  <rect x="436" y="412" width="280" height="1" fill="#BDBDBD"/>
+  <text x="436" y="438" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">Real ATMs from OpenStreetMap;</text>
+  <text x="436" y="456" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">SSE live feed + EWMA burst watch</text>
+  <text x="436" y="474" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">on the complaint stream.</text>
+
+  <!-- PROVENANCE -->
+  <rect x="768" y="340" width="336" height="176" fill="#FFFFFF" stroke="#BDBDBD" stroke-width="1.2"/>
+  <rect x="768" y="340" width="336" height="10" fill="#141414"/>
+  <rect x="796" y="380" width="14" height="14" transform="rotate(45 803 387)" fill="#141414"/>
+  <text x="824" y="392" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#141414" letter-spacing="1">PROVENANCE</text>
+  <rect x="796" y="412" width="280" height="1" fill="#BDBDBD"/>
+  <text x="796" y="438" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">Every score and hop logged to SQLite</text>
+  <text x="796" y="456" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">— court-ready Section-102 BNSS</text>
+  <text x="796" y="474" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#6E6E6E">dossiers on export.</text>
+
+  <!-- footer line -->
+  <text x="48" y="576" font-family="Helvetica, Arial, sans-serif" font-size="14.5" font-weight="bold" fill="#141414">See it before the cash moves — forecast, trace, intercept, in one console.</text>
+  <text x="1104" y="600" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#6E6E6E">nirikshanv2.onrender.com · TEAM CYPHORA</text>
+</svg>
