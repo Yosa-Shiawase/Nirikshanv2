@@ -397,14 +397,16 @@ export default function TerminalMap() {
       g && g.clearLayers();
       list.forEach((a) => {
         if (typeof a.lat !== "number" || typeof a.lon !== "number") return;
-        L.circleMarker([a.lat, a.lon], {
-          radius: 4,
-          color: "#f59e0b",
-          weight: 1,
-          fillColor: "#f59e0b",
-          fillOpacity: 0.9,
-        })
-          .bindTooltip(`${a.name || "ATM"}${a.operator ? " · " + a.operator : ""}`, { className: "nir-tip" })
+        // ATM gem marker — divIcon chip, readable on dark AND light basemaps
+        const S = 28;
+        const atmIcon = L.divIcon({
+          className: "atm-gem-icon",
+          html: `<div style="width:${S}px;height:${S}px;border-radius:8px;background:rgba(14,29,56,.92);border:1.5px solid #53c7f0;box-shadow:0 0 10px rgba(83,199,240,.55);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;">💠</div>`,
+          iconSize: [S, S],
+          iconAnchor: [S / 2, S / 2],
+        });
+        L.marker([a.lat, a.lon], { icon: atmIcon, keyboard: false })
+          .bindTooltip(`ATM — ${a.name || "ATM"}${a.operator ? " · " + a.operator : ""}`, { className: "nir-tip" })
           .addTo(g);
       });
       setAtmState({ loading: false, count: list.length, note: data.degraded || "" });
