@@ -265,58 +265,192 @@ def sms_process(frm, txt, tag):
         tg_push("SMS suspicious (" + str(r["risk_score"]) + ")", r["text"][:120])
     return r
 
+ATM_CACHE_TTL = 21600
+OVERPASS_STATUS_TIMEOUT = 4
+OVERPASS_QUERY_TIMEOUT = 15
+TOP_RISK_NODE = "MUM-01"  # highest baseline risk (92) in the terminal model
+TOP_RISK_LAT, TOP_RISK_LON = 19.076, 72.8777
+
+# Seeded data is intentionally labeled when Overpass is unavailable, but covers
+# every monitored city so the degraded map still gives an operator a full view.
 FALLBACK_ATMS = [
+  # Delhi — 8
   {"name":"SBI ATM - Connaught Place","operator":"State Bank of India","lat":28.6304,"lon":77.2177},
   {"name":"HDFC Bank ATM - Karol Bagh","operator":"HDFC Bank","lat":28.6519,"lon":77.1909},
   {"name":"Axis Bank ATM - Nehru Place","operator":"Axis Bank","lat":28.5521,"lon":77.2517},
   {"name":"ICICI ATM - Nehru Place Metro","operator":"ICICI Bank","lat":28.5494,"lon":77.2519},
-  {"name":"Canara Bank ATM - Pari Chowk","operator":"Canara Bank","lat":28.4744,"lon":77.5040},
+  {"name":"Canara Bank ATM - Lajpat Nagar","operator":"Canara Bank","lat":28.5677,"lon":77.2433},
+  {"name":"Punjab National Bank ATM - Dwarka","operator":"Punjab National Bank","lat":28.5921,"lon":77.0460},
+  {"name":"Kotak Mahindra ATM - Saket","operator":"Kotak Mahindra Bank","lat":28.5245,"lon":77.2066},
+  {"name":"Bank of Baroda ATM - Okhla Phase II","operator":"Bank of Baroda","lat":28.5307,"lon":77.2706},
+  # Mumbai — 6
   {"name":"SBI ATM - Bandra West","operator":"State Bank of India","lat":19.0596,"lon":72.8295},
-  {"name":"HDFC ATM - Andheri East","operator":"HDFC Bank","lat":19.1136,"lon":72.8697},
-  {"name":"ICICI ATM - Lower Parel","operator":"ICICI Bank","lat":18.9977,"lon":72.8267},
+  {"name":"HDFC Bank ATM - Andheri East","operator":"HDFC Bank","lat":19.1136,"lon":72.8697},
+  {"name":"ICICI Bank ATM - Lower Parel","operator":"ICICI Bank","lat":18.9977,"lon":72.8267},
+  {"name":"Axis Bank ATM - Fort","operator":"Axis Bank","lat":18.9358,"lon":72.8356},
+  {"name":"Kotak Mahindra ATM - Dadar West","operator":"Kotak Mahindra Bank","lat":19.0180,"lon":72.8430},
+  {"name":"Bank of Maharashtra ATM - Powai","operator":"Bank of Maharashtra","lat":19.1176,"lon":72.9060},
+  # Bengaluru — 6
   {"name":"SBI ATM - MG Road","operator":"State Bank of India","lat":12.9757,"lon":77.6068},
-  {"name":"Kotak ATM - Indiranagar","operator":"Kotak Mahindra Bank","lat":12.9784,"lon":77.6408},
-  {"name":"HDFC ATM - Koramangala","operator":"HDFC Bank","lat":12.9352,"lon":77.6245},
-  {"name":"Axis ATM - Hazratganj","operator":"Axis Bank","lat":26.8500,"lon":80.9470}
+  {"name":"Kotak Mahindra Bank ATM - Indiranagar","operator":"Kotak Mahindra Bank","lat":12.9784,"lon":77.6408},
+  {"name":"HDFC Bank ATM - Koramangala","operator":"HDFC Bank","lat":12.9352,"lon":77.6245},
+  {"name":"ICICI Bank ATM - Whitefield","operator":"ICICI Bank","lat":12.9698,"lon":77.7500},
+  {"name":"Axis Bank ATM - Jayanagar","operator":"Axis Bank","lat":12.9250,"lon":77.5938},
+  {"name":"Canara Bank ATM - Rajajinagar","operator":"Canara Bank","lat":12.9919,"lon":77.5537},
+  # Hyderabad — 4
+  {"name":"HDFC Bank ATM - Banjara Hills","operator":"HDFC Bank","lat":17.4126,"lon":78.4482},
+  {"name":"SBI ATM - Secunderabad","operator":"State Bank of India","lat":17.4399,"lon":78.4983},
+  {"name":"ICICI Bank ATM - Gachibowli","operator":"ICICI Bank","lat":17.4401,"lon":78.3489},
+  {"name":"Axis Bank ATM - Kukatpally","operator":"Axis Bank","lat":17.4028,"lon":78.4930},
+  # Lucknow — 4
+  {"name":"Axis Bank ATM - Hazratganj","operator":"Axis Bank","lat":26.8500,"lon":80.9470},
+  {"name":"HDFC Bank ATM - Gomti Nagar","operator":"HDFC Bank","lat":26.8544,"lon":81.0198},
+  {"name":"ICICI Bank ATM - Aliganj","operator":"ICICI Bank","lat":26.8885,"lon":80.9422},
+  {"name":"State Bank ATM - Indira Nagar","operator":"State Bank of India","lat":26.8830,"lon":80.9950},
+  # Jaipur — 4
+  {"name":"HDFC Bank ATM - MI Road","operator":"HDFC Bank","lat":26.9085,"lon":75.8100},
+  {"name":"SBI ATM - Malviya Nagar","operator":"State Bank of India","lat":26.8540,"lon":75.8130},
+  {"name":"ICICI Bank ATM - Vaishali Nagar","operator":"ICICI Bank","lat":26.9120,"lon":75.7380},
+  {"name":"Axis Bank ATM - Mansarovar","operator":"Axis Bank","lat":26.8510,"lon":75.7600},
+  # Ahmedabad — 3
+  {"name":"HDFC Bank ATM - CG Road","operator":"HDFC Bank","lat":23.0290,"lon":72.5670},
+  {"name":"SBI ATM - Satellite","operator":"State Bank of India","lat":23.0300,"lon":72.5100},
+  {"name":"ICICI Bank ATM - Maninagar","operator":"ICICI Bank","lat":22.9970,"lon":72.6020},
+  # Indore — 3
+  {"name":"HDFC Bank ATM - Vijay Nagar","operator":"HDFC Bank","lat":22.7530,"lon":75.8940},
+  {"name":"SBI ATM - Palasia","operator":"State Bank of India","lat":22.7240,"lon":75.8830},
+  {"name":"ICICI Bank ATM - Rau","operator":"ICICI Bank","lat":22.6520,"lon":75.8120},
+  # Kolkata — 4
+  {"name":"SBI ATM - Park Street","operator":"State Bank of India","lat":22.5530,"lon":88.3520},
+  {"name":"HDFC Bank ATM - Salt Lake Sector V","operator":"HDFC Bank","lat":22.5800,"lon":88.4200},
+  {"name":"ICICI Bank ATM - Gariahat","operator":"ICICI Bank","lat":22.5840,"lon":88.3630},
+  {"name":"Axis Bank ATM - Howrah","operator":"Axis Bank","lat":22.5950,"lon":88.2630},
+  # Chennai — 3
+  {"name":"SBI ATM - T. Nagar","operator":"State Bank of India","lat":13.0418,"lon":80.2341},
+  {"name":"HDFC Bank ATM - Anna Nagar","operator":"HDFC Bank","lat":13.0850,"lon":80.2600},
+  {"name":"ICICI Bank ATM - Adyar","operator":"ICICI Bank","lat":13.0067,"lon":80.2570},
+  # Srinagar — 3
+  {"name":"SBI ATM - Lal Chowk","operator":"State Bank of India","lat":34.0830,"lon":74.7970},
+  {"name":"J&K Bank ATM - Residency Road","operator":"Jammu & Kashmir Bank","lat":34.0780,"lon":74.8060},
+  {"name":"HDFC Bank ATM - Karan Nagar","operator":"HDFC Bank","lat":34.0740,"lon":74.8070}
 ]
 
-OVERPASS = ["https://overpass-api.de/api/interpreter",
-            "https://overpass.kumi.systems/api/interpreter"]
+OVERPASS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter",
+  "https://overpass.osm.ch/api/interpreter"
+]
+OVERPASS_STATUS = [ep.replace("/api/interpreter", "/api/status") for ep in OVERPASS]
+ATM_WARM_LOCK = threading.Lock()
+ATM_WARMING = set()
+
+
+def _cache_atms(node_id, atms, degraded=""):
+    payload = json.dumps({"atms": atms, "degraded": degraded}, separators=(",", ":"))
+    with DB_LOCK:
+        DB.execute("INSERT OR REPLACE INTO atm_cache VALUES(?,?,?)",
+                   (node_id, time.time(), payload))
+        DB.commit()
+
+
+def _read_atm_cache(node_id):
+    with DB_LOCK:
+        row = DB.execute("SELECT fetched_at,payload FROM atm_cache WHERE node_id=?",
+                         (node_id,)).fetchone()
+    if not row or time.time() - row[0] >= ATM_CACHE_TTL:
+        return None
+    try:
+        cached = json.loads(row[1])
+        if isinstance(cached, dict) and "atms" in cached:
+            return cached
+        return {"atms": cached, "degraded": ""}  # migrate pre-resilience rows
+    except (TypeError, ValueError):
+        return None
+
+
+def _overpass_working_endpoints():
+    results = [None] * len(OVERPASS)
+    def probe(index, status_ep):
+        try:
+            req = urllib.request.Request(status_ep, headers={"User-Agent": "NirakshanSIH/1.0"})
+            with urllib.request.urlopen(req, timeout=OVERPASS_STATUS_TIMEOUT) as response:
+                if 200 <= response.status < 400:
+                    results[index] = OVERPASS[index]
+        except Exception:
+            pass
+    probes = [threading.Thread(target=probe, args=(i, status_ep), daemon=True)
+              for i, status_ep in enumerate(OVERPASS_STATUS)]
+    for thread in probes: thread.start()
+    for thread in probes: thread.join(OVERPASS_STATUS_TIMEOUT + 1)
+    return [ep for ep in results if ep]
+
 
 def get_atms(node_id, lat, lon, r):
-    with DB_LOCK:
-        row = DB.execute("SELECT fetched_at,payload FROM atm_cache WHERE node_id=?",(node_id,)).fetchone()
-    if row and time.time()-row[0] < 21600: return {"atms": json.loads(row[1])}
-    q = ('[out:json][timeout:60];('
+    cached = _read_atm_cache(node_id)
+    if cached is not None:
+        return cached
+    q = ('[out:json][timeout:25];('
          'node(around:%d,%f,%f)["amenity"="atm"];way(around:%d,%f,%f)["amenity"="atm"];'
          'node(around:%d,%f,%f)["amenity"="bank"];way(around:%d,%f,%f)["amenity"="bank"];);out center 80;'
          ) % (r,lat,lon,r,lat,lon,r,lat,lon,r,lat,lon)
-    last = "no attempt"
-    for ep in OVERPASS:
-        try:
-            req = urllib.request.Request(ep, data=urllib.parse.urlencode({"data":q}).encode(),
-                                         headers={"User-Agent":"NirakshanSIH/1.0"})
-            raw = json.loads(urllib.request.urlopen(req, timeout=75).read())
-            out = []
-            for e in raw.get("elements", []):
-                c = e.get("center") or {}
-                la, lo = e.get("lat", c.get("lat")), e.get("lon", c.get("lon"))
-                if la is None or lo is None: continue
-                t = e.get("tags", {})
-                out.append({"name": t.get("name") or t.get("operator") or "ATM",
-                            "operator": t.get("operator",""), "lat": la, "lon": lo})
-            if not out: last = ep+" 0 elements"; continue
-            with DB_LOCK:
-                DB.execute("INSERT OR REPLACE INTO atm_cache VALUES(?,?,?)",
-                           (node_id,time.time(),json.dumps(out))); DB.commit()
-            return {"atms": out}
-        except Exception as ex: last = "%s -> %s" % (ep, ex)
-    stale = None
+    working = _overpass_working_endpoints()
+    last = "no Overpass endpoint passed status check"
+    for ep in working:
+        for attempt in range(2):
+            try:
+                req = urllib.request.Request(ep, data=urllib.parse.urlencode({"data":q}).encode(),
+                                             headers={"User-Agent": "NirakshanSIH/1.0"})
+                with urllib.request.urlopen(req, timeout=OVERPASS_QUERY_TIMEOUT) as response:
+                    raw = json.loads(response.read())
+                out = []
+                for e in raw.get("elements", []):
+                    c = e.get("center") or {}
+                    la, lo = e.get("lat", c.get("lat")), e.get("lon", c.get("lon"))
+                    if la is None or lo is None: continue
+                    t = e.get("tags", {})
+                    out.append({"name": t.get("name") or t.get("operator") or "ATM",
+                                "operator": t.get("operator",""), "lat": la, "lon": lo})
+                if not out:
+                    last = "%s returned 0 elements" % ep
+                    continue
+                result = {"atms": out, "degraded": ""}
+                _cache_atms(node_id, out)
+                return result
+            except Exception as ex:
+                last = "%s attempt %d -> %s" % (ep, attempt + 1, ex)
     with DB_LOCK:
-        stale = DB.execute("SELECT payload FROM atm_cache WHERE node_id=?",(node_id,)).fetchone()
+        stale = DB.execute("SELECT payload FROM atm_cache WHERE node_id=?", (node_id,)).fetchone()
     if stale:
-        return {"atms": json.loads(stale[1]), "degraded": "served from older cache - Overpass busy"}
-    return {"atms": FALLBACK_ATMS, "degraded": "Overpass unavailable - showing seeded ATM set (labeled)"}
+        try:
+            old = json.loads(stale[0])
+            return {"atms": old.get("atms", FALLBACK_ATMS) if isinstance(old, dict) else old,
+                    "degraded": "served from older cache - Overpass busy"}
+        except (TypeError, ValueError):
+            pass
+    result = {"atms": FALLBACK_ATMS,
+              "degraded": "Overpass unavailable - showing seeded ATM set (labeled)"}
+    _cache_atms(node_id, FALLBACK_ATMS, result["degraded"])
+    return result
+
+
+def prewarm_top_atms():
+    """Kick off one cache warm for UptimeRobot without delaying /health."""
+    if _read_atm_cache(TOP_RISK_NODE) is not None:
+        return
+    with ATM_WARM_LOCK:
+        if TOP_RISK_NODE in ATM_WARMING:
+            return
+        ATM_WARMING.add(TOP_RISK_NODE)
+    def warm():
+        try:
+            get_atms(TOP_RISK_NODE, TOP_RISK_LAT, TOP_RISK_LON, 4000)
+        except Exception as ex:
+            print("[atm-prewarm] %s: %s" % (TOP_RISK_NODE, ex), flush=True)
+        finally:
+            with ATM_WARM_LOCK:
+                ATM_WARMING.discard(TOP_RISK_NODE)
+    threading.Thread(target=warm, daemon=True).start()
 
 def ai_briefing():
     now = time.time()
@@ -445,7 +579,8 @@ class H(BaseHTTPRequestHandler):
             q = urllib.parse.parse_qs(p.query)
             res = get_atms(q.get("node",[""])[0], float(q.get("lat",[22.5])[0]),
                            float(q.get("lon",[79.5])[0]), int(q.get("r",[6000])[0]))
-            res["source"] = "OpenStreetMap/Overpass (LIVE)"
+            res["source"] = ("OpenStreetMap/Overpass (LIVE)" if not res.get("degraded")
+                             else "Seeded ATM fallback (degraded)")
             self._json(res)
         elif p.path == "/case/trace":
             now = time.time()
@@ -469,6 +604,9 @@ class H(BaseHTTPRequestHandler):
         elif p.path == "/ai/briefing":
             self._json(ai_briefing())
         elif p.path == "/health":
+            # UptimeRobot calls this every 5 minutes; warm the highest-risk
+            # node asynchronously so health stays a sub-second liveness check.
+            prewarm_top_atms()
             self._json({"ok": True, "clients": len(CLIENTS),
                         "ntfy": ("set" if NTFY_TOPIC else "NOT SET")})
         else:
