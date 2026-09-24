@@ -15,6 +15,8 @@ Interactive architecture diagram: [gitdiagram.com/Yosa-Shiawase/Nirikshanv2](htt
 
 ## What NIRAKSHAN does
 
+![NIRAKSHAN at a glance — ingest, predict, trace, intercept](docs/nirakshan-at-a-glance.svg)
+
 Cyber-fraud money reaches an ATM within hours. Police find out after it's
 gone. NIRAKSHAN flips that: it ingests cybercrime complaint streams live,
 predicts which ATM clusters will be hit next (+2h/+6h/+24h), shows the real
