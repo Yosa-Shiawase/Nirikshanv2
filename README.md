@@ -9,6 +9,7 @@
 
 
 Desktop command console
+
 ![Desktop command console](docs/r2-desktop.png)
 
 
@@ -16,6 +17,7 @@ Desktop command console
 
 
 Mobile app layout
+
 ![Mobile app layout](docs/r2-mobile.png)
 
 
@@ -23,6 +25,7 @@ Mobile app layout
 
 
 Engine Room — live prediction machinery
+
 ![Engine Room — live prediction machinery](docs/r2-engine.png)
 
 
