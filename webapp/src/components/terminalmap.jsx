@@ -622,7 +622,13 @@ export default function TerminalMap() {
       {/* consolidated tools */}
       <div className="tm-tools">
         {toolsOpen && (
-          <div className={`tm-panel ${dropUp ? "tm-panel--up" : "tm-panel--down"}`} ref={toolsPanelRef} role="dialog" aria-label="Map tools">
+          <div
+            className={`tm-panel ${dropUp ? "tm-panel--up" : "tm-panel--down"}`}
+            ref={toolsPanelRef}
+            role="dialog"
+            aria-label="Map tools"
+            onPointerDown={(event) => event.stopPropagation()}
+          >
             <div className="tm-panel__head">
               <span className="hud-label">MAP TOOLS</span>
               <button type="button" className="tm-btn tm-btn--icon" onClick={() => setToolsOpen(false)} aria-label="Close map tools">
