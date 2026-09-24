@@ -397,11 +397,12 @@ export default function TerminalMap() {
       g && g.clearLayers();
       list.forEach((a) => {
         if (typeof a.lat !== "number" || typeof a.lon !== "number") return;
-        // ATM gem marker — divIcon chip, readable on dark AND light basemaps
-        const S = 28;
+        // Transparent gem marker: the emoji provides the diamond shape, so no
+        // square background/border is needed and nearby markers stay visible.
+        const S = 16;
         const atmIcon = L.divIcon({
           className: "atm-gem-icon",
-          html: `<div style="width:${S}px;height:${S}px;border-radius:8px;background:rgba(14,29,56,.92);border:1.5px solid #53c7f0;box-shadow:0 0 10px rgba(83,199,240,.55);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;">💠</div>`,
+          html: `<span style="width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:${S}px;text-shadow:0 0 6px rgba(83,199,240,.9);">💠</span>`,
           iconSize: [S, S],
           iconAnchor: [S / 2, S / 2],
         });
