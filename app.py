@@ -390,6 +390,12 @@ def get_atms(node_id, lat, lon, r):
     cached = _read_atm_cache(node_id)
     if cached is not None:
         return cached
+    # Never make a user-facing request wait behind a slow community mirror.
+    # The pre-warm worker owns the network fetch; serve the labeled seed set
+    # until that worker has populated sqlite.
+    if node_id in ATM_WARMING and threading.current_thread().name != "atm-prewarm":
+        return {"atms": FALLBACK_ATMS,
+                "degraded": "ATM cache warming - showing seeded ATM set (labeled)"}
     q = ('[out:json][timeout:25];('
          'node(around:%d,%f,%f)["amenity"="atm"];way(around:%d,%f,%f)["amenity"="atm"];'
          'node(around:%d,%f,%f)["amenity"="bank"];way(around:%d,%f,%f)["amenity"="bank"];);out center 80;'
@@ -450,7 +456,7 @@ def prewarm_top_atms():
         finally:
             with ATM_WARM_LOCK:
                 ATM_WARMING.discard(TOP_RISK_NODE)
-    threading.Thread(target=warm, daemon=True).start()
+    threading.Thread(target=warm, name="atm-prewarm", daemon=True).start()
 
 def ai_briefing():
     now = time.time()
