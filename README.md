@@ -8,10 +8,15 @@
 **Demo video:** https://youtu.be/27NCGUmb9SQ
 
 ![Desktop command console](docs/r2-desktop.png)
+
+
 ![Mobile app layout](docs/r2-mobile.png)
+
+
 ![Engine Room — live prediction machinery](docs/r2-engine.png)
 
 Interactive architecture diagram: [gitdiagram.com/Yosa-Shiawase/Nirikshanv2](https://gitdiagram.com/Yosa-Shiawase/Nirikshanv2)
+![Gitdiagram — the total workflow ](docs/r2-diagram.png)
 
 ## What NIRAKSHAN does
 
