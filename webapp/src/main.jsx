@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
+import App from "./app.jsx";
 import { ThemeProvider } from "./context/themecontext.jsx";
 import { ConsoleProvider } from "./context/consolecontext.jsx";
 import { LiveFeedProvider } from "./live/uselivefeed.jsx";
